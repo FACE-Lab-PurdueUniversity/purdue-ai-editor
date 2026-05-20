@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module fritzingVersion="0.4.3b.09.26.4458" moduleId="US-100 Ultrasonic Rangefinder_5103b193a2d8ef909fb1abe5afd80b1c_8" referenceFile="SRF05 Ultrasonic Rangefinder__856ec32add635ca789a835a39fed2389__67d4590627079fd4efa77e6430f0e9c7__7feda7cf112876e5bd1c6b854136dc6d__2deb64b76e84d54b89aa5b7925b91a01__1309efc522384c71a9feeaf68dcf45c3.fzp">
+ <author>RafaG</author>
+ <date>lun. oct. 12 2015</date>
+ <tags/>
+ <properties>
+  <property name="part number"></property>
+  <property name="variant">Serial</property>
+  <property name="family">Ultrasonic sensors</property>
+  <property name="layer"></property>
+ </properties>
+ <views>
+  <iconView>
+   <layers image="icon/US-100 Ultrasonic Rangefinder_bce6357ccc200e48f99d55bfda611f45_6_icon.svg">
+    <layer layerId="icon"/>
+   </layers>
+  </iconView>
+  <breadboardView>
+   <layers image="breadboard/US-100 Ultrasonic Rangefinder_bce6357ccc200e48f99d55bfda611f45_6_breadboard.svg">
+    <layer layerId="breadboard"/>
+   </layers>
+  </breadboardView>
+  <pcbView>
+   <layers image="pcb/US-100 Ultrasonic Rangefinder_bce6357ccc200e48f99d55bfda611f45_6_pcb.svg">
+    <layer layerId="copper0"/>
+    <layer layerId="copper1"/>
+   </layers>
+  </pcbView>
+  <schematicView>
+   <layers image="schematic/US-100 Ultrasonic Rangefinder_bce6357ccc200e48f99d55bfda611f45_6_schematic.svg">
+    <layer layerId="schematic"/>
+   </layers>
+  </schematicView>
+ </views>
+ <connectors>
+  <connector type="male" id="connector8" name="VCC">
+   <description>5VDC</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" svgId="connector8"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" svgId="connector8"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper1" svgId="connector8"/>
+     <p layer="copper0" svgId="connector8"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector type="male" id="connector9" name="Trig/Tx">
+   <description>no description yet</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" svgId="connector9"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" svgId="connector9"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper1" svgId="connector9"/>
+     <p layer="copper0" svgId="connector9"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector type="male" id="connector10" name="Echo/Rx">
+   <description>no description yet</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" svgId="connector10"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" svgId="connector10"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper1" svgId="connector10"/>
+     <p layer="copper0" svgId="connector10"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector type="male" id="connector11" name="GND">
+   <description>no description yet</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" svgId="connector11"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" svgId="connector11"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper1" svgId="connector11"/>
+     <p layer="copper0" svgId="connector11"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector type="male" id="connector12" name="GND*">
+   <description>no description yet</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" svgId="connector12pin"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" svgId="connector12pin"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper1" svgId="connector12pin"/>
+     <p layer="copper0" svgId="connector12pin"/>
+    </pcbView>
+   </views>
+  </connector>
+ </connectors>
+ <title>US-100 Ultrasonic Rangefinder</title>
+ <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;br />&lt;/p>&lt;/body>&lt;/html></description>
+ <url>http://minibots.wordpress.com</url>
+</module>

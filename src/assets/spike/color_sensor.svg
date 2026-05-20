@@ -1,0 +1,10 @@
+<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Color Sensor placeholder -->
+  <rect x="15" y="25" width="50" height="40" rx="5" fill="#FF6B35" stroke="#C4320A" stroke-width="2"/>
+  <circle cx="40" cy="45" r="12" fill="#FFF" stroke="#000" stroke-width="1"/>
+  <circle cx="40" cy="45" r="8" fill="#FF0000"/>
+  <circle cx="37" cy="42" r="3" fill="#00FF00"/>
+  <circle cx="43" cy="42" r="3" fill="#0000FF"/>
+  <text x="40" y="15" font-family="Arial" font-size="9" font-weight="bold" fill="#333" text-anchor="middle">Color</text>
+</svg>
+

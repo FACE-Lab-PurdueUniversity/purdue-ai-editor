@@ -1,0 +1,140 @@
+/* DebugManager - overlay and content from ModalBase.css */
+
+.dbg-box {
+  padding: 0;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dbg-header {
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 16px 16px 0 0;
+}
+
+.dbg-body,
+.dbg-body-terminal {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  padding: 16px;
+  overflow-y: auto;
+  min-height: 400px;
+  max-height: 500px;
+  line-height: 1.6;
+}
+
+.dbg-body {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dbg-body-terminal {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dbg-log-entry {
+  padding: 4px 0;
+  word-wrap: break-word;
+}
+
+.dbg-log-error {
+  color: #f87171;
+}
+
+.dbg-log-warn {
+  color: #fbbf24;
+}
+
+.dbg-empty {
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.dbg-controls {
+  padding: 20px 24px;
+  background: #f9fafb;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dbg-copy-notify {
+  margin-right: auto;
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 14px;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.dbg-button {
+  padding: 12px 24px;
+  background-color: var(--brand-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dbg-button:hover {
+  background-color: var(--brand-accent-hover);
+}
+
+.dbg-button:active {
+  background-color: #1d4ed8;
+}
+
+.dbg-footer {
+  padding: 16px 24px;
+  background: #f9fafb;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 16px 16px;
+}
+
+.dbg-footer a {
+  color: var(--brand-accent);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dbg-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar styling for dark sections */
+.dbg-body::-webkit-scrollbar,
+.dbg-body-terminal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dbg-body::-webkit-scrollbar-track,
+.dbg-body-terminal::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.dbg-body::-webkit-scrollbar-thumb,
+.dbg-body-terminal::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 5px;
+}
+
+.dbg-body::-webkit-scrollbar-thumb:hover,
+.dbg-body-terminal::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}

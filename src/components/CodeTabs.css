@@ -1,0 +1,166 @@
+/* Code Tabs Container */
+.code-tabs-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #e8e8e8;
+  border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Scrollable container */
+.code-tabs-container {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-width: 0;
+
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.code-tabs-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Individual tab - VS Code-like boxy style */
+.code-tab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: #d4d4d4;
+  border: 1px solid #bbb;
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  margin-right: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.15s, border-color 0.15s;
+  min-width: 100px;
+  max-width: 180px;
+}
+
+.code-tab:hover {
+  background: #e0e0e0;
+}
+
+.code-tab.active {
+  background: #fff;
+  border-color: #ccc;
+  border-bottom: 1px solid #fff;
+  margin-bottom: -1px;
+  font-weight: 500;
+}
+
+/* Tab name */
+.code-tab-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+  user-select: none;
+  min-width: 0;
+}
+
+/* Edit button - visible only on tab hover */
+.code-tab-edit {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.08);
+  color: #555;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+  opacity: 0;
+}
+
+.code-tab:hover .code-tab-edit {
+  opacity: 1;
+}
+
+.code-tab-edit:hover {
+  background: rgba(0, 0, 0, 0.15);
+  color: #000;
+}
+
+.code-tab.active .code-tab-edit {
+  background: rgba(0, 0, 0, 0.06);
+  color: #333;
+}
+
+.code-tab.active .code-tab-edit:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* Tab input for editing */
+.code-tab-input {
+  flex: 1;
+  padding: 2px 4px;
+  border: 1px solid var(--brand-accent);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  min-width: 0;
+}
+
+/* Add new code button - small plus, matches tab styling, sticky so it stays visible when scrolling */
+.code-tab-add {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: #d4d4d4;
+  color: #333;
+  border: 1px solid #bbb;
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s;
+  padding: 0;
+  margin-left: 1px;
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.1);
+}
+
+.code-tab-add:hover {
+  background: #e0e0e0;
+}
+
+.code-tab-add:active {
+  background: #c9c9c9;
+}
+
+.spinner-small {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

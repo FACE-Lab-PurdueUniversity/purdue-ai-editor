@@ -1,0 +1,94 @@
+.new-session-title {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.new-session-description {
+  margin: 0 0 24px 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.new-session-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin: 16px 0 8px 0;
+}
+
+.new-session-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.new-session-input:focus {
+  border-color: var(--brand-accent);
+}
+
+.new-session-platforms {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.new-session-platform {
+  flex: 1 1 140px;
+  padding: 14px 16px;
+  border: 2px solid #d0d0d0;
+  border-radius: 10px;
+  background: white;
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  cursor: pointer;
+  transition: border-color 0.1s ease, background-color 0.1s ease;
+}
+
+.new-session-platform:hover {
+  border-color: var(--brand-accent);
+}
+
+.new-session-platform.selected {
+  border-color: var(--brand-accent);
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+.new-session-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.new-session-actions .modal-close-button {
+  flex: 1;
+}
+
+.new-session-actions .modal-close-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.new-session-cancel {
+  flex: 0 0 auto;
+  padding: 12px 20px;
+  background: transparent;
+  color: #444;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.new-session-cancel:hover {
+  background: #f5f5f5;
+}

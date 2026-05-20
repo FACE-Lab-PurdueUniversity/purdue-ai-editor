@@ -1,0 +1,68 @@
+/* Console Modal - overlay and content from ModalBase.css */
+
+.console-box {
+  padding: 40px;
+  max-width: 800px;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.console-header {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.console-editor-container {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+}
+
+.console-editor-container .cm-editor {
+  height: 100%;
+}
+
+.console-editor-container .cm-scroller {
+  overflow: auto;
+}
+
+.console-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.console-actions button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.console-actions button[data-act="cancel"] {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.console-actions button[data-act="cancel"]:hover {
+  background-color: #d1d5db;
+}
+
+.console-actions button[data-act="copy"] {
+  background-color: var(--brand-accent);
+  color: white;
+}
+
+.console-actions button[data-act="copy"]:hover {
+  background-color: var(--brand-accent-hover);
+}

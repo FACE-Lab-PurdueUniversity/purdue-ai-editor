@@ -1,0 +1,125 @@
+/* AuthModal content styles - overlay and content box from ModalBase.css */
+
+.auth-modal h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.auth-modal > p {
+  margin-bottom: 25px;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.auth-button:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.auth-button.anonymous {
+  background-color: #f0f0f0;
+}
+
+.auth-button img {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+}
+
+.auth-error {
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--brand-accent);
+}
+
+.auth-button.password-button {
+  background-color: var(--brand-accent);
+  color: white;
+  border: none;
+}
+
+.auth-button.password-button:hover {
+  background-color: var(--brand-accent-hover);
+}
+
+.auth-toggle-button {
+  background: none;
+  border: none;
+  color: var(--brand-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px;
+  margin-bottom: 15px;
+  text-decoration: underline;
+}
+
+.auth-toggle-button:hover {
+  color: var(--brand-accent-hover);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #9ca3af;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.auth-divider span {
+  padding: 0 10px;
+  font-size: 0.9rem;
+}

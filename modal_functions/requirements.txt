@@ -1,0 +1,7 @@
+pydantic>=2.0.0
+openai
+anthropic
+google-genai
+supabase
+pytz
+fastapi[standard]

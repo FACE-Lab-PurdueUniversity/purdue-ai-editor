@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module moduleId="KY-037_991c8d99fbc361650c15e1a691da2cd2_5" referenceFile="generic_ic_dip_4_300mil.fzp">
+ <version>4</version>
+ <author>arduinomodules.info</author>
+ <title>KY-037 High Sensitivity Sound Detection Module</title>
+ <label>Part</label>
+ <date>Thu Mar 2 2023</date>
+ <tags>
+  <tag>LM393</tag>
+  <tag>arduinomodules.info</tag>
+  <tag>contrib</tag>
+  <tag>KY-037</tag>
+  <tag>CMA-6542PF</tag>
+  <tag>Sound</tag>
+ </tags>
+ <properties>
+  <property name="family">KY-037</property>
+  <property name="variant">variant 1</property>
+  <property name="editable pin labels">false</property>
+  <property name="Current consumption">~0.5mA</property>
+  <property name="pin spacing">300mil</property>
+  <property name="board dimensions">15mm x 36mm [0.6in x 1.4in]</property>
+  <property name="layer"></property>
+  <property name="package">Breakout board</property>
+  <property name="pins">4</property>
+  <property name="Microphone  sensitivity">-42 ±3 db</property>
+  <property name="chip label">KY-037</property>
+  <property name="hole size"></property>
+  <property name="mn"></property>
+  <property name="mpn"></property>
+  <property name="part number"></property>
+  <property name="operating voltage">3.3V to 5.5V</property>
+ </properties>
+ <taxonomy>part.dip.4.pins</taxonomy>
+ <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">KY-037 high sensitivity sound detection module is an analog/digital sensor that uses a condenser microphone to observe changes in environment noise.&lt;/p>&lt;/body>&lt;/html></description>
+ <views>
+  <iconView>
+   <layers image="icon/KY-037_991c8d99fbc361650c15e1a691da2cd2_5_icon.svg">
+    <layer layerId="icon"/>
+   </layers>
+  </iconView>
+  <breadboardView>
+   <layers image="breadboard/KY-037_991c8d99fbc361650c15e1a691da2cd2_5_breadboard.svg">
+    <layer layerId="breadboard"/>
+   </layers>
+  </breadboardView>
+  <schematicView>
+   <layers image="schematic/KY-037_991c8d99fbc361650c15e1a691da2cd2_5_schematic.svg">
+    <layer layerId="schematic"/>
+   </layers>
+  </schematicView>
+  <pcbView>
+   <layers image="pcb/KY-037_991c8d99fbc361650c15e1a691da2cd2_5_pcb.svg">
+    <layer layerId="silkscreen"/>
+    <layer layerId="copper0"/>
+    <layer layerId="copper1"/>
+   </layers>
+  </pcbView>
+ </views>
+ <connectors>
+  <connector id="connector0" type="male" name="A0">
+   <description>Analog Output</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" terminalId="connector0terminal" svgId="connector0pin"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" terminalId="connector0terminal" svgId="connector0pin"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper0" svgId="connector0pin"/>
+     <p layer="copper1" svgId="connector0pin"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector id="connector1" type="male" name="G">
+   <description>GND</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" terminalId="connector1terminal" svgId="connector1pin"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" terminalId="connector1terminal" svgId="connector1pin"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper0" svgId="connector1pin"/>
+     <p layer="copper1" svgId="connector1pin"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector id="connector2" type="male" name="+">
+   <description>Vin</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" terminalId="connector2terminal" svgId="connector2pin"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" terminalId="connector2terminal" svgId="connector2pin"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper0" svgId="connector2pin"/>
+     <p layer="copper1" svgId="connector2pin"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector id="connector3" type="male" name="D0">
+   <description>Digital Output</description>
+   <views>
+    <breadboardView>
+     <p layer="breadboard" terminalId="connector3terminal" svgId="connector3pin"/>
+    </breadboardView>
+    <schematicView>
+     <p layer="schematic" terminalId="connector3terminal" svgId="connector3pin"/>
+    </schematicView>
+    <pcbView>
+     <p layer="copper0" svgId="connector3pin"/>
+     <p layer="copper1" svgId="connector3pin"/>
+    </pcbView>
+   </views>
+  </connector>
+ </connectors>
+ <url> https://arduinomodules.info/ky-037-high-sensitivity-sound-detection-module/</url>
+</module>

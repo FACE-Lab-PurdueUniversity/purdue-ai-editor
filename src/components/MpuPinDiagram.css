@@ -1,0 +1,17 @@
+.mpu-pin-diagram {
+  width: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.mpu-pin-diagram text {
+  user-select: none;
+  pointer-events: none;
+}
+
+.mpu-diagram-placeholder {
+  color: #6b7280;
+  font-size: 13px;
+  font-style: italic;
+  padding: 16px 0;
+}

@@ -1,0 +1,45 @@
+{
+  "name": "coderobots.ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "generate:schema": "node scripts/generateSchemas.js"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4",
+    "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/view": "^6.38.5",
+    "@microbit/microbit-connection": "^0.1.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@tailwindcss/vite": "^4.2.1",
+    "@uiw/react-codemirror": "^4.25.2",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "dompurify": "^3.0.8",
+    "jszip": "^3.10.1",
+    "marked": "^11.1.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.13.1",
+    "recharts": "^3.7.0",
+    "tailwindcss": "^4.2.1",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "vite": "^7.1.7"
+  }
+}

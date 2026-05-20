@@ -1,0 +1,373 @@
+.hardware-config-modal {
+  max-width: 1200px;
+  width: 95%;
+  max-height: 90vh;
+  overflow: auto;
+  padding: 24px;
+}
+
+.hardware-config-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hardware-config-header-text {
+  flex: 1;
+}
+
+.hardware-config-header h2 {
+  margin: 0;
+  color: #111827;
+}
+
+.hardware-config-header p {
+  margin: 6px 0 0;
+  color: #4b5563;
+}
+
+.hardware-config-save-button {
+  padding: 8px 16px;
+  background-color: #26823b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hardware-config-save-button:hover {
+  background-color: #2cb04b;
+}
+
+.hardware-config-save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hardware-config-loading,
+.hardware-config-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.hardware-config-loading {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.hardware-config-error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.hardware-config-toolbar {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.hardware-config-toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.hardware-config-toolbar select {
+  min-width: 240px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.hardware-config-inline-button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.hardware-config-inline-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hardware-config-body {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.hardware-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 500px;
+  background: #fafafa;
+}
+
+/* The left panel with the visual diagram needs less min-height
+   since the SVG scales to its natural height */
+.hardware-panel-left {
+  min-height: 0;
+}
+
+.hardware-panel h3 {
+  margin: 0;
+}
+
+.hardware-helper-text {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 8px 0 12px;
+}
+
+.mpu-pin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mpu-pin-row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mpu-pin-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.mpu-pin-input {
+  min-height: 34px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  text-align: left;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #374151;
+}
+
+.mpu-pin-input.active {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-accent) 20%, transparent);
+}
+
+.mpu-clear-button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.component-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.component-toolbar select {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.component-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.component-card {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: white;
+  padding: 10px;
+}
+
+.component-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.component-remove {
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.part-preview {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 8px;
+  background: #fff;
+  overflow: auto;
+}
+
+.component-pin-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.component-pin-button {
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  cursor: pointer;
+}
+
+.component-pin-button.blink {
+  animation: pinBlink 0.7s linear infinite;
+}
+
+@keyframes pinBlink {
+  0% {
+    background: #fde68a;
+    border-color: #f59e0b;
+  }
+  50% {
+    background: #eff6ff;
+    border-color: #93c5fd;
+  }
+  100% {
+    background: #fde68a;
+    border-color: #f59e0b;
+  }
+}
+
+.hardware-config-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.hardware-config-check-button {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.hardware-config-check-button:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.hardware-config-check-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wiring-feedback-panel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.wiring-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: var(--brand-accent);
+}
+
+.wiring-feedback-dismiss {
+  padding: 4px 10px;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  background: white;
+  color: var(--brand-accent);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.wiring-feedback-dismiss:hover {
+  background: #dbeafe;
+}
+
+.wiring-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #93c5fd;
+  border-top-color: var(--brand-accent);
+  border-radius: 50%;
+  animation: wiringSpinnerSpin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes wiringSpinnerSpin {
+  to { transform: rotate(360deg); }
+}
+
+.wiring-feedback-loading {
+  color: var(--brand-accent);
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.wiring-feedback-error {
+  color: #b91c1c;
+  margin: 0;
+  font-size: 13px;
+}
+
+.wiring-feedback-text {
+  color: #1f2937;
+  font-size: 13px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.hardware-config-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

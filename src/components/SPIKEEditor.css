@@ -1,0 +1,194 @@
+/* SPIKE Editor Main Container */
+.spike-editor {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #111;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.spike-editor h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Split Layout */
+.spike-editor .parent {
+  display: grid;
+  grid-template-rows: 50% 5px auto;
+  flex-grow: 1;
+  min-height: 0;
+  width: 100%;
+  padding-right: 10px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 0 0 8px 8px;
+  background-color: white;
+  margin: 0 1rem 1rem 1rem;
+}
+
+.spike-editor .child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px;
+  gap: 0.5rem;
+}
+
+.spike-editor .resizer {
+  background-color: #f1f1f1;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  cursor: row-resize;
+  user-select: none;
+}
+
+.spike-editor .resizer:hover {
+  background-color: #e0e0e0;
+}
+
+/* Editor and Terminal Wrappers */
+.spike-editor .editor-wrapper {
+  flex-grow: 1;
+  min-height: 0;
+  overflow: scroll;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.spike-editor .terminal-wrapper {
+  flex-grow: 1;
+  min-height: 150px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+/* Control Panels */
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.status-and-control-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.status-banner {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.45rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  border: 1px solid #c9d2dc;
+  background: #f3f6fa;
+  color: #1f2933;
+}
+
+.status-banner.success {
+  border-color: #86c998;
+  background: #edf8f0;
+  color: #225c2f;
+}
+
+.status-banner.error {
+  border-color: #d88f8f;
+  background: #fceeee;
+  color: #7c2222;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Button Styling */
+.spike-editor .button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.spike-editor .button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.spike-editor .button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button color roles */
+.right-panel .connect-button {
+  background-color: #26823b;
+}
+
+.right-panel .connect-button:hover:not(:disabled) {
+  background-color: #1f6c31;
+}
+
+
+.right-panel .disconnect-button,
+.right-panel .stop-button {
+  background-color: #a33a3a;
+}
+
+.right-panel .disconnect-button:hover:not(:disabled),
+.right-panel .stop-button:hover:not(:disabled) {
+  background-color: #8f2e2e;
+}
+
+.right-panel .clear-console-button {
+  background-color: #d0d3d8;
+  color: #1f2933;
+}
+
+.right-panel .clear-console-button:hover:not(:disabled) {
+  background-color: #bcc1c8;
+}
+
+.right-panel .run-button {
+  background-color: #2d7a3c;
+}
+
+.right-panel .run-button:hover:not(:disabled) {
+  background-color: #266734;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .button-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .spike-editor .button {
+    width: 100%;
+  }
+}
+

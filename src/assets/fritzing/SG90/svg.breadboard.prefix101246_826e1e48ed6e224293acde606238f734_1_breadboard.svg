@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE svg>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg xmlns="http://www.w3.org/2000/svg" width="83.61mm" height="31.75mm" xmlns:xml="http://www.w3.org/XML/1998/namespace" x="0px" enable-background="new 78 0 237 90" y="0px"  viewBox="0 0 237 90" gorn="0" id="svg13574" xml:space="preserve" version="1.1">
+    <desc >
+        <referenceFile >servo_breadb.svg</referenceFile>
+    </desc>
+    <g transform="translate(-78,0)" >
+        <g >
+            <g >
+                <g >
+                    <g >
+                        <g transform="translate(0,49.5)" >
+                            <g >
+                                <g >
+                                    <g >
+                                        <g  gorn="0.1.0.0.0.0.0.0.0.0.0" id="breadboard_1_">
+                                            <g  gorn="0.1.0.0.0.0.0.0.0.0.0.0" id="conn">
+                                                <path d="M289.7-11.4h-135h-4.5l-4.5-4.5h-13.5" stroke-linejoin="round" fill="none"  stroke-width="4.5" gorn="0.1.0.0.0.0.0.0.0.0.0.0.0" stroke="#EB7206" id="path4914"/>
+                                                <path d="M289.7-6.9h-135h-22.5" fill="none"  stroke-width="4.5" gorn="0.1.0.0.0.0.0.0.0.0.0.0.1" stroke="#CC0404" id="path4916"/>
+                                                <path d="M289.7-2.4h-135h-4.5l-4.5,4.5h-13.5" stroke-linejoin="round" fill="none"  stroke-width="4.5" gorn="0.1.0.0.0.0.0.0.0.0.0.0.2" stroke="#723107" id="path4918"/>
+                                                <linearGradient y1="-2.6488" y2="33.3512" x1="-86.2909" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 1 189 -22.9985)" x2="-72.7909"  id="rect4930_1_">
+                                                    <stop  offset="0" style="stop-color:#2C2C2C"/>
+                                                    <stop  offset="0.5" style="stop-color:#3C3C3C"/>
+                                                    <stop  offset="1" style="stop-color:#333333"/>
+                                                </linearGradient>
+                                                <rect width="45" height="27" fill="url(#rect4930_1_)" x="87.2" y="-20.4"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.4" id="rect4930"/>
+                                                <rect width="31.5" height="1.8" fill="#FFFFFF" x="87.2" y="-20.4"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.5" id="rect4940" fill-opacity="0.3971"/>
+                                                <rect width="31.5" height="1.8" x="87.2" y="4.8"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.6" id="rect4942" fill-opacity="0.512"/>
+                                                <path d="M133.1-15.9h12.6l4.5,4.5h135" fill="none" stroke-linecap="round"  stroke-opacity="9.090911e-002" stroke-width="1.8" gorn="0.1.0.0.0.0.0.0.0.0.0.0.7" stroke="#FFFFFF" id="path4958"/>
+                                                <path d="M133.1-6.9h152.1" fill="none" stroke-linecap="round"  stroke-opacity="0.1005" stroke-width="1.8" gorn="0.1.0.0.0.0.0.0.0.0.0.0.8" stroke="#FFFFFF" id="path4960"/>
+                                                <rect width="4.5" height="4.5" fill="none" x="85" y="-18.2"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.9" id="connector1pin"/>
+                                                <rect width="4.5" height="4.5" fill="none" x="85" y="-9.2"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.10" id="connector2pin"/>
+                                                <rect width="4.5" height="4.5" fill="none" x="85" y="-0.2"  gorn="0.1.0.0.0.0.0.0.0.0.0.0.11" id="connector3pin"/>
+                                            </g>
+                                            <g transform="matrix(0.86602541,-0.50000001,0.50000001,0.86602541,207.25895,65.397868)" >
+                                                <g >
+                                                    <g >
+                                                        <g >
+                                                            <g  gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0" id="g4867">
+                                                                <radialGradient cx="-275.8898" cy="-181.284" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.2 1.527944e-005 -1.527944e-005 1.2 389.5577 168.0401)"  id="path4779_1_" r="2.2505">
+                                                                    <stop  offset="0" style="stop-color:#B3B3B3"/>
+                                                                    <stop  offset="0" style="stop-color:#939393"/>
+                                                                    <stop  offset="0.6667" style="stop-color:#D3D3D3"/>
+                                                                    <stop  offset="0.8333" style="stop-color:#969696"/>
+                                                                    <stop  offset="1" style="stop-color:#909090"/>
+                                                                </radialGradient>
+                                                                <path d="M61.2-49.5c0,1.5-1.2,2.7-2.7,2.7c-1.5,0-2.7-1.2-2.7-2.7c0-1.5,1.2-2.7,2.7-2.7C60-52.2,61.2-51,61.2-49.5z" fill="url(#path4779_1_)"  gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.1" id="path4779"/>
+                                                                <path d="M56.4-48.7l3.7-2.2l0.4,0.6l-3.7,2.2L56.4-48.7z M57.1-51.2l0.6-0.4l2.2,3.7l-0.6,0.4L57.1-51.2z" fill="#333333"  gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.2" id="rect4815" fill-opacity="0.3971"/>
+                                                                <path d="M32-88.2c-0.9-0.5-2-0.2-2.5,0.7l-7.4,12.9c2.3-1.5,5.3-1.6,7.9-0.1c3.7,2.1,4.9,6.8,2.8,10.5c-2.1,3.7-6.8,4.9-10.5,2.8c-2.5-1.5-3.9-4.2-3.8-6.9L11-55.6c-0.5,0.9-0.2,2,0.7,2.5l98.2,56.7c0.9,0.5,2,0.2,2.5-0.7l7.4-12.9c-2.3,1.5-5.3,1.6-7.9,0.1c-3.7-2.1-4.9-6.8-2.8-10.5s6.8-4.9,10.5-2.8c2.5,1.5,3.9,4.2,3.8,6.9l7.4-12.9c0.5-0.9,0.2-2-0.7-2.5L32-88.2L32-88.2z" stroke-linejoin="round" fill="#104F8E"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.3" stroke="#000000" id="rect3699"/>
+                                                                <g transform="matrix(-0.866 -0.5 0.5 -0.866 76.1125 -70.6116)" >
+                                                                    <g >
+                                                                        <g >
+                                                                            <g >
+                                                                                <rect width="13.5" height="3.6" stroke-linejoin="round" fill="#083C87" x="21.8" y="-47.3" stroke-linecap="round"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.4.0.0.0.0" stroke="#000000" id="rect4660"/>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                                <g transform="matrix(-0.866 -0.5 0.5 -0.866 126.3923 -121.0283)" >
+                                                                    <g >
+                                                                        <g >
+                                                                            <g >
+                                                                                <rect width="13.5" height="3.6" stroke-linejoin="round" fill="#083C87" x="40.2" y="-79.2" stroke-linecap="round"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.5.0.0.0.0" stroke="#000000" id="rect4670"/>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                                <g transform="matrix(-0.866 -0.5 0.5 -0.866 231.0343 -16.5234)" >
+                                                                    <g >
+                                                                        <g >
+                                                                            <g >
+                                                                                <rect width="13.5" height="3.6" stroke-linejoin="round" fill="#083C87" x="106.6" y="-41" stroke-linecap="round"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.6.0.0.0.0" stroke="#000000" id="rect4674"/>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                                <g transform="matrix(-0.866 -0.5 0.5 -0.866 180.4814 33.8933)" >
+                                                                    <g >
+                                                                        <g >
+                                                                            <g >
+                                                                                <rect width="13.5" height="3.6" stroke-linejoin="round" fill="#083C87" x="88" y="-9" stroke-linecap="round"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.7.0.0.0.0" stroke="#000000" id="rect4678"/>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                                <path d="M51.4-77l59.2,34.2c0.9,0.5,1.2,1.6,0.7,2.5l-18.5,32c-0.5,0.9-1.6,1.2-2.5,0.7L31.2-41.9c-0.9-0.5-1.2-1.6-0.7-2.5l18.5-32C49.5-77.2,50.6-77.5,51.4-77z" stroke-linejoin="round" fill="#0F4696"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.8" stroke="#000000" id="rect4629"/>
+                                                                <path d="M61.6-71.1c-8.5-1-17.1,3-21.7,10.9c-4.5,7.9-3.7,17.4,1.4,24.2l15.1,8.7c1.3,0.2,2.6,0.2,3.9,0.1l0,0l20-0.4v-0.1c3.3,0.2,6.5-1.4,8.3-4.5c1.8-3,1.5-6.6-0.3-9.4v-0.1l-9.7-17.5l0,0c-0.6-1.2-1.3-2.3-2.1-3.3L61.6-71.1z" stroke-linejoin="round" fill="#083C87"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.9" stroke="#000000" id="rect4621"/>
+                                                                <linearGradient y1="-37.1629" y2="-37.1629" x1="-291.703" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.866 0.5 -0.5 0.866 333.1548 155.3942)" x2="-309.703"  id="rect4553_1_">
+                                                                    <stop  offset="0" style="stop-color:#000000;stop-opacity:0.2411"/>
+                                                                    <stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0.2143"/>
+                                                                </linearGradient>
+                                                                <path d="M102.1-47.7l8.6,5c0.9,0.5,1.2,1.6,0.7,2.5l-18.5,32c-0.5,0.9-1.6,1.2-2.5,0.7l-8.6-5c-0.9-0.5-1.2-1.6-0.7-2.5l18.5-32C100.1-47.9,101.2-48.2,102.1-47.7z" fill="url(#rect4553_1_)"  gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.11" id="rect4553"/>
+                                                                <path d="M61.6-71.1c-8.5-1-17.1,3-21.7,10.9c-4.5,7.9-3.7,17.4,1.4,24.2l15.1,8.7c8.5,1,17.1-3,21.7-10.9c4.5-7.9,3.7-17.3-1.4-24.2L61.6-71.1z" stroke-linejoin="round" fill="#143E82"  stroke-width="0.18" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.12" stroke="#000000" id="path4616"/>
+                                                                <path d="M42.1-36.4C35-45.7,36.7-59,45.9-66.1c4.3-3.3,9.7-4.9,15.1-4.3" stroke-linejoin="round" fill="none" stroke-linecap="round"  stroke-opacity="0.2169" stroke-width="1.8" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.13" stroke="#FFFFFF" id="path4653"/>
+                                                                <path d="M56-28.4c11.6,1.6,22.2-6.6,23.8-18.2c0.7-5.4-0.7-10.8-3.8-15.2" stroke-linejoin="round" fill="none" stroke-linecap="round"  stroke-opacity="0.3386" stroke-width="1.8" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.14" stroke="#000000" id="path4655"/>
+                                                                <path d="M65.5-45.5c-2.2,3.9-7.2,5.2-11.1,3s-5.2-7.2-3-11.1l0,0c2.2-3.9,7.2-5.2,11.1-3C66.4-54.4,67.7-49.4,65.5-45.5L65.5-45.5z" stroke-linejoin="round" fill="#CCCCCC" stroke-linecap="round"  stroke-opacity="0.6825" stroke-width="0.48" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.15" stroke="#969696" id="path4695"/>
+                                                                <path d="M58.4-81c-3.9,0-7.1,3.2-7.1,7.1v13c-1.7,1.1-3.1,2.5-4.2,4.2l-39.9,0c-4,0-7.2,3.2-7.2,7.2c0,4,3.2,7.2,7.2,7.2l39.9,0c1.1,1.7,2.5,3.1,4.2,4.2v13c0,3.9,3.2,7.1,7.1,7.1h0.2c3.9,0,7.1-3.2,7.1-7.1v-13c1.7-1.1,3.1-2.5,4.2-4.2l39.9,0c4,0,7.2-3.2,7.2-7.2s-3.2-7.2-7.2-7.2l-39.9,0c-1.1-1.7-2.5-3.1-4.2-4.2l0-13c0-3.9-3.2-7.1-7.1-7.1H58.4z M58.5-75.6c1,0,1.8,0.8,1.8,1.8S59.5-72,58.5-72s-1.8-0.8-1.8-1.8C56.7-74.8,57.5-75.6,58.5-75.6z M58.5-69.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8c-1,0-1.8-0.8-1.8-1.8C56.7-68.5,57.5-69.3,58.5-69.3z M7.2-51.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8s-1.8-0.8-1.8-1.8C5.4-50.5,6.2-51.3,7.2-51.3z M13.5-51.3c1,0,1.8,0.8,1.8,1.8c0,1-0.8,1.8-1.8,1.8c-1,0-1.8-0.8-1.8-1.8S12.5-51.3,13.5-51.3z M19.8-51.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8S18-48.5,18-49.5S18.8-51.3,19.8-51.3z M97.7-51.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8c-1,0-1.8-0.8-1.8-1.8C95.8-50.5,96.7-51.3,97.7-51.3z M103.9-51.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8s-1.8-0.8-1.8-1.8S102.9-51.3,103.9-51.3z M110.3-51.3c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8c-1,0-1.8-0.8-1.8-1.8C108.4-50.5,109.3-51.3,110.3-51.3z M58.5-33.3c1,0,1.8,0.8,1.8,1.8c0,1-0.8,1.8-1.8,1.8s-1.8-0.8-1.8-1.8C56.7-32.5,57.5-33.3,58.5-33.3z M58.5-27c1,0,1.8,0.8,1.8,1.8c0,1-0.8,1.8-1.8,1.8s-1.8-0.8-1.8-1.8C56.7-26.2,57.5-27,58.5-27z" stroke-linejoin="round" fill="#DDDDDD" stroke-linecap="round"  stroke-opacity="0.6825" stroke-width="0.48" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.16" stroke="#939393" id="rect4703"/>
+                                                                <path d="M72-49.5C72-42,66-36,58.5-36C51-36,45-42,45-49.5C45-57,51-63,58.5-63C66-63,72-57,72-49.5z" stroke-linejoin="round" fill="#B7B7B7" stroke-linecap="round"  stroke-opacity="0.6825" stroke-width="0.48" gorn="0.1.0.0.0.0.0.0.0.0.0.1.0.0.0.0.17" stroke="#8C8C8C" id="path4875" fill-opacity="0.3971"/>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

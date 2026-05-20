@@ -1,0 +1,419 @@
+/* root container */
+.chat-panel{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    width:100%;
+    box-sizing:border-box;
+    padding:4px;
+    gap:4px; /* tiny gap between body & input bar */
+}
+
+/* --- Top control groups for selectors and admin tools --- */
+.admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+.admin-controls label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.admin-controls input {
+    flex-grow: 1;
+    padding: 2px 4px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.admin-controls button {
+    padding: 2px 8px;
+    background: var(--brand-secondary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* conversation area */
+.chat-body{
+    flex:1 1 0;
+    position:relative; /* lets spinner sit inside */
+    overflow-y:auto;
+    padding:6px;
+    background:#fff7e1;
+    width:100%;
+}
+
+/* message wrapper (role alignment handled inline) */
+.chat-msg-wrap{
+    display:flex;
+    flex-direction:column;
+    margin:.35rem 0;
+}
+
+/* left-aligned bubbles nudge in from the edge */
+.chat-msg-wrap.align-left {
+    align-items: flex-start;
+}
+.chat-msg-wrap.align-left  .chat-bubble{ margin-left:6px; }
+
+/* right-aligned bubbles keep a buffer from the scrollbar */
+.chat-msg-wrap.align-right {
+    align-items: flex-end;
+}
+.chat-msg-wrap.align-right .chat-bubble{ margin-right:6px; }
+
+/* label above bubble */
+.chat-label{
+    font-size:.6rem;
+    font-weight:600;
+    margin-bottom:.12rem; /* gap below label */
+    color:#555;
+}
+
+/* bubble */
+.chat-bubble{
+    max-width:70%;
+      padding:.45rem .7rem;
+      border-radius:14px;
+      box-shadow:0 1px 2px rgba(0,0,0,.2);
+      white-space:normal;
+      word-break:break-word;
+      font-size:.85rem;
+}
+
+/* --- markdown inside chat bubbles ------------------------------- */
+.chat-bubble{
+    /* remove the pre-wrap that made HTML margins huge */
+    white-space: normal;
+}
+
+.chat-bubble .markdown-content {
+    line-height: 1.6;
+}
+
+.chat-bubble p{
+    margin: .25rem 0;
+}
+
+.chat-bubble p:first-child {
+    margin-top: 0;
+}
+
+.chat-bubble p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-bubble ul,
+.chat-bubble ol{
+    margin: .25rem 0 .25rem 1.2rem;    /* tighter & consistent */
+    padding-left: 1rem;                /* space for bullets/numbers */
+}
+
+.chat-bubble ul {
+    list-style-type: disc;             /* show bullet points */
+}
+
+.chat-bubble ol {
+    list-style-type: decimal;          /* show numbers */
+}
+
+.chat-bubble li{
+    margin: .15rem 0;
+    display: list-item;                /* ensure list item display */
+}
+
+.chat-bubble h1,
+.chat-bubble h2,
+.chat-bubble h3,
+.chat-bubble h4,
+.chat-bubble h5,
+.chat-bubble h6 {
+    margin: .5rem 0 .3rem 0;
+    font-weight: 600;
+}
+
+.chat-bubble h1 { font-size: 1.4rem; }
+.chat-bubble h2 { font-size: 1.2rem; }
+.chat-bubble h3 { font-size: 1.1rem; }
+.chat-bubble h4 { font-size: 1rem; }
+.chat-bubble h5 { font-size: 0.9rem; }
+.chat-bubble h6 { font-size: 0.85rem; }
+
+.chat-bubble strong,
+.chat-bubble b {
+    font-weight: 600;
+}
+
+.chat-bubble em,
+.chat-bubble i {
+    font-style: italic;
+}
+
+.chat-bubble code {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.chat-bubble pre {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.4rem 0;
+}
+
+.chat-bubble pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.chat-bubble blockquote {
+    border-left: 3px solid rgba(0, 0, 0, 0.2);
+    padding-left: 0.8rem;
+    margin: 0.4rem 0;
+    color: #555;
+    font-style: italic;
+}
+
+.chat-bubble a {
+    color: var(--brand-accent);
+    text-decoration: underline;
+}
+
+.chat-bubble a:hover {
+    color: #004499;
+}
+
+.chat-bubble hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    margin: 0.5rem 0;
+}
+
+.chat-bubble table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.4rem 0;
+}
+
+.chat-bubble table th,
+.chat-bubble table td {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 0.3rem 0.5rem;
+    text-align: left;
+}
+
+.chat-bubble table th {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+.chat-disclaimer {
+    padding: 8px;
+    text-align: center;
+    font-size: 0.75rem; /* 12px */
+    color: #666;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0; /* Prevents shrinking */
+}
+
+/* send area */
+.chat-input-area{
+    display: flex;
+    flex-direction: column; /* Lays out context-bar above input-row */
+    border-top:1px solid #ccc;
+    background:#f0f0f0;
+    width:100%;
+}
+
+/* Horizontal row for context buttons and indicator */
+.chat-context-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+}
+
+.chat-context-controls button {
+    flex-shrink: 0;
+}
+
+.context-checkbox-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #e5e5e5;
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.context-checkbox-btn:hover:not(:disabled) {
+    background: #d8d8d8;
+}
+
+.context-checkbox-btn--active {
+    background: var(--brand-secondary);
+    color: #fff;
+    border-color: var(--brand-secondary);
+}
+
+.context-checkbox-btn--active:hover:not(:disabled) {
+    background: #003d8f;
+    border-color: #003d8f;
+}
+
+.context-checkbox-btn__box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.context-checkbox-btn--active .context-checkbox-btn__box {
+    border-color: #fff;
+}
+
+.context-checkbox-btn__label {
+    white-space: nowrap;
+}
+
+.chat-context-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Wrapper for the textarea and send button */
+.chat-input-row {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 4px 8px;
+}
+
+.chat-input-row textarea {
+    flex:1 1 0;
+    resize:none;
+    font-family:inherit;
+    padding:.4rem;
+}
+
+.chat-input-row button {
+    padding:1rem 1rem;
+    background: var(--brand-secondary);
+    color:#ffffff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.chat-input-row button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* spinner ----------------------------------- */
+.chat-spinner{
+    display:none;
+    margin:.6rem 0; /* same gap as messages    */
+    justify-content:center;
+}
+
+.chat-spinner .loader{
+    width:18px; height:18px;
+    border:3px solid #999;
+    border-top-color:transparent;
+    border-radius:50%;
+    animation: spin .9s linear infinite;
+}
+
+@keyframes spin { to { transform:rotate(360deg);} }
+
+/* VIEW CODE button -------------------------- */
+.code-btn {
+    margin:.2rem 0;
+    background:#277227;
+    color:#fff;
+    border:none;
+    padding:.35rem .8rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:.75rem;
+    max-width: 12rem;
+}
+
+.console-btn {
+    margin:.2rem 0;
+    background:var(--brand-secondary);
+    color:#fff;
+    border:none;
+    padding:.35rem .8rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:.75rem;
+}
+
+.port-config-btn {
+    margin: 0.2rem 0;
+    background:#7B1FA2;
+    color:#fff;
+    border:none;
+    padding:.35rem .8rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    max-width: 12rem;
+}
+
+.port-config-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinner-small {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+.console-btn {
+    margin:.4rem 0;
+    background:var(--brand-secondary);
+    color:#fff;
+    border:none;
+    padding:.35rem .8rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:.75rem;
+}

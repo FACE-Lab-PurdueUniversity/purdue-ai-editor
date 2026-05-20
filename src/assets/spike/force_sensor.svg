@@ -1,0 +1,8 @@
+<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Force Sensor placeholder -->
+  <rect x="15" y="25" width="50" height="40" rx="5" fill="#9C27B0" stroke="#6A1B9A" stroke-width="2"/>
+  <circle cx="40" cy="45" r="12" fill="#E1BEE7" stroke="#4A148C" stroke-width="2"/>
+  <circle cx="40" cy="45" r="6" fill="#7B1FA2"/>
+  <text x="40" y="15" font-family="Arial" font-size="9" font-weight="bold" fill="#333" text-anchor="middle">Force</text>
+</svg>
+
