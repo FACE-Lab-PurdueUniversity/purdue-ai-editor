@@ -1,3 +1,23 @@
+// MIT License
+//
+// NOTE: The MIT License applies to the microRepl.js file and no other files
+// in this repository. 
+// 
+// Copyright © 2024, Andrea Giammarchi, @WebReflection
+// 
+// Modifications made by Duncan Johnson, @DuncanAJohnson
+// Copyright © 2026
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software
+// is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+
 const CONTROL_A = '\x01';
 const CONTROL_B = '\x02';
 const CONTROL_C = '\x03';
