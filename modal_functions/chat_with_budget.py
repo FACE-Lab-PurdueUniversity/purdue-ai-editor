@@ -23,7 +23,38 @@ from budget_manager import (
 # Create Modal app
 app = modal.App("coderobots-chat-budget")
 
-# Define the image with dependencies
+# Map each provider to the Modal secret that holds its credentials.
+# To deploy with only a subset, set MODAL_PROVIDERS at deploy time, e.g.:
+#   MODAL_PROVIDERS=google,anthropic modal deploy modal_functions/chat_with_budget.py
+# When unset, all providers are enabled (every secret below must exist in Modal).
+PROVIDER_SECRETS = {
+    "openai": "openai-api-key",
+    "anthropic": "anthropic-secret",
+    "google": "gemini-secret",
+    "skolegpt": "skolegpt-credentials",
+}
+
+_enabled_env = os.environ.get("MODAL_PROVIDERS", "").strip()
+if _enabled_env:
+    ENABLED_PROVIDERS = [p.strip() for p in _enabled_env.split(",") if p.strip()]
+    _unknown = [p for p in ENABLED_PROVIDERS if p not in PROVIDER_SECRETS]
+    if _unknown:
+        raise ValueError(
+            f"MODAL_PROVIDERS contains unknown provider(s): {_unknown}. "
+            f"Valid options: {list(PROVIDER_SECRETS)}"
+        )
+else:
+    ENABLED_PROVIDERS = list(PROVIDER_SECRETS.keys())
+
+print(f"Deploying with providers: {ENABLED_PROVIDERS}")
+
+SECRETS = [modal.Secret.from_name("supabase-credentials")] + [
+    modal.Secret.from_name(PROVIDER_SECRETS[p]) for p in ENABLED_PROVIDERS
+]
+
+# Define the image with dependencies. Bake the resolved provider list into the
+# image so the runtime container sees the same MODAL_PROVIDERS value the deploy
+# machine used — otherwise get_provider() in the container would default to "all".
 image = (
     modal.Image.debian_slim()
     .pip_install(
@@ -36,6 +67,7 @@ image = (
         "fastapi[standard]",
         "aiohttp",
     )
+    .env({"MODAL_PROVIDERS": ",".join(ENABLED_PROVIDERS)})
     .add_local_dir("modal_functions/providers", "/root/providers")
     .add_local_file("modal_functions/budget_manager.py", "/root/budget_manager.py")
 )
@@ -43,6 +75,12 @@ image = (
 
 def get_provider(provider_name: str):
     """Get provider instance based on provider name."""
+    if provider_name not in ENABLED_PROVIDERS:
+        raise ValueError(
+            f"Provider '{provider_name}' is not enabled in this deployment. "
+            f"Enabled providers: {ENABLED_PROVIDERS}. "
+            f"Redeploy with MODAL_PROVIDERS including '{provider_name}' to enable it."
+        )
     if provider_name == "openai":
         print("Using OpenAI provider")
         from providers.openai_provider import OpenAIProvider
@@ -65,12 +103,7 @@ def get_provider(provider_name: str):
 
 @app.function(
     image=image,
-    secrets=[
-        modal.Secret.from_name("openai-api-key"),
-        modal.Secret.from_name("anthropic-secret"),
-        modal.Secret.from_name("gemini-secret"),
-        modal.Secret.from_name("supabase-credentials"),
-    ],
+    secrets=SECRETS,
     timeout=300,  # 5 minute timeout
 )
 async def stream_chat_completion_with_budget(
@@ -188,13 +221,7 @@ async def stream_chat_completion_with_budget(
 
 @app.function(
     image=image,
-    secrets=[
-        modal.Secret.from_name("openai-api-key"),
-        modal.Secret.from_name("anthropic-secret"),
-        modal.Secret.from_name("gemini-secret"),
-        modal.Secret.from_name("supabase-credentials"),
-        modal.Secret.from_name("skolegpt-credentials"),
-    ],
+    secrets=SECRETS,
 )
 @modal.fastapi_endpoint(method="POST")
 async def chat_endpoint_with_budget(request: dict):

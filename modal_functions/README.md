@@ -39,6 +39,22 @@ modal deploy modal_functions/openai_stream_with_budget.py
 
 After deployment, copy the URL for `chat_endpoint_with_budget` and add it to your `.env.local` file as `VITE_MODAL_BUDGET_ENDPOINT_URL`.
 
+### Deploying with a subset of providers
+
+`modal_functions/chat_with_budget.py` supports four providers: `openai`, `anthropic`, `google`, `skolegpt`. By default it requires the Modal secret for each (`openai-api-key`, `anthropic-secret`, `gemini-secret`, `skolegpt-credentials`), and deployment fails if any are missing.
+
+To deploy with only the providers you have credentials for, set `MODAL_PROVIDERS` (comma-separated) at deploy time:
+
+```bash
+# Google only
+MODAL_PROVIDERS=google modal deploy modal_functions/chat_with_budget.py
+
+# Google + Anthropic
+MODAL_PROVIDERS=google,anthropic modal deploy modal_functions/chat_with_budget.py
+```
+
+The `supabase-credentials` secret is always required. Requests for a disabled provider return a clear error; make sure the `ai_models` table in Supabase only lists models whose providers are enabled in the current deployment.
+
 ## API Notes
 
 This service uses the OpenAI Responses API (not the legacy Chat Completions API).
