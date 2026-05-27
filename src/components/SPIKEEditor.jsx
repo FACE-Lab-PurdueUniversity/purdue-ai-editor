@@ -6,7 +6,7 @@ import {
   findAuthorizedMicrobitSerialPort,
   waitForMicrobitSerialPort,
 } from '../utils/microbitInstall.js';
-import { applyPostConnectFiles } from '../utils/postConnectFiles.js';
+import { applyPostConnectFiles, uploadFileToMicrobit } from '../utils/postConnectFiles.js';
 import CodeEditor from './CodeEditor.jsx';
 import ControlPanel from './ControlPanel.jsx';
 import CodeTabs from './CodeTabs.jsx';
@@ -571,6 +571,40 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
     }
   };
 
+  const handleDownload = async () => {
+    const board = boardRef.current;
+    if (!board || !connected || connectedBoard !== 'microbit') {
+      alert('Cannot download. Please connect to the micro:bit first.');
+      return;
+    }
+    if (operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+
+    try {
+      const codeToSave = editorRef.current?.getCode() || currentCodeContent;
+
+      await createSnapshot('download_to_microbit');
+      await logInteractionSafe('download_to_microbit');
+
+      // Free the REPL prompt before paste-mode writes.
+      setIsRunning(false);
+      await board.interrupt();
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      try {
+        await uploadFileToMicrobit(board, 'main.py', codeToSave, { label: 'main.py' });
+        await board.reset();
+        setMode('repl');
+        board.terminal?.focus();
+      } catch (error) {
+        console.error('Failed to download to micro:bit:', error);
+        alert(`Failed to download to micro:bit: ${error.message}`);
+      }
+    } finally {
+      operationInFlightRef.current = false;
+    }
+  };
+
   return (
     <div className="spike-editor">
       <FlashProgressModal
@@ -614,6 +648,7 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
               onReset={handleReset}
               onClear={handleClear}
               onSaveToMain={handleSaveToMain}
+              onDownload={handleDownload}
             />
             {!connected && (
               <div className={`status-banner ${statusBanner.type}`}>

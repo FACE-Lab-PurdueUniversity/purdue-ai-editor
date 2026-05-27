@@ -10,7 +10,8 @@ const ControlPanel = ({
   onCtrlC,
   onReset,
   onClear,
-  onSaveToMain
+  onSaveToMain,
+  onDownload
 }) => {
   return (
     <div className="control-panel right-panel">
@@ -58,6 +59,11 @@ const ControlPanel = ({
           {connectedBoard === 'pico' && (
             <button onClick={onSaveToMain} className="button run-button">
               Save to main.py
+            </button>
+          )}
+          {connectedBoard === 'microbit' && (
+            <button onClick={onDownload} className="button run-button">
+              Download
             </button>
           )}
           <button onClick={onCtrlC} className="button stop-button">

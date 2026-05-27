@@ -61,20 +61,70 @@ const buildUploadStatements = (path, bytes) => {
   return statements;
 };
 
+// Read a file's size on the device via a paste-mode os.stat probe.
+// Returns -1 when the file is missing.
+async function probeFileSize(board, path) {
+  const result = await board.readPrint(buildSizeProbe(path));
+  const parsed = parseInt(String(result || '').trim(), 10);
+  return Number.isFinite(parsed) ? parsed : -1;
+}
+
+// Write `content` to `path` on a micro:bit using chunked paste-mode statements
+// and verify by re-probing the resulting file size. Always overwrites.
+export async function uploadFileToMicrobit(board, path, content, { label } = {}) {
+  const bytes = new TextEncoder().encode(content);
+  const expectedSize = bytes.length;
+  const friendlyLabel = label || path;
+
+  const terminal = board.terminal;
+  terminal?.write(`\r\n... installing ${path} (${expectedSize} bytes)\r\n`);
+
+  const statements = buildUploadStatements(path, bytes);
+  try {
+    for (const statement of statements) {
+      await board.runStatement(statement);
+    }
+  } catch (error) {
+    const err = new Error(
+      `Upload of ${path} failed: ${error?.message || error}`
+    );
+    err.label = friendlyLabel;
+    throw err;
+  }
+
+  let verifiedSize = -1;
+  try {
+    verifiedSize = await probeFileSize(board, path);
+  } catch (error) {
+    const err = new Error(
+      `Could not verify ${path} on device: ${error?.message || error}`
+    );
+    err.label = friendlyLabel;
+    throw err;
+  }
+
+  if (verifiedSize !== expectedSize) {
+    const err = new Error(
+      `Upload of ${path} did not verify (expected ${expectedSize} bytes, got ${verifiedSize}).`
+    );
+    err.label = friendlyLabel;
+    throw err;
+  }
+
+  terminal?.write(`... installed ${path}\r\n`);
+}
+
 export async function applyPostConnectFiles(board, platform) {
   const files = platform?.postConnectFiles;
   if (!files?.length) return;
 
   for (const file of files) {
     const { path, content, label } = file;
-    const bytes = new TextEncoder().encode(content);
-    const expectedSize = bytes.length;
+    const expectedSize = new TextEncoder().encode(content).length;
 
     let deviceSize = -1;
     try {
-      const result = await board.readPrint(buildSizeProbe(path));
-      const parsed = parseInt(String(result || '').trim(), 10);
-      deviceSize = Number.isFinite(parsed) ? parsed : -1;
+      deviceSize = await probeFileSize(board, path);
     } catch (error) {
       const err = new Error(
         `Could not probe ${path} on device: ${error?.message || error}`
@@ -85,44 +135,6 @@ export async function applyPostConnectFiles(board, platform) {
 
     if (deviceSize === expectedSize) continue;
 
-    const terminal = board.terminal;
-    terminal?.write(`\r\n... installing ${path} (${expectedSize} bytes)\r\n`);
-
-    const statements = buildUploadStatements(path, bytes);
-    try {
-      for (const statement of statements) {
-        await board.runStatement(statement);
-      }
-    } catch (error) {
-      const err = new Error(
-        `Upload of ${path} failed: ${error?.message || error}`
-      );
-      err.label = label || path;
-      throw err;
-    }
-
-    // Verify by re-probing the size.
-    let verifiedSize = -1;
-    try {
-      const result = await board.readPrint(buildSizeProbe(path));
-      const parsed = parseInt(String(result || '').trim(), 10);
-      verifiedSize = Number.isFinite(parsed) ? parsed : -1;
-    } catch (error) {
-      const err = new Error(
-        `Could not verify ${path} on device: ${error?.message || error}`
-      );
-      err.label = label || path;
-      throw err;
-    }
-
-    if (verifiedSize !== expectedSize) {
-      const err = new Error(
-        `Upload of ${path} did not verify (expected ${expectedSize} bytes, got ${verifiedSize}).`
-      );
-      err.label = label || path;
-      throw err;
-    }
-
-    terminal?.write(`... installed ${path}\r\n`);
+    await uploadFileToMicrobit(board, path, content, { label });
   }
 }
