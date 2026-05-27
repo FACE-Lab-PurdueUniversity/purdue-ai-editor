@@ -1,12 +1,15 @@
-// Stop both Cutebot motors by writing the I²C command bytes directly. Mirrors
-// CUTEBOT.set_motors_speed(0, 0) so it works even when student code never
-// imported the cutebot module. Defensive try/except keeps stop a no-op if the
-// I²C bus is in a bad state.
+// Stop both Cutebot motors and park both servos at their neutral (90°) position
+// by writing the I²C command bytes directly. Mirrors CUTEBOT.set_motors_speed(0, 0)
+// and CUTEBOT.set_servo(s, 90) so it works even when student code never imported
+// the cutebot module. Angle 90 is the stop point for continuous-rotation servos.
+// Defensive try/except keeps stop a no-op if the I²C bus is in a bad state.
 export const stopCode = `
 try:
     from microbit import i2c
     i2c.write(0x10, bytes([0x01, 0x02, 0, 0]))
     i2c.write(0x10, bytes([0x02, 0x02, 0, 0]))
+    i2c.write(0x10, bytes([0x05, 90, 0, 0]))
+    i2c.write(0x10, bytes([0x06, 90, 0, 0]))
 except Exception:
     pass
 `;
