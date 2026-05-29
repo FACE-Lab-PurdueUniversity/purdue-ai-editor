@@ -22,7 +22,7 @@ const AboutModal = ({ visible, onClose }) => {
         <div className="about-info-section">
           <div className="about-info-row">
             <span className="about-info-label">Version</span>
-            <span className="about-info-value">March 2, 2026</span>
+            <span className="about-info-value">May 28, 2026</span>
           </div>
 
           <div className="about-info-row">
@@ -35,12 +35,12 @@ const AboutModal = ({ visible, onClose }) => {
 
         <div className="about-footer">
           <p className="about-contact">
-            Send bug reports, feature requests, and Frog & Toad quotes to{' '}
+            Send bug reports to{' '}
             <a 
-              href="mailto:duncan.johnson@tufts.edu" 
+              href="mailto:duncanjohnson99@gmail.com" 
               className="about-link"
             >
-              duncan.johnson@tufts.edu
+              duncanjohnson99@gmail.com
             </a>
             .
           </p>
