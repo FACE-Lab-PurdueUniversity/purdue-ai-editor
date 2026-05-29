@@ -571,6 +571,37 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
     }
   };
 
+  const handleClearDownload = async () => {
+    const board = boardRef.current;
+    if (!board || !connected || connectedBoard !== 'microbit') {
+      alert('Cannot clear download. Please connect to the micro:bit first.');
+      return;
+    }
+    if (operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+
+    try {
+      await logInteractionSafe('clear_download_microbit');
+
+      setIsRunning(false);
+      await board.interrupt();
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      try {
+        await board.runStatement('import os');
+        await board.runStatement("os.remove('main.py') if 'main.py' in os.listdir() else None");
+        await board.reset();
+        setMode('repl');
+        board.terminal?.focus();
+      } catch (error) {
+        console.error('Failed to clear download from micro:bit:', error);
+        alert(`Failed to clear download from micro:bit: ${error.message}`);
+      }
+    } finally {
+      operationInFlightRef.current = false;
+    }
+  };
+
   const handleDownload = async () => {
     const board = boardRef.current;
     if (!board || !connected || connectedBoard !== 'microbit') {
@@ -649,6 +680,7 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
               onClear={handleClear}
               onSaveToMain={handleSaveToMain}
               onDownload={handleDownload}
+              onClearDownload={handleClearDownload}
             />
             {!connected && (
               <div className={`status-banner ${statusBanner.type}`}>
