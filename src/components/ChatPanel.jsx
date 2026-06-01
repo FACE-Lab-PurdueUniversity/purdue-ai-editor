@@ -116,7 +116,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
     stickToBottomRef.current = distanceFromBottom < 50;
   };
 
-  // Check console content availability
+  // Check console content availability on mount / when the accessor changes
   useEffect(() => {
     const checkConsole = async () => {
       if (getConsoleContent) {
@@ -126,6 +126,17 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
     };
     checkConsole();
   }, [getConsoleContent]);
+
+  // React immediately to console buffer changes from the editor (device
+  // connect/disconnect, output, clear) so the "Add Console to Chat" button
+  // enables/disables without needing a tab switch to force a re-render.
+  useEffect(() => {
+    const handler = (e) => {
+      setConsoleHasContent(!!e.detail?.hasContent);
+    };
+    window.addEventListener('console-content-changed', handler);
+    return () => window.removeEventListener('console-content-changed', handler);
+  }, []);
 
   // Fetch user access level
   useEffect(() => {

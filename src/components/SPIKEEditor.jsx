@@ -227,6 +227,21 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
     }
   }, []);
 
+  // Notify other panels (e.g. ChatPanel's "Add Console to Chat" button) when the
+  // console buffer gains or loses content. The buffer changes on connect (REPL
+  // output arrives) and disconnect (buffer is cleared), neither of which
+  // re-renders App/ChatPanel, so a window event is used to push the new state.
+  const prevConsoleHasContentRef = useRef(false);
+  useEffect(() => {
+    const hasContent = buffer.trim().length > 0;
+    if (hasContent !== prevConsoleHasContentRef.current) {
+      prevConsoleHasContentRef.current = hasContent;
+      window.dispatchEvent(
+        new CustomEvent('console-content-changed', { detail: { hasContent } })
+      );
+    }
+  }, [buffer]);
+
   // Resizable pane logic
   useEffect(() => {
     const resizer = resizerRef.current;
