@@ -496,7 +496,7 @@ export const SessionProvider = ({ children }) => {
     
     if (!activeSession || !currentCodeId || !contentToSave) {
       console.error('No active session, current code, or content');
-      return false;
+      return null;
     }
 
     try {
@@ -507,7 +507,7 @@ export const SessionProvider = ({ children }) => {
         contentToSave,
         saveSource
       );
-      
+
       if (snapshot) {
         console.log(`📸 Created code snapshot (${saveSource})`);
         return snapshot.id;
@@ -515,7 +515,7 @@ export const SessionProvider = ({ children }) => {
       return null;
     } catch (error) {
       console.error('Error creating code snapshot:', error);
-      return false;
+      return null;
     }
   }, [activeSession, currentCodeId, currentCodeContent]);
 
