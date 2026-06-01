@@ -14,12 +14,12 @@ All tables live in the `public` schema and have row-level security (RLS) enabled
 | `sessions` | `sessionManager.createNewSession` | ✅ | Top-level work container, one per user "project" |
 | `conversations` | `sessionManager.createConversation` | ✅ | Chat tab inside a session |
 | `messages` | `dataLogger.logMessage` | ✅ | Every user/assistant/system chat message |
-| `code` | `sessionManager.createCode` / live autosave | ❌ (live state only) | Current contents of each code tab |
+| `code` | `sessionManager.createCode` / live autosave | ✅ | Current contents of each code tab |
 | `code_snapshots` | `sessionManager.createCodeSnapshot` | ✅ | Append-only history of code contents |
 | `console` | `dataLogger.logConsole` | ✅ | Terminal output captures |
 | `interactions` | `dataLogger.logInteraction` | ✅ | Toolbar/button click events |
 
-`code` is intentionally not exported — it only holds the *current* contents of a tab and is mutated in place by live edits. The full historical record lives in `code_snapshots`.
+`code` holds the *current* contents of each tab (mutated in place by live edits); `code_snapshots` is the append-only history. Both are included in the export so you can pull either the latest state of a tab or its full editing history.
 
 ---
 
@@ -157,7 +157,7 @@ The live, in-place contents of each code tab. **Not** an append-only log — row
 | `save_source` | text | Most recent reason the row was written/updated |
 | `timestamp` | timestamptz | Last write time |
 
-Because this table tracks current state rather than history, it is **not** included in the data export — `code_snapshots` is the auditable record.
+This table tracks current state rather than history; it **is** included in the data export as `Code` so you can pull the latest contents of each tab. `code_snapshots` remains the append-only auditable record of every change.
 
 ---
 
@@ -248,7 +248,7 @@ Toolbar/button click events. Pure analytics — no payload beyond which button w
 
 ## The data export at `/data`
 
-The admin-only `DataExtractor` page (`src/components/data_extractor/DataExtractor.jsx`) bundles the seven exported tables above into per-table CSVs zipped together as `data_export_<YYYY-MM-DD>.zip`.
+The admin-only `DataExtractor` page (`src/components/data_extractor/DataExtractor.jsx`) bundles the eight exported tables above (`messages`, `sessions`, `console`, `code`, `code_snapshots`, `interactions`, `conversations`, `user_profiles`) into per-table CSVs zipped together as `data_export_<YYYY-MM-DD>.zip`. Each table is also exportable on its own via the per-table sections below the "Export Everything" button.
 
 ### Filters
 
@@ -257,7 +257,9 @@ Both filters apply to **every** table in the export and are combined with AND:
 - **Time range** — `Start Time` and `End Time` (datetime-local). Applied against the table's natural time column:
   - `sessions`, `conversations` → `start_time`
   - `user_profiles` → `created_at`
-  - all others → `timestamp`
+  - all others (incl. `code`) → `timestamp`
+
+  **Exception:** the structural/container tables `sessions`, `code`, `conversations`, and `user_profiles` are **exempt from the time range** — they are always exported in full so that rows created before the start time (but still referenced by the time-filtered tables) are present. They remain subject to the email filter. The exempt set lives in `TIME_RANGE_EXEMPT_TABLES` in `src/services/dataExport.js`.
 - **Emails** — comma- or newline-separated list. Resolved to `user_id`s via `user_profiles.email`, then filtered with `.in('user_id', …)`. Empty means "all users". If the email list resolves to zero users, the export for that table is empty (rather than unfiltered).
 
 ### Per-table column selection
@@ -273,7 +275,6 @@ Both filters apply to **every** table in the export and are combined with AND:
 
 ### What is **not** in the export
 
-- `code` (live tab state — superseded by `code_snapshots`)
 - `ai_models` (operator-managed catalog)
 - `ai_usage` (surfaced separately via the `/usage` admin dashboard)
 - Anything in `auth.users` beyond what's already mirrored into `user_profiles`

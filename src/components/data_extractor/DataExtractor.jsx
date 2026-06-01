@@ -47,6 +47,16 @@ const CONSOLE_COLUMNS = [
   { key: 'save_source', label: 'Save Source', default: true },
 ];
 
+const CODE_COLUMNS = [
+  { key: 'id', label: 'ID', default: true },
+  { key: 'user_id', label: 'User ID', default: false },
+  { key: 'session_id', label: 'Session ID', default: false },
+  { key: 'name', label: 'Name', default: true },
+  { key: 'content', label: 'Content', default: true },
+  { key: 'save_source', label: 'Save Source', default: true },
+  { key: 'timestamp', label: 'Timestamp', default: true },
+];
+
 const CODE_SNAPSHOT_COLUMNS = [
   { key: 'id', label: 'ID', default: true },
   { key: 'user_id', label: 'User ID', default: false },
@@ -86,6 +96,7 @@ const ALL_TABLES = [
   { tableName: 'Messages', columns: MESSAGE_COLUMNS },
   { tableName: 'Sessions', columns: SESSION_COLUMNS },
   { tableName: 'Console', columns: CONSOLE_COLUMNS },
+  { tableName: 'Code', columns: CODE_COLUMNS },
   { tableName: 'Code Snapshots', columns: CODE_SNAPSHOT_COLUMNS },
   { tableName: 'Interactions', columns: INTERACTION_COLUMNS },
   { tableName: 'Conversations', columns: CONVERSATION_COLUMNS },
@@ -302,6 +313,14 @@ function DataExtractor() {
             <TableExporter
               tableName="Console"
               columns={CONSOLE_COLUMNS}
+              startTime={startTime}
+              endTime={endTime}
+              emails={parsedEmails}
+            />
+
+            <TableExporter
+              tableName="Code"
+              columns={CODE_COLUMNS}
               startTime={startTime}
               endTime={endTime}
               emails={parsedEmails}
