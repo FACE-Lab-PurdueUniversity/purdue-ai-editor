@@ -8,8 +8,23 @@ const TIME_COLUMN_BY_TABLE = {
   user_profiles: 'created_at',
 };
 
+// Structural/container tables that should be exported in full regardless of the
+// selected time range. These rows may predate the time window but are still
+// needed to give context to the time-filtered tables (e.g. a session created
+// last month that the exported messages belong to).
+const TIME_RANGE_EXEMPT_TABLES = new Set([
+  'sessions',
+  'code',
+  'conversations',
+  'user_profiles',
+]);
+
 function getTimeColumn(table) {
   return TIME_COLUMN_BY_TABLE[table] || 'timestamp';
+}
+
+function isTimeRangeExempt(table) {
+  return TIME_RANGE_EXEMPT_TABLES.has(table);
 }
 
 export function normalizeTableName(name) {
@@ -56,11 +71,15 @@ function buildBaseQuery({ table, columns, startIso, endIso, userIds }) {
     .select(columns.join(','))
     .order(timeColumn, { ascending: true, nullsFirst: false });
 
-  if (startIso) {
+  // Some structural tables are exempt from the time range so we always export
+  // their full history (still subject to the user/email filter below).
+  const applyTimeRange = !isTimeRangeExempt(table);
+
+  if (applyTimeRange && startIso) {
     query = query.gte(timeColumn, startIso);
   }
 
-  if (endIso) {
+  if (applyTimeRange && endIso) {
     query = query.lte(timeColumn, endIso);
   }
 

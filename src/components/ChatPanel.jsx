@@ -44,7 +44,7 @@ const EMPTY_MODEL_METADATA = {
 const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
   const { 
     activeSession, 
-    conversationHistory, 
+    conversationHistory,
     conversations,
     currentConversationId,
     getSystemPriming,
@@ -116,7 +116,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
     stickToBottomRef.current = distanceFromBottom < 50;
   };
 
-  // Check console content availability
+  // Check console content availability on mount / when the accessor changes
   useEffect(() => {
     const checkConsole = async () => {
       if (getConsoleContent) {
@@ -126,6 +126,17 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
     };
     checkConsole();
   }, [getConsoleContent]);
+
+  // React immediately to console buffer changes from the editor (device
+  // connect/disconnect, output, clear) so the "Add Console to Chat" button
+  // enables/disables without needing a tab switch to force a re-render.
+  useEffect(() => {
+    const handler = (e) => {
+      setConsoleHasContent(!!e.detail?.hasContent);
+    };
+    window.addEventListener('console-content-changed', handler);
+    return () => window.removeEventListener('console-content-changed', handler);
+  }, []);
 
   // Fetch user access level
   useEffect(() => {
@@ -270,8 +281,12 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
     const finalContext = { code: null, console: null };
     if (attachedContext.includeCode && getCodeContent) {
       finalContext.code = await getCodeContent();
-      // Create snapshot when code is added to AI context
-      codeContextId = await createSnapshot('chat_context');
+      // Snapshot the code as it was at send time and link the message to that
+      // immutable snapshot (messages.code_context_id -> code_snapshots.id).
+      // Referencing the mutable code record would make every message point at
+      // the same row whose content keeps changing.
+      const snapshotId = await createSnapshot('chat_context');
+      codeContextId = typeof snapshotId === 'number' && snapshotId > 0 ? snapshotId : null;
     }
     if (attachedContext.includeConsole && getConsoleContent) {
       finalContext.console = await getConsoleContent();

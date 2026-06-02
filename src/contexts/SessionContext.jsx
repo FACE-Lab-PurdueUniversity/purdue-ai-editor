@@ -479,12 +479,25 @@ export const SessionProvider = ({ children }) => {
         try {
           await updateCodeContentService(currentCodeId, content);
           console.log(`🔄 Auto-saved code (debounced)`);
+
+          // Also log a snapshot so every manual edit is preserved historically
+          if (activeSession && content) {
+            const snapshot = await createCodeSnapshot(
+              currentCodeId,
+              activeSession.id,
+              content,
+              'live_edit'
+            );
+            if (snapshot) {
+              console.log(`📸 Created code snapshot (live_edit)`);
+            }
+          }
         } catch (error) {
           console.error('Error auto-saving code:', error);
         }
       }
     }, 1000); // 1 second debounce
-  }, [currentCodeId]);
+  }, [currentCodeId, activeSession]);
 
   /**
    * Create a code snapshot (for historical record keeping)
@@ -496,7 +509,7 @@ export const SessionProvider = ({ children }) => {
     
     if (!activeSession || !currentCodeId || !contentToSave) {
       console.error('No active session, current code, or content');
-      return false;
+      return null;
     }
 
     try {
@@ -507,7 +520,7 @@ export const SessionProvider = ({ children }) => {
         contentToSave,
         saveSource
       );
-      
+
       if (snapshot) {
         console.log(`📸 Created code snapshot (${saveSource})`);
         return snapshot.id;
@@ -515,7 +528,7 @@ export const SessionProvider = ({ children }) => {
       return null;
     } catch (error) {
       console.error('Error creating code snapshot:', error);
-      return false;
+      return null;
     }
   }, [activeSession, currentCodeId, currentCodeContent]);
 
