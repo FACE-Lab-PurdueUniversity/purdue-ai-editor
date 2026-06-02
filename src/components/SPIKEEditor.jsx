@@ -56,22 +56,54 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
   // Prevents concurrent run/stop handlers from overlapping their paste calls,
   // which otherwise corrupts the REPL paste-mode handshake and hangs.
   const operationInFlightRef = useRef(false);
+  // Authoritative copy of the console buffer so the once-created ondata
+  // callback (and the run/reset/disconnect handlers) always read the latest
+  // output without stale-closure issues.
+  const bufferRef = useRef('');
+  // Armed once a program's code has been fully sent to the device (after the
+  // paste-mode handshake echoes are done). The next `>>> ` prompt seen by
+  // ondata then marks the program as finished, so we save the console tail.
+  const pendingRunSaveRef = useRef(false);
+  // The Board (and its ondata callback) is created once on mount, capturing the
+  // initial sessionId — which is null before the session loads. Read sessionId
+  // through this ref so the run-finished save logs to the current session.
+  const sessionIdRef = useRef(sessionId);
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+  }, [sessionId]);
 
   const logInteractionSafe = async (action) => {
-    if (!sessionId) return;
+    if (!sessionIdRef.current) return;
     try {
-      await logInteraction(action, sessionId);
+      await logInteraction(action, sessionIdRef.current);
     } catch (error) {
       console.warn(`Failed to log interaction (${action}):`, error);
     }
   };
 
   const logConsoleSafe = async (content, action) => {
-    if (!sessionId || !content) return;
+    if (!sessionIdRef.current || !content) return;
     try {
-      await logConsole(content, sessionId, action);
+      await logConsole(content, sessionIdRef.current, action);
     } catch (error) {
       console.warn(`Failed to log console (${action}):`, error);
+    }
+  };
+
+  // Save just the last 20 rows of the console to the console tab. Used when a
+  // program finishes running, on reset, and on disconnect.
+  const logConsoleTailSafe = async (content, action) => {
+    const tail = (content || '').split('\n').slice(-20).join('\n');
+    await logConsoleSafe(tail, action);
+  };
+
+  // If a run is armed and the REPL prompt has returned (program finished),
+  // save the console tail. Checks the accumulated buffer rather than a single
+  // serial chunk so a `>>> ` prompt split across reads is still detected.
+  const maybeSaveRunConsole = () => {
+    if (pendingRunSaveRef.current && bufferRef.current.endsWith('>>> ')) {
+      pendingRunSaveRef.current = false;
+      logConsoleTailSafe(bufferRef.current, 'run_device');
     }
   };
 
@@ -181,6 +213,8 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
           setConnectedPlatformId(null);
           setConnectPhase('idle');
           setMode('disconnected');
+          bufferRef.current = '';
+          pendingRunSaveRef.current = false;
           setBuffer('');
           setIsRunning(false);
           setStatusBanner({
@@ -208,11 +242,13 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
           }
         },
         ondata: (chunk) => {
-          // Update buffer (FIFO)
-          setBuffer(prev => {
-            const newBuffer = prev + chunk;
-            return newBuffer.slice(-FIFO_SIZE);
-          });
+          // Update buffer (FIFO). bufferRef is authoritative; state mirrors it.
+          bufferRef.current = (bufferRef.current + chunk).slice(-FIFO_SIZE);
+          setBuffer(bufferRef.current);
+
+          // If a run was dispatched, a returned prompt means it finished — save
+          // the console tail (checks the accumulated buffer, not just this chunk).
+          maybeSaveRunConsole();
 
           // Check if execution finished (prompt appears)
           if (chunk.includes('>>> ')) {
@@ -319,6 +355,7 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
         message: 'Disconnecting...'
       });
       await logInteractionSafe('disconnect');
+      await logConsoleTailSafe(bufferRef.current, 'disconnect');
       await board.disconnect();
     }
     finally {
@@ -511,7 +548,13 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
       setIsRunning(true);
       try {
         await board.paste(codeToRun, { hidden: false });
+        // Code is now fully sent (paste-mode echoes are done). Arm the save so
+        // the returning `>>> ` prompt — the program finishing — saves the console.
+        pendingRunSaveRef.current = true;
         board.terminal?.focus();
+        // Backstop: a fast program may have already printed its prompt before
+        // the next ondata fires; re-check shortly after arming.
+        setTimeout(maybeSaveRunConsole, 200);
       } catch (error) {
         console.error('Run failed:', error);
         setIsRunning(false);
@@ -540,7 +583,11 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
     if (!board || !connected) return;
 
     await logInteractionSafe('reset_device');
+    await logConsoleTailSafe(bufferRef.current, 'reset_device');
 
+    // We've saved the console here; don't let the reset's own `>>> ` prompt
+    // trigger a duplicate run_device save.
+    pendingRunSaveRef.current = false;
     setIsRunning(false);
     await board.reset();
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -552,11 +599,12 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
   const handleClear = async () => {
     // Log interaction and console before clearing
     await logInteractionSafe('clear_console');
-    await logConsoleSafe(buffer, 'clear_console');
+    await logConsoleSafe(bufferRef.current, 'clear_console');
 
     if (boardRef.current?.terminal) {
       boardRef.current.terminal.clear();
     }
+    bufferRef.current = '';
     setBuffer('');
   };
 
