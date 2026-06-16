@@ -3,29 +3,41 @@
 # Bulk-create Supabase user accounts for summer camp students.
 #
 # Usage:
-#   ./scripts/bulk_create_camp_users.sh <emails.txt> [output.csv]
+#   ./scripts/bulk_create_camp_users.sh <count> [output.csv]
 #
 # Reads VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from .env.local.
-# For each email in <emails.txt> (one per line, blank/# lines ignored),
-# creates a confirmed Supabase user with a random 10-char alphanumeric
-# password and user_metadata.access_level = "camps". Writes email,password
-# pairs to [output.csv] (default: camp_users.csv).
+# Creates <count> confirmed Supabase users (count between 1 and 99) with:
+#   - email    facelab.team##@gmail.com  (## zero-padded 01..count)
+#   - password purdue###                 (### three random digits)
+#   - user_metadata.access_level = "camps"
+# Writes email,password pairs to [output.csv] (default: camp_users.csv).
+#
+# Accounts are expected to be deleted before re-running. If an account with
+# one of the target emails already exists, the script errors out.
 
 set -u
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 <emails.txt> [output.csv]" >&2
+  echo "Usage: $0 <count> [output.csv]" >&2
   exit 64
 }
 
 [ $# -ge 1 ] || usage
-INPUT_FILE="$1"
+COUNT="$1"
 OUTPUT_FILE="${2:-camp_users.csv}"
 
-if [ ! -f "$INPUT_FILE" ]; then
-  echo "Error: input file not found: $INPUT_FILE" >&2
-  exit 66
+# Validate count: integer between 1 and 99.
+case "$COUNT" in
+  ''|*[!0-9]*)
+    echo "Error: count must be a positive integer (got: $COUNT)" >&2
+    exit 64
+    ;;
+esac
+COUNT=$((10#$COUNT))
+if [ "$COUNT" -lt 1 ] || [ "$COUNT" -gt 99 ]; then
+  echo "Error: count must be between 1 and 99 (got: $COUNT)" >&2
+  exit 64
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -66,25 +78,17 @@ if command -v jq >/dev/null 2>&1; then
 fi
 
 gen_password() {
-  LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10
+  # "purdue" followed by three random digits.
+  printf 'purdue%03d' $((RANDOM % 1000))
 }
 
 # Write CSV header (overwrites any existing file).
 echo "email,password" >"$OUTPUT_FILE"
 
 created=0
-failed=0
 
-while IFS= read -r raw_line || [ -n "$raw_line" ]; do
-  # Trim leading/trailing whitespace and CR.
-  email="${raw_line%$'\r'}"
-  email="${email#"${email%%[![:space:]]*}"}"
-  email="${email%"${email##*[![:space:]]}"}"
-
-  # Skip blanks and comments.
-  [ -z "$email" ] && continue
-  case "$email" in \#*) continue ;; esac
-
+for i in $(seq 1 "$COUNT"); do
+  email=$(printf 'facelab.team%02d@gmail.com' "$i")
   password="$(gen_password)"
 
   body=$(printf '{"email":"%s","password":"%s","email_confirm":true,"user_metadata":{"access_level":"camps"}}' \
@@ -99,9 +103,11 @@ while IFS= read -r raw_line || [ -n "$raw_line" ]; do
   if [ "$HAS_JQ" -eq 1 ]; then
     user_id=$(printf '%s' "$response" | jq -r '.id // empty')
     err_msg=$(printf '%s' "$response" | jq -r '.msg // .error_description // .error // empty')
+    err_code=$(printf '%s' "$response" | jq -r '.error_code // .code // empty')
   else
     user_id=$(printf '%s' "$response" | grep -o '"id"[[:space:]]*:[[:space:]]*"[^"]*"' | head -n1 | sed 's/.*"\([^"]*\)"$/\1/')
     err_msg=$(printf '%s' "$response" | grep -o '"msg"[[:space:]]*:[[:space:]]*"[^"]*"' | head -n1 | sed 's/.*"\([^"]*\)"$/\1/')
+    err_code=""
   fi
 
   if [ -n "$user_id" ]; then
@@ -112,11 +118,21 @@ while IFS= read -r raw_line || [ -n "$raw_line" ]; do
     if [ -z "$err_msg" ]; then
       err_msg="$response"
     fi
-    echo "failed:  $email — $err_msg" >&2
-    failed=$((failed + 1))
+    # A pre-existing account is a hard error — the user must delete accounts first.
+    case "$err_code$err_msg" in
+      *email_exists*|*already*registered*|*already*been*registered*|*[Aa]lready*exists*|*[Dd]uplicate*)
+        echo "Error: account already exists: $email" >&2
+        echo "Delete existing facelab.team## accounts before re-running." >&2
+        echo "(Created $created accounts before stopping; see $OUTPUT_FILE)" >&2
+        exit 1
+        ;;
+    esac
+    echo "Error: failed to create $email — $err_msg" >&2
+    echo "(Created $created accounts before stopping; see $OUTPUT_FILE)" >&2
+    exit 1
   fi
-done <"$INPUT_FILE"
+done
 
 echo
-echo "Done. Created: $created  Failed: $failed"
+echo "Done. Created: $created"
 echo "CSV written to: $OUTPUT_FILE"
