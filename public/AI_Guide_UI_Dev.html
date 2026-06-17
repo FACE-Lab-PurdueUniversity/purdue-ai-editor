@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Interface Development — AI Design Guide</title>
+<style>
+  :root {
+    --bg: #0F0F0F;
+    --card: #1A1A1A;
+    --gold: #CEB888;
+    --gold-dim: #8C6D3F;
+    --head: #F2F2F2;
+    --muted: #8C8C8C;
+    --dim: #4A4A4A;
+    --green: #4A7C59;
+    --green-dim: #2C4A35;
+    --red: #7A3333;
+    --red-dim: #4A1F1F;
+    --amber: #B8862A;
+    --amber-dim: #6B4E18;
+    --blue: #2A5C8C;
+    --blue-dim: #1A3A5C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--head);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  .site-nav {
+    border-bottom: 1px solid var(--dim);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .site-nav a {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .site-nav a:hover { text-decoration: underline; }
+  .site-nav .sep { color: var(--dim); }
+
+  /* HERO */
+  .hero {
+    padding: 56px 40px 40px;
+    border-bottom: 1px solid var(--dim);
+    max-width: 900px;
+  }
+  .hero .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--head);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 640px;
+    line-height: 1.65;
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 900px;
+    padding: 48px 40px;
+    border-bottom: 1px solid var(--dim);
+  }
+  .section:last-of-type { border-bottom: none; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--head);
+    margin-bottom: 24px;
+  }
+
+  /* APPROACH CARDS */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .approach-card {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-top: 3px solid var(--gold);
+    padding: 20px;
+    border-radius: 4px;
+  }
+  .approach-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .approach-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* TOOL CARDS */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tool-screenshot {
+    width: 100%;
+    height: 190px;
+    background: #111;
+    border-bottom: 1px dashed var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dim);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 12px;
+  }
+  .tool-screenshot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tool-info {
+    padding: 14px 16px 16px;
+  }
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .tool-info h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--head);
+  }
+  .tool-access {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .tool-access.free {
+    background: var(--green-dim);
+    color: #7FC496;
+    border: 1px solid var(--green);
+  }
+  .tool-access.freemium {
+    background: var(--blue-dim);
+    color: #7EB3DC;
+    border: 1px solid var(--blue);
+  }
+  .tool-access.built-in {
+    background: #1E1E1E;
+    color: var(--muted);
+    border: 1px solid var(--dim);
+  }
+  .tool-info p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .tool-use-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* DID CALLOUT */
+  .did-callout {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-left: 4px solid var(--gold);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .did-callout .did-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .did-callout p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .did-template {
+    background: #0A0A0A;
+    border: 1px solid var(--dim);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #B8C4B8;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  /* WORKFLOW */
+  .workflow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .step.step-warn {
+    border-left: 3px solid var(--red);
+    background: #140F0F;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    color: var(--head);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-warn .step-num {
+    background: var(--red);
+  }
+  .step-body h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--head);
+    margin-bottom: 4px;
+  }
+  .step-body p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .step-body .tip {
+    display: inline-block;
+    margin-top: 8px;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: #7FC496;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+  }
+
+  /* PROMPT PATTERNS */
+  .pattern-block {
+    margin-bottom: 24px;
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .pattern-block:last-child { margin-bottom: 0; }
+  .pattern-header {
+    padding: 12px 18px;
+    background: #111;
+    border-bottom: 1px solid var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pattern-header .ph-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(206,184,136,0.12);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .pattern-header h4 {
+    font-size: 13px;
+    color: var(--head);
+  }
+  .pattern-body {
+    padding: 16px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #B8C4B8;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    background: #0A0A0A;
+  }
+  .pattern-note {
+    padding: 10px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--dim);
+    background: var(--card);
+  }
+
+  /* PITFALLS */
+  .pitfall-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pitfall {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-left: 3px solid var(--red);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .pitfall h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E07070;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pitfall h4::before {
+    content: '✕';
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .pitfall p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .pitfall .fix {
+    font-size: 12px;
+    color: #7FC496;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    border-radius: 3px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .pitfall .fix::before { content: '✓'; flex-shrink: 0; }
+
+  /* NORMAN CALLOUT */
+  .norman-callout {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-left: 4px solid var(--gold);
+    border-radius: 4px;
+    padding: 18px 22px;
+    margin-top: 24px;
+  }
+  .norman-callout .nc-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .norman-levels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .norman-level {
+    background: #111;
+    border: 1px solid var(--dim);
+    border-radius: 3px;
+    padding: 12px 14px;
+  }
+  .norman-level h5 {
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .norman-level p {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .norman-level .nl-question {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #B8C4B8;
+    font-style: italic;
+  }
+
+  /* PAGE NAV */
+  .page-nav {
+    max-width: 900px;
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--dim);
+  }
+  .page-nav a {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .page-nav a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <a href="AI_Design_Guide_v1.html">AI Design Guide</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Vibe_Coding.html">Vibe Coding</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Microcontrollers.html">Microcontrollers</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Hardware.html">Hardware Troubleshooting</a>
+  <span class="sep">/</span>
+  <span style="color: var(--head);">UI Development</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">Part 2 · Workflows</div>
+  <h1>User Interface<br>Development</h1>
+  <p>Building screens people actually want to use. AI can generate layouts fast — but good interfaces come from knowing what experience you're designing toward, not just what pixels look right.</p>
+</div>
+
+<!-- APPROACH -->
+<div class="section">
+  <div class="section-label">Core Approach</div>
+  <h2>Start with the feeling, not the frame</h2>
+  <div class="approach-grid">
+
+    <div class="approach-card">
+      <h3>Describe experience, not layout</h3>
+      <p>Don't open with "make a nav bar with a logo on the left." Open with "this feels like a calm, professional tool — minimal color, generous whitespace." Layout follows feel. Specifying pixels first produces generic work.</p>
+    </div>
+
+    <div class="approach-card">
+      <h3>One component at a time</h3>
+      <p>Build a button. Get it right. Build a card. Get it right. Assemble them. Asking AI to "build the whole page" produces something that technically works but rarely fits your vision — too many decisions made at once to evaluate clearly.</p>
+    </div>
+
+    <div class="approach-card">
+      <h3>Evaluate through Norman's lens</h3>
+      <p>After each generation, run three questions: Does it feel right? (visceral). Is it easy to use? (behavioral). Does it say something worth saying? (reflective). AI doesn't know what level matters most for your project — you do.</p>
+    </div>
+
+  </div>
+
+  <!-- Norman levels quick ref -->
+  <div class="norman-callout">
+    <div class="nc-label">Norman's Three Levels — UI Evaluation Guide</div>
+    <div class="norman-levels">
+      <div class="norman-level">
+        <h5>Visceral</h5>
+        <p>Immediate sensory response to color, type, spacing, motion.</p>
+        <span class="nl-question">"Does it feel right before they do anything?"</span>
+      </div>
+      <div class="norman-level">
+        <h5>Behavioral</h5>
+        <p>The pleasure (or friction) of actually using it — clicks, flows, feedback.</p>
+        <span class="nl-question">"Can they figure it out without thinking?"</span>
+      </div>
+      <div class="norman-level">
+        <h5>Reflective</h5>
+        <p>What the interface says about them or the world after they've used it.</p>
+        <span class="nl-question">"What does this communicate about who made it?"</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="section">
+  <div class="section-label">Tools</div>
+  <h2>Where UI development happens</h2>
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Claude.ai chat window showing an HTML/CSS response with code block visible. Capture the moment a styled component appears in the output. Filename: ui-claude.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Claude</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Best for iterating on components with natural language feedback. Paste your current HTML, describe what's wrong, and get targeted fixes. Excellent at explaining why something looks off and what to change.</p>
+        <span class="tool-use-tag">Primary — generate &amp; debug</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: v0.dev interface showing a generated React component with code on the right and preview on the left. Show the component switcher. Filename: ui-v0.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>v0 by Vercel</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Generates React/Tailwind components from prompts with a live preview. Strong starting point for complex UI patterns — forms, data tables, dashboards. Export clean code and adapt it.</p>
+        <span class="tool-use-tag">Rapid component generation</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Bolt.new with a full-page UI preview on the left and file tree + editor on the right. Show a page with visible nav and content sections. Filename: ui-bolt.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Bolt.new</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Full-stack in-browser environment. Good when your UI needs backend logic (forms that submit, data that persists) and you want everything in one place. Generates and runs the project instantly.</p>
+        <span class="tool-use-tag">Full-stack prototypes</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Browser DevTools open with the Elements panel showing HTML structure on the left and CSS styles on the right. A component should be highlighted. Filename: ui-devtools.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Browser DevTools</h3>
+          <span class="tool-access built-in">Built-in</span>
+        </div>
+        <p>Your first debugging stop. Inspect any element, live-edit CSS, see what's actually rendering. Open with F12 or right-click → Inspect. Screenshot the Elements panel and paste it to Claude for targeted fixes.</p>
+        <span class="tool-use-tag">Inspect &amp; live-edit</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: CodePen editor with an isolated component (e.g., a styled button or card) visible in the preview pane. Show the HTML/CSS/JS tabs. Filename: ui-codepen.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>CodePen</h3>
+          <span class="tool-access free">Free</span>
+        </div>
+        <p>Build and test isolated components in a sandboxed environment without a local setup. Paste AI-generated HTML/CSS/JS here to verify it works before adding it to your project. Easy to share for feedback.</p>
+        <span class="tool-use-tag">Isolated component testing</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Figma canvas with a simple wireframe or style guide (color swatches + type scale visible). This is the reference/spec side, not building side. Filename: ui-figma.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Figma</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Design-side reference. Use it to establish visual intent — color palette, type scale, spacing — before generating code. Screenshots from Figma give AI a concrete visual target to hit, dramatically improving output quality.</p>
+        <span class="tool-use-tag">Visual spec &amp; reference</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- WORKFLOW -->
+<div class="section">
+  <div class="section-label">Workflow</div>
+  <h2>Seven steps from blank page to working interface</h2>
+
+  <div class="did-callout">
+    <div class="did-label">Before any session — write your Design Intent Document (DID)</div>
+    <p>Paste this at the top of your first AI message. It anchors every generation to your actual project.</p>
+    <div class="did-template">Project: [Name of your installation or project]
+Experience goal: [What should users feel when they interact with this?]
+Audience: [Who is this for? Age, context, prior experience]
+Technical constraints: [What are you running this on? Browser? Raspberry Pi? Screen size?]
+Visual reference: [One sentence describing the aesthetic — dark/minimal, playful/colorful, etc.]
+What I have so far: [Describe existing components, colors in use, or attach a screenshot]</div>
+  </div>
+
+  <div class="workflow-list">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Establish visual intent before writing a line</h4>
+        <p>Decide on three things: the dominant color palette (write the hex codes), the typeface family (serif / sans / mono), and the overall density (spacious / packed / in between). Write these into your DID before generating anything. AI will produce wildly inconsistent results across sessions if you don't anchor it.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Generate one component — describe the experience</h4>
+        <p>Start small. Ask for a single card, button, or nav bar. Lead with the experience: "This should feel sturdy and deliberate — not playful. Users should feel confident they're clicking the right thing." Then give the specs: size, colors, behavior.</p>
+        <span class="tip">Paste your DID before the component request in every new session</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Open in browser, evaluate against Norman's three levels</h4>
+        <p>Open the generated HTML directly in a browser. Ask the three questions: Does it feel right? Is it usable? What does it say? Take notes before you prompt again. Don't iterate until you know what specifically isn't working and why.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Screenshot → describe → ask for one change</h4>
+        <p>Take a screenshot of what you see. Paste it into Claude with a specific description: "The button text is too small and looks timid — I want it to feel more decisive. Increase font size to 16px and add 4px letter-spacing." One change per prompt. Don't ask for five things at once.</p>
+      </div>
+    </div>
+
+    <div class="step step-warn">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Ask AI to explain any CSS you don't understand before accepting</h4>
+        <p>Before copying code into your project, ask: "Explain what this CSS rule does and why you used it." If you can't explain what's in your own project, you can't debug it when something breaks. AI will often use shorthand or newer properties that aren't universally supported.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Compose — then test the full layout</h4>
+        <p>Once individual components work, assemble them. Often things that look fine in isolation fight each other at full page scale — margins collapse, colors clash, hierarchy disappears. Send a screenshot of the full page and ask: "What's competing for attention that shouldn't be?"</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Document your style decisions in a comment block</h4>
+        <p>Before you finish a session, ask Claude to add a CSS comment block at the top of your file documenting the color palette, type scale, and any design decisions. This becomes the next session's DID and ensures consistency even if you switch tools.</p>
+        <span class="tip">Ask: "Add a comment at the top of my CSS summarizing the design system we've built"</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROMPT PATTERNS -->
+<div class="section">
+  <div class="section-label">Prompt Patterns</div>
+  <h2>How to phrase it</h2>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 01</span>
+      <h4>Opening a new UI session</h4>
+    </div>
+    <div class="pattern-body">I'm building a UI for [project name]. Here's my Design Intent Document:
+
+[Paste DID here]
+
+Here is my current HTML/CSS file:
+
+[Paste code here — or "I'm starting from scratch"]
+
+The component I want to build next is [name]. Here's what it needs to do: [function].
+Here's how it should feel: [visceral description — e.g., "heavy, deliberate, minimal color"].
+Here's who will use it: [audience context].
+
+Please generate this component as a self-contained HTML + CSS block I can paste into my file.</div>
+    <div class="pattern-note">Pasting the DID and existing code every session costs a few seconds but saves many minutes of off-target generation.</div>
+  </div>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 02</span>
+      <h4>Adjusting visual feel with a screenshot</h4>
+    </div>
+    <div class="pattern-body">Here's a screenshot of what I have right now. [attach image]
+
+The layout is mostly correct, but the feel is off. Specifically:
+— The typography feels too thin and digital — I want something warmer and more substantial
+— The card background blends into the page background — needs more contrast without adding bright color
+— The spacing between items feels rushed — increase vertical breathing room
+
+Please revise the CSS only (don't change the HTML structure). Show me just the changed rules.</div>
+    <div class="pattern-note">Asking for CSS-only changes keeps the HTML stable. "Show me just the changed rules" prevents Claude from rewriting the whole file.</div>
+  </div>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 03</span>
+      <h4>Debugging a layout problem with DevTools</h4>
+    </div>
+    <div class="pattern-body">I'm having a layout issue. Here's what's happening: [describe the visual bug — e.g., "my flex container items wrap at 3 columns but I want 2, and on mobile they overlap instead of stacking"].
+
+Here's the relevant HTML structure:
+[paste the element]
+
+Here's the CSS currently applied (from DevTools Elements panel):
+[paste computed styles or screenshot]
+
+What's causing this and what's the minimal fix? Explain the root cause before giving me the code.</div>
+    <div class="pattern-note">Asking for root cause explanation first prevents cargo-cult fixes. You learn the underlying model, not just a patch.</div>
+  </div>
+
+</div>
+
+<!-- PITFALLS -->
+<div class="section">
+  <div class="section-label">Common Pitfalls</div>
+  <h2>What goes wrong and why</h2>
+
+  <div class="pitfall-list">
+
+    <div class="pitfall">
+      <h4>Prompting with aesthetics references without a DID</h4>
+      <p>"Make it look like Apple.com" produces generic minimalism that has nothing to do with your project's actual intent. AI anchors to the reference image, not your design goals.</p>
+      <div class="fix">Write a DID first. Use reference images only to illustrate specific properties ("the whitespace density I want") — not as an overall target to copy.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Accepting the first generation without evaluating</h4>
+      <p>The first result will almost always work technically. It rarely captures the exact experience you want. Accepting it and moving on locks in a baseline that compounds — every subsequent component inherits its visual DNA.</p>
+      <div class="fix">Evaluate against Norman's three levels before building on top of any generated component. Note what's right and what isn't before prompting again.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Asking for five changes in one prompt</h4>
+      <p>AI will try to make all five changes at once. Some will land, some won't. You won't know which change fixed which problem, and you can't easily undo one without the others.</p>
+      <div class="fix">One change per prompt during visual iteration. When you've stabilized a component, batch structural changes (padding, margin, spacing) in one go — but evaluate behavior changes one at a time.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Skipping mobile and different screen sizes</h4>
+      <p>AI generates for whatever viewport is implied in the prompt. If you don't mention a screen size, you'll often get a desktop layout that breaks completely on mobile — and a lot of MicroArtistry projects run on tablets or embedded displays.</p>
+      <div class="fix">Add your target screen size to the DID. If your project needs to run on a specific display (tablet, 1080p kiosk, phone), state the exact dimensions: "This will run on a 10-inch tablet in landscape at 1280×800."</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Pasting generated CSS on top of existing CSS without reconciling</h4>
+      <p>Each generation session produces its own class names and variable definitions. Paste four sessions' outputs into one file and you'll have four competing definitions of <code style="background:#111; padding: 1px 5px; border-radius:2px; font-family:monospace; font-size:11px;">--primary-color</code>, duplicate class names, and cascading conflicts no one can untangle.</p>
+      <div class="fix">Maintain one CSS file. At the start of each session, paste your current file and ask Claude to reconcile any new rules with what's already there before appending.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE NAV -->
+<nav class="page-nav">
+  <a href="AI_Guide_Hardware.html">← Hardware Troubleshooting</a>
+  <a href="AI_Guide_Image_Gen.html">Image Generation →</a>
+</nav>
+
+</body>
+</html>
