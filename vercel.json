@@ -1,1 +1,12 @@
-{ "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }] }
+{
+  "rewrites": [
+    {
+      "source": "/ai_guide_ui_dev",
+      "destination": "/AI_Guide_UI_Dev.html"
+    },
+    {
+      "source": "/((?!.*\\.).*)",
+      "destination": "/"
+    }
+  ]
+}
