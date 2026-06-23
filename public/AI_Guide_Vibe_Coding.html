@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding &mdash; AI + Design Field Guide</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+    --red:   #7A3333;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 580px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 540px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PRINCIPLE CARDS */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card {
+    background: var(--card); padding: 1.75rem;
+    position: relative; overflow: hidden;
+  }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 14px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* ── TOOL CARDS ── */
+  .tools-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .tool-card {
+    background: var(--card);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Screenshot slot — full bleed top of card */
+  .tool-screenshot {
+    width: 100%; height: 190px;
+    background: #0a0a0a;
+    border-bottom: 1px solid var(--dim);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.6rem; position: relative;
+    overflow: hidden;
+  }
+  .tool-screenshot img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .tool-screenshot .shot-label {
+    font-size: 11px; color: var(--dim);
+    letter-spacing: 0.06em; font-style: italic;
+    text-align: center; padding: 0 1rem;
+    /* shown only when no img is present */
+  }
+  .tool-screenshot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em;
+    color: var(--dim); text-transform: uppercase;
+    background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+  }
+  /* dashed placeholder border when no image */
+  .tool-screenshot:not(:has(img)) {
+    border: 1.5px dashed rgba(206,184,136,0.2);
+    border-bottom: 1px solid var(--dim);
+  }
+
+  .tool-body { padding: 1.5rem 1.6rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+  .tool-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+  .tool-name { font-size: 16px; font-weight: 500; color: var(--head); }
+  .tool-access {
+    font-size: 10px; letter-spacing: 0.09em;
+    padding: 0.18rem 0.5rem; background: var(--bg);
+    border: 1px solid var(--dim); color: var(--dim);
+    text-transform: uppercase; border-radius: 2px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .tool-access.free { border-color: var(--green); color: var(--green); }
+  .tool-best { font-size: 11px; color: var(--gold); letter-spacing: 0.07em; text-transform: uppercase; }
+  .tool-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .tool-start-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .tool-start {
+    background: var(--bg); border: 1px solid var(--dim);
+    padding: 0.7rem 0.9rem; font-size: 12px; color: var(--muted); line-height: 1.65;
+  }
+  .tool-start ol { margin-left: 1.1rem; }
+  .tool-start ol li { margin-bottom: 0.2rem; }
+  .tool-url { font-size: 11px; color: var(--dim); margin-top: auto; padding-top: 0.4rem; }
+  .tool-url a { color: var(--gold); text-decoration: none; }
+  .tool-url a:hover { text-decoration: underline; }
+
+  /* WORKFLOW */
+  .workflow-steps { display: flex; flex-direction: column; }
+  .step {
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 0 1.75rem; padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num { font-size: 46px; font-weight: 200; color: var(--dim); line-height: 1; align-self: flex-start; padding-top: 0.05rem; }
+  .step-title { font-size: 15px; font-weight: 500; color: var(--head); margin-bottom: 0.4rem; }
+  .step-body { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+  .step-tip {
+    margin-top: 0.65rem; padding: 0.55rem 0.8rem;
+    background: var(--card); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic; max-width: 580px;
+  }
+
+  /* PROMPT PATTERNS */
+  .prompt-blocks { display: flex; flex-direction: column; gap: 1.25rem; }
+  .prompt-block { border: 1px solid var(--dim); background: var(--card); }
+  .prompt-label-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 1rem; border-bottom: 1px solid var(--dim);
+    background: rgba(0,0,0,0.3);
+  }
+  .prompt-label-bar .plabel { font-size: 10px; letter-spacing: 0.17em; color: var(--gold); text-transform: uppercase; }
+  .prompt-label-bar .ptag { font-size: 10px; color: var(--dim); }
+  .prompt-text {
+    padding: 1.1rem 1.25rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px; color: var(--muted); line-height: 1.7; white-space: pre-wrap;
+  }
+  .prompt-text em { color: var(--gold); font-style: normal; }
+  .prompt-note { padding: 0.55rem 1.25rem; border-top: 1px solid var(--dim); font-size: 11.5px; color: var(--dim); font-style: italic; }
+
+  /* PITFALLS */
+  .pitfall-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .pitfall-card { background: var(--card); padding: 1.4rem 1.5rem; }
+  .pitfall-num { font-size: 10px; color: var(--red); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .pitfall-card h3 { font-size: 13.5px; font-weight: 500; color: var(--head); margin-bottom: 0.5rem; }
+  .pitfall-card p { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .pitfall-fix {
+    margin-top: 0.65rem; padding: 0.5rem 0.75rem;
+    background: var(--bg); border-left: 2px solid var(--green);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="AI_Design_Guide_v1.html">AI + Design</a> &nbsp;/&nbsp; Vibe Coding</span>
+  <ul>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#prompts">Prompts</a></li>
+    <li><a href="#pitfalls">Pitfalls</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="AI_Design_Guide_v1.html">&larr; AI + Design Field Guide</a> &nbsp;&middot;&nbsp; Workflows</div>
+    <h1>Vibe <em>Coding</em></h1>
+    <p class="lead">Direct AI to build interactive experiences from design intent &mdash; not code syntax. You describe what something should do and feel. AI writes the implementation. You evaluate, direct, and iterate.</p>
+    <div class="quick-links">
+      <a href="#approach" class="quick-link">The Approach</a>
+      <a href="#tools" class="quick-link">Tools</a>
+      <a href="#workflow" class="quick-link">Workflow</a>
+      <a href="#prompts" class="quick-link">Prompt Patterns</a>
+      <a href="#pitfalls" class="quick-link">Pitfalls</a>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<section id="approach">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Approach</div>
+      <h2>You are the designer. AI is the implementer.</h2>
+      <p>Stay at the right level of abstraction. Your job is design intent &mdash; what it should do and feel. The moment you start thinking in code syntax, you've given up the designer's chair.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Stay at the level of experience.</h3>
+        <p>Describe what a person sees, does, and feels &mdash; not the code structure you think you need. The syntax is AI's problem. Precision in describing the experience is yours.</p>
+        <div class="rule">"It should feel like a slow inhale, not a click." That's a brief. That's your job.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>One change at a time.</h3>
+        <p>Pick one design goal. Make it specific. Evaluate the result. Then move to the next. This discipline keeps you in authorial control &mdash; and makes it possible to know what worked.</p>
+        <div class="rule">If your revision prompt has more than two requests, split it into two prompts.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>Understand before you accept.</h3>
+        <p>Every function you accept is code you're responsible for. Ask AI to explain any section you don't understand. You don't need to memorize syntax &mdash; but you need to know what each part is responsible for.</p>
+        <div class="rule">"Explain what this function does, as if I'm a designer who needs to understand the behavior &mdash; not the syntax."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Tools</div>
+      <h2>Six tools &mdash; and when to reach for each.</h2>
+      <p>Different tools have different strengths. Claude is conversational and strong at design intent. Cursor knows your whole codebase. v0 generates visual UI fast. Know which tool fits the moment.</p>
+    </div>
+    <div class="tools-grid">
+
+      <!-- Claude -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Claude.ai interface — Design Intent Document pasted at top of chat, prompt being composed -->
+          <!-- <img src="screenshots/claude-interface.png" alt="Claude.ai chat interface showing a Design Intent Document being pasted"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Claude.ai &mdash; Design Intent Document + prompt</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Claude</div>
+            <div class="tool-access free">Free + Pro</div>
+          </div>
+          <div class="tool-best">Full-file generation &middot; design-intent prompting &middot; explanation</div>
+          <div class="tool-desc">The strongest tool for generating complete files from a design brief. Understands aesthetic and emotional language well &mdash; "the interaction should feel weighted" lands here in a way it won't in code-focused tools.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Open claude.ai &rarr; new conversation</li>
+            <li>Paste your Design Intent Document first</li>
+            <li>Describe the experience you want to build</li>
+            <li>Ask for a single self-contained HTML file</li>
+            <li>On follow-ups: paste current file + one specific change</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://claude.ai" target="_blank">claude.ai</a></div>
+        </div>
+      </div>
+
+      <!-- Cursor -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Cursor editor — Cmd+K inline edit panel open on a highlighted function, showing AI suggestion -->
+          <!-- <img src="screenshots/cursor-editor.png" alt="Cursor editor with Cmd+K inline edit panel open"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Cursor &mdash; Cmd+K inline edit on existing code</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Cursor</div>
+            <div class="tool-access">Free trial &middot; $20/mo</div>
+          </div>
+          <div class="tool-best">Editing existing code &middot; multi-file projects &middot; inline changes</div>
+          <div class="tool-desc">A code editor where AI can see your entire project &mdash; not just what you paste. When you have an existing codebase and need targeted changes, that full-project context changes everything.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Download Cursor at cursor.com &rarr; open your project folder</li>
+            <li>Cmd+K to edit a selected section inline</li>
+            <li>Cmd+L to chat about your files</li>
+            <li>Use @filename to bring specific files into context</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://cursor.com" target="_blank">cursor.com</a></div>
+        </div>
+      </div>
+
+      <!-- v0 -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: v0.dev interface — a UI prompt on the left, generated component preview on the right -->
+          <!-- <img src="screenshots/v0-interface.png" alt="v0.dev showing a UI prompt and generated component side by side"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">v0.dev &mdash; UI description + generated component</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">v0 by Vercel</div>
+            <div class="tool-access free">Free tier</div>
+          </div>
+          <div class="tool-best">UI component generation &middot; visual starting points &middot; React/Tailwind</div>
+          <div class="tool-desc">Generates React/Tailwind UI components from visual descriptions &mdash; and the results look designed, not like a default template. Strong for the visual layer. Bring it into Cursor or Claude for behavior and customization.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to v0.dev &rarr; no account required to start</li>
+            <li>Describe your UI with visual specificity</li>
+            <li>Iterate in the v0 interface</li>
+            <li>Copy the component code &rarr; customize in Cursor</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://v0.dev" target="_blank">v0.dev</a></div>
+        </div>
+      </div>
+
+      <!-- GitHub Copilot -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: VS Code with GitHub Copilot — a comment at top of a function, Copilot autocomplete suggestion appearing in gray -->
+          <!-- <img src="screenshots/copilot-vscode.png" alt="VS Code showing a Copilot inline autocomplete suggestion from a comment"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">VS Code + Copilot &mdash; comment-to-code autocomplete</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">GitHub Copilot</div>
+            <div class="tool-access free">Free for students</div>
+          </div>
+          <div class="tool-best">Inline autocomplete &middot; boilerplate &middot; code continuations</div>
+          <div class="tool-desc">AI autocomplete inside VS Code &mdash; suggests completions as you type. Best when you understand the pattern you're implementing and need implementation speed. Less useful for generating from a design brief from scratch.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Install the GitHub Copilot extension in VS Code</li>
+            <li>Sign in with GitHub (free for verified students)</li>
+            <li>Write a comment describing the function you want</li>
+            <li>Tab to accept Copilot's suggestion</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://github.com/features/copilot" target="_blank">github.com/features/copilot</a></div>
+        </div>
+      </div>
+
+      <!-- Bolt.new -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Bolt.new — prompt on left, full running application preview on right with deploy button visible -->
+          <!-- <img src="screenshots/bolt-interface.png" alt="Bolt.new showing a prompt input and a live running application preview side by side"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Bolt.new &mdash; prompt + live app preview + deploy</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Bolt.new</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Full-stack generation &middot; live demos &middot; deployed URL in minutes</div>
+          <div class="tool-desc">Generates a complete, deployable web application from a single prompt &mdash; front end, back end, and a live URL. The fastest path from idea to something demonstrable. Less controllable than Cursor, but dramatically faster for pitching.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to bolt.new &rarr; no signup required</li>
+            <li>Describe your full application (include DID context)</li>
+            <li>Iterate by typing follow-up changes in the chat</li>
+            <li>Click Deploy for a shareable URL</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://bolt.new" target="_blank">bolt.new</a></div>
+        </div>
+      </div>
+
+      <!-- Replit -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Replit browser interface — code editor on left, live preview panel on right, AI chat open in sidebar -->
+          <!-- <img src="screenshots/replit-interface.png" alt="Replit browser IDE showing code, live preview, and AI chat panel"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Replit &mdash; browser IDE with live preview + AI chat</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Replit</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">No local setup &middot; browser-based &middot; instant sharing</div>
+          <div class="tool-desc">Everything runs in your browser &mdash; no installation required. Write, run, and share code from any computer. The most accessible starting point for students who don't have a development environment set up.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to replit.com &rarr; create a free account</li>
+            <li>Click Create Repl &rarr; choose HTML/CSS/JS</li>
+            <li>Use the AI chat to describe what to build</li>
+            <li>Click Run to see it live &rarr; share the URL for demos</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://replit.com" target="_blank">replit.com</a></div>
+        </div>
+      </div>
+
+    </div><!-- /tools-grid -->
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Workflow</div>
+      <h2>From design intent to working code.</h2>
+      <p>A repeatable structure. You'll cycle through steps 4&ndash;6 many times &mdash; the quality of your work lives in that loop.</p>
+    </div>
+    <div class="workflow-steps">
+
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Build your context.</div>
+          <div class="step-body">Write your Design Intent Document before you touch a tool. Five to seven sentences: what you're making, who it's for, what you want them to feel, what constraints you're working under. Paste this at the top of every AI conversation. Without it, you're starting from zero every session.</div>
+          <div class="step-tip">Keep your DID in a text file. Paste it first, every time.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Describe the experience &mdash; not the code.</div>
+          <div class="step-body">Your first prompt should describe what a person experiences: what they see, what they do, what they feel. No HTML elements, no CSS properties, no JavaScript functions. Those are AI's job. Your job is the experience brief.</div>
+          <div class="step-tip">"Feels like it's deciding whether to respond" is better than "0.3s transition delay."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Run it first &mdash; then read the code.</div>
+          <div class="step-body">When AI generates a file, open it in a browser before you read the code. Interact with it as a user. Your felt reaction is valid design data. What works? What doesn't? What surprised you?</div>
+          <div class="step-tip">Ask for a single self-contained HTML file whenever possible.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Explain it back.</div>
+          <div class="step-body">For any section you don't understand, ask AI to explain it in plain language before you move on. You don't need to memorize syntax &mdash; but you need to know what each part is responsible for, so you can ask for targeted changes and debug when things break.</div>
+          <div class="step-tip">"Explain this function as if I'm a designer who needs to understand the behavior, not the syntax."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Evaluate against your design intent.</div>
+          <div class="step-body">Return to your DID. Does this draft achieve what you said you wanted? Apply Norman's three levels: does it hit visceral (immediate feeling), behavioral (works as expected), reflective (says something after you walk away)? Write your evaluation in a sentence &mdash; that sentence becomes your next prompt.</div>
+          <div class="step-tip">"The transition feels mechanical because it has no variation in speed or weight."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <div class="step-title">Iterate precisely.</div>
+          <div class="step-body">One change at a time. Take your evaluation sentence, make it a prompt, paste the current full file, and specify exactly what to change &mdash; and what to leave alone. Always paste the full current file. Never ask AI to "remember" the previous version.</div>
+          <div class="step-tip">"Revise only the animation logic. Everything else should stay the same."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">07</div>
+        <div class="step-content">
+          <div class="step-title">Document as you go.</div>
+          <div class="step-body">At session end: ask AI to add inline comments explaining each major section (if missing), and log three sentences in your AI use record: what you asked for, what AI gave you, what you decided and why. This is your authorship record &mdash; and what lets you continue next session.</div>
+          <div class="step-tip">Your log doesn't need to be elaborate. Three sentences is enough.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT PATTERNS -->
+<section id="prompts">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Prompt Patterns</div>
+      <h2>Four prompts you'll use constantly.</h2>
+      <p>These aren't templates to copy verbatim. They're structures. Understand why they work, then adapt them to your project.</p>
+    </div>
+    <div class="prompt-blocks">
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">01 &nbsp;&middot;&nbsp; Opening a new session</span>
+          <span class="ptag">Every single time</span>
+        </div>
+        <div class="prompt-text"><em>[Paste your Design Intent Document]</em>
+
+I'm continuing work on this project. Current code:
+
+<em>[Paste full current file]</em>
+
+Today I want to work on <em>[specific goal]</em>. Before making changes, confirm you understand the design argument and flag anything in the current code that conflicts with it.</div>
+        <div class="prompt-note">AI has no memory between sessions. This rebuilds full context in one move and asks AI to catch conflicts before generating.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">02 &nbsp;&middot;&nbsp; First generation from a brief</span>
+          <span class="ptag">Starting something new</span>
+        </div>
+        <div class="prompt-text"><em>[Design Intent Document]</em>
+
+Build a single self-contained HTML file. When a visitor arrives, they should feel <em>[emotional quality]</em>. The visual language is <em>[descriptors]</em>. The primary interaction is <em>[describe]</em> and when it happens it should feel <em>[quality &mdash; immediate / weighted / elastic / reluctant]</em>.
+
+Do not include: <em>[exclusions]</em>.
+Add comments in the code explaining what each major section does.</div>
+        <div class="prompt-note">You're writing a director's brief, not a technical spec. "Reluctant" is a useful word here. "50ms delay" is implementation &mdash; AI's job, not yours.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">03 &nbsp;&middot;&nbsp; Iterating on feel</span>
+          <span class="ptag">The most common prompt type</span>
+        </div>
+        <div class="prompt-text">Current code: <em>[paste full file]</em>
+
+The <em>[element or behavior]</em> currently feels <em>[how it feels]</em>. I want it to feel <em>[how it should feel]</em> &mdash; specifically, <em>[what's missing or wrong]</em>.
+
+Revise only the <em>[relevant section]</em>. Do not change anything else. Explain what you changed and why it produces the feeling I'm describing.</div>
+        <div class="prompt-note">"Revise only X" is critical. Without it, AI will refactor things you weren't asking about. The explanation request connects the technical change to the experiential goal.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">04 &nbsp;&middot;&nbsp; Requesting explanation</span>
+          <span class="ptag">After anything you don't understand</span>
+        </div>
+        <div class="prompt-text">Explain this section as if talking to a designer who needs to understand the behavior &mdash; not the syntax:
+
+<em>[paste section]</em>
+
+What is this responsible for? What breaks if I remove it? What would I change to get <em>[alternative behavior]</em>?</div>
+        <div class="prompt-note">"As if talking to a designer" reframes explanations away from jargon. The "what would break" question gives you actionable design handles, not just a description.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PITFALLS -->
+<section id="pitfalls">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Pitfalls</div>
+      <h2>Five ways this goes wrong.</h2>
+    </div>
+    <div class="pitfall-grid">
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">01</div>
+        <h3>Accepting code you can't explain.</h3>
+        <p>If something breaks, you need to locate why. "AI wrote it" is not a debugging strategy. Understanding doesn't mean memorizing syntax &mdash; it means knowing what each section is responsible for.</p>
+        <div class="pitfall-fix">Ask for explanation after every generation. Make it a habit.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">02</div>
+        <h3>Describing the code instead of the experience.</h3>
+        <p>"Add a CSS flexbox layout" tells AI to build but gives away the design decision before it's made. The result will be technically correct and design-neutral.</p>
+        <div class="pitfall-fix">Start every prompt from the human experience. Code structure follows.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">03</div>
+        <h3>Too many changes in one prompt.</h3>
+        <p>Asking for five things and getting three addressed makes it impossible to know what worked &mdash; or revert anything specifically. This is how projects become impossible to debug.</p>
+        <div class="pitfall-fix">One design goal per prompt. Evaluate before moving on.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">04</div>
+        <h3>Not testing in a real browser.</h3>
+        <p>Generated code may behave differently across browsers, screen sizes, and interaction speeds. The only valid test is interacting with it yourself, in the environment where it will run.</p>
+        <div class="pitfall-fix">Open it in a browser after every generation. Interact before reading the code.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">05</div>
+        <h3>Starting a new session without rebuilding context.</h3>
+        <p>AI has no memory. Paste only code, get code-level help. Paste your DID first, get design-intent-level help. The difference is significant. The fix costs sixty seconds.</p>
+        <div class="pitfall-fix">Keep your DID in a text file. Paste it first. Every time.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="AI_Design_Guide_v1.html">&larr; Back to Field Guide</a>
+    <a href="AI_Guide_Microcontrollers.html">Microcontroller Programming &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>MicroArtistry 2026 &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardware Troubleshooting &mdash; AI + Design Field Guide</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+    --red:   #7A3333;
+    --amber: #8C6A2A;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 580px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 560px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PRINCIPLE CARDS */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card { background: var(--card); padding: 1.75rem; position: relative; overflow: hidden; }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 14px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* SYMPTOM REFERENCE GRID */
+  .symptom-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+    margin-top: 2rem;
+  }
+  .symptom-card { background: var(--card); padding: 1.25rem 1.4rem; }
+  .symptom-tag {
+    display: inline-block; margin-bottom: 0.55rem;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.18rem 0.55rem; border-radius: 2px;
+    background: rgba(122,51,51,0.25); color: #C48080; border: 1px solid rgba(122,51,51,0.4);
+  }
+  .symptom-card .symptom { font-size: 13.5px; font-weight: 500; color: var(--head); margin-bottom: 0.55rem; }
+  .symptom-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+  .symptom-card ul li {
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
+    display: flex; gap: 0.5rem; align-items: baseline;
+  }
+  .symptom-card ul li::before { content: '&rarr;'; color: var(--dim); font-size: 11px; flex-shrink: 0; }
+  .symptom-card .first-check {
+    margin-top: 0.65rem; padding: 0.45rem 0.75rem;
+    background: var(--bg); border-left: 2px solid var(--green);
+    font-size: 11.5px; color: var(--head); font-style: italic;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .tool-card { background: var(--card); display: flex; flex-direction: column; overflow: hidden; }
+  .tool-screenshot {
+    width: 100%; height: 190px; background: #0a0a0a;
+    border-bottom: 1px solid var(--dim);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.6rem; position: relative; overflow: hidden;
+  }
+  .tool-screenshot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tool-screenshot .shot-label {
+    font-size: 11px; color: var(--dim); letter-spacing: 0.06em;
+    font-style: italic; text-align: center; padding: 0 1.2rem;
+  }
+  .tool-screenshot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase;
+    background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+  }
+  .tool-screenshot:not(:has(img)) { border: 1.5px dashed rgba(206,184,136,0.2); border-bottom: 1px solid var(--dim); }
+  .tool-body { padding: 1.5rem 1.6rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+  .tool-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+  .tool-name { font-size: 16px; font-weight: 500; color: var(--head); }
+  .tool-access {
+    font-size: 10px; letter-spacing: 0.09em; padding: 0.18rem 0.5rem;
+    background: var(--bg); border: 1px solid var(--dim); color: var(--dim);
+    text-transform: uppercase; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+  }
+  .tool-access.free { border-color: var(--green); color: var(--green); }
+  .tool-access.physical { border-color: var(--amber); color: #C49A3A; }
+  .tool-best { font-size: 11px; color: var(--gold); letter-spacing: 0.07em; text-transform: uppercase; }
+  .tool-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .tool-start-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .tool-start {
+    background: var(--bg); border: 1px solid var(--dim);
+    padding: 0.7rem 0.9rem; font-size: 12px; color: var(--muted); line-height: 1.65;
+  }
+  .tool-start ol { margin-left: 1.1rem; }
+  .tool-start ol li { margin-bottom: 0.2rem; }
+  .tool-url { font-size: 11px; color: var(--dim); margin-top: auto; padding-top: 0.4rem; }
+  .tool-url a { color: var(--gold); text-decoration: none; }
+  .tool-url a:hover { text-decoration: underline; }
+
+  /* WORKFLOW */
+  .workflow-steps { display: flex; flex-direction: column; }
+  .step {
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 0 1.75rem; padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num { font-size: 46px; font-weight: 200; color: var(--dim); line-height: 1; align-self: flex-start; padding-top: 0.05rem; }
+  .step-title { font-size: 15px; font-weight: 500; color: var(--head); margin-bottom: 0.4rem; }
+  .step-body { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+  .step-tip {
+    margin-top: 0.65rem; padding: 0.55rem 0.8rem;
+    background: var(--card); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic; max-width: 580px;
+  }
+  .step-warn {
+    margin-top: 0.65rem; padding: 0.55rem 0.8rem;
+    background: var(--card); border-left: 2px solid var(--red);
+    font-size: 12px; color: var(--muted); font-style: italic; max-width: 580px;
+  }
+
+  /* PROMPT PATTERNS */
+  .prompt-blocks { display: flex; flex-direction: column; gap: 1.25rem; }
+  .prompt-block { border: 1px solid var(--dim); background: var(--card); }
+  .prompt-label-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 1rem; border-bottom: 1px solid var(--dim);
+    background: rgba(0,0,0,0.3);
+  }
+  .prompt-label-bar .plabel { font-size: 10px; letter-spacing: 0.17em; color: var(--gold); text-transform: uppercase; }
+  .prompt-label-bar .ptag { font-size: 10px; color: var(--dim); }
+  .prompt-text {
+    padding: 1.1rem 1.25rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px; color: var(--muted); line-height: 1.7; white-space: pre-wrap;
+  }
+  .prompt-text em { color: var(--gold); font-style: normal; }
+  .prompt-note { padding: 0.55rem 1.25rem; border-top: 1px solid var(--dim); font-size: 11.5px; color: var(--dim); font-style: italic; }
+
+  /* PITFALLS */
+  .pitfall-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .pitfall-card { background: var(--card); padding: 1.4rem 1.5rem; }
+  .pitfall-num { font-size: 10px; color: var(--red); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .pitfall-card h3 { font-size: 13.5px; font-weight: 500; color: var(--head); margin-bottom: 0.5rem; }
+  .pitfall-card p { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .pitfall-fix {
+    margin-top: 0.65rem; padding: 0.5rem 0.75rem;
+    background: var(--bg); border-left: 2px solid var(--green);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="AI_Design_Guide_v1.html">AI + Design</a> &nbsp;/&nbsp; Hardware Troubleshooting</span>
+  <ul>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#symptoms">Symptoms</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#prompts">Prompts</a></li>
+    <li><a href="#pitfalls">Pitfalls</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="AI_Design_Guide_v1.html">&larr; AI + Design Field Guide</a> &nbsp;&middot;&nbsp; Workflows</div>
+    <h1>Hardware <em>Troubleshooting</em></h1>
+    <p class="lead">When physical systems fail, AI is a strong diagnostic partner &mdash; if you give it enough to work with. Precise symptom descriptions, serial output, and your hardware spec turn AI from a guesser into a useful collaborator.</p>
+    <div class="quick-links">
+      <a href="#approach" class="quick-link">The Approach</a>
+      <a href="#symptoms" class="quick-link">Symptom Reference</a>
+      <a href="#tools" class="quick-link">Tools</a>
+      <a href="#workflow" class="quick-link">Workflow</a>
+      <a href="#prompts" class="quick-link">Prompt Patterns</a>
+      <a href="#pitfalls" class="quick-link">Pitfalls</a>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<section id="approach">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Approach</div>
+      <h2>Symptoms first. Theories later.</h2>
+      <p>Hardware debugging has two separate systems in the loop: firmware and physical hardware. Knowing which layer has the problem before you start changing things is the difference between a 10-minute fix and a 3-hour chase.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Isolate the layer first.</h3>
+        <p>Before changing anything, determine whether the problem is in the firmware or the physical hardware. Run your code in Wokwi simulation. If it works there, the problem is wiring or components. If it fails there too, the problem is code. This single step cuts your debugging space in half.</p>
+        <div class="rule">Simulation works &rarr; hardware problem. Simulation fails &rarr; firmware problem. Now you know where to look.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>Describe symptoms, not theories.</h3>
+        <p>"The sensor reads 1023 constantly" is a symptom &mdash; it's a fact you observed. "I think the power rail is wrong" is a theory &mdash; it might be right, it might not. Give AI your symptoms. Your theory about the cause may be leading you away from the actual problem. Let AI generate the theories.</p>
+        <div class="rule">"The LED doesn't light up at all" is useful. "I think there's a short circuit" is noise. Symptom first, always.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>Change one thing at a time.</h3>
+        <p>If you change three things and it starts working, you don't know what fixed it &mdash; or why. If you change one thing and test, you're learning something real. Hardware debugging is controlled experimentation. The moment you change multiple variables, you've lost the ability to interpret the results.</p>
+        <div class="rule">Every working state is a checkpoint. Fix one thing. Test. Confirm. Then move to the next.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYMPTOM REFERENCE -->
+<section id="symptoms">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Symptom Reference</div>
+      <h2>Common symptoms and where to look first.</h2>
+      <p>These aren't guarantees &mdash; they're starting points. Use them to narrow the search before involving AI. The faster you can locate the layer (firmware vs. physical), the faster the fix.</p>
+    </div>
+    <div class="symptom-grid">
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Sensor</div>
+        <div class="symptom">Sensor always reads 0</div>
+        <ul>
+          <li>Power not reaching the component</li>
+          <li>Wrong pin number in code</li>
+          <li>Wrong communication protocol (analog vs. digital vs. I2C)</li>
+          <li>Missing library or wrong library version</li>
+        </ul>
+        <div class="first-check">Check: Is VCC connected? Is the correct pin in your code?</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Sensor</div>
+        <div class="symptom">Sensor always reads maximum (1023 / HIGH)</div>
+        <ul>
+          <li>Floating input pin (no pull-up or pull-down resistor)</li>
+          <li>Sensor not connected &mdash; pin is reading ambient noise</li>
+          <li>Power and signal wires swapped</li>
+        </ul>
+        <div class="first-check">Check: Is there a pull-down resistor on the input? Is the sensor actually wired?</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Serial Monitor</div>
+        <div class="symptom">Serial Monitor shows garbage / random characters</div>
+        <ul>
+          <li>Baud rate mismatch (code says 9600, monitor set to 115200, or vice versa)</li>
+          <li>Wrong serial port selected</li>
+          <li>USB cable is charge-only, not data</li>
+        </ul>
+        <div class="first-check">Match Serial.begin(XXXX) in code to the baud rate in the Serial Monitor dropdown.</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Upload</div>
+        <div class="symptom">Upload fails / "Port not found"</div>
+        <ul>
+          <li>Wrong board selected under Tools &rarr; Board</li>
+          <li>Wrong port selected under Tools &rarr; Port</li>
+          <li>USB cable is charge-only</li>
+          <li>Driver not installed (especially CH340 on clone boards)</li>
+        </ul>
+        <div class="first-check">Try a different USB cable first &mdash; this is the cause more often than expected.</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Behavior</div>
+        <div class="symptom">Random or erratic behavior</div>
+        <ul>
+          <li>Loose breadboard connection or cold solder joint</li>
+          <li>Power supply can't supply enough current</li>
+          <li>Floating input pin picking up electrical noise</li>
+          <li>Interrupt or timing conflict in firmware</li>
+        </ul>
+        <div class="first-check">Press down on all breadboard connections. Check power draw vs. supply rating.</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Physical</div>
+        <div class="symptom">Component gets warm or hot immediately</div>
+        <ul>
+          <li>Reversed polarity &mdash; power and ground swapped</li>
+          <li>Component voltage rating exceeded</li>
+          <li>Short circuit in wiring</li>
+        </ul>
+        <div class="first-check">Power off immediately. Reversed polarity can destroy components in seconds. Check your wiring diagram.</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Output</div>
+        <div class="symptom">LED / motor / servo doesn&rsquo;t respond</div>
+        <ul>
+          <li>Output pin not set to OUTPUT mode in setup()</li>
+          <li>Wrong pin number in code</li>
+          <li>Component requires more current than the pin can supply</li>
+          <li>Reversed LED polarity (longer leg is positive)</li>
+        </ul>
+        <div class="first-check">Test the output pin with a simple blink sketch before adding complexity.</div>
+      </div>
+
+      <div class="symptom-card">
+        <div class="symptom-tag">Display</div>
+        <div class="symptom">I2C display shows nothing</div>
+        <ul>
+          <li>Wrong I2C address (run an I2C scanner sketch to find it)</li>
+          <li>SDA / SCL pins swapped</li>
+          <li>Missing pull-up resistors on SDA and SCL (some modules need them)</li>
+          <li>Wrong library or constructor parameters</li>
+        </ul>
+        <div class="first-check">Run the I2C scanner sketch. If no address is found, the wiring is the problem, not the code.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Tools</div>
+      <h2>Six tools across the troubleshooting stack.</h2>
+      <p>Some are software, one is physical. Know what each one is for before you reach for it &mdash; using the right tool at the right moment is itself half the diagnosis.</p>
+    </div>
+    <div class="tools-grid">
+
+      <!-- Claude -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Claude.ai — a full diagnosis prompt: hardware spec at top, symptom description, serial output pasted verbatim, code below. Claude's structured diagnosis response visible. -->
+          <!-- <img src="screenshots/hw-claude.png" alt="Claude.ai showing a hardware diagnosis prompt with serial output and code, with a structured diagnosis response"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Claude &mdash; symptom + serial output + code &rarr; diagnosis</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Claude</div>
+            <div class="tool-access free">Free + Pro</div>
+          </div>
+          <div class="tool-best">Diagnosis from symptoms &middot; code review &middot; fix generation</div>
+          <div class="tool-desc">The most capable AI tool for hardware diagnosis when given full context: hardware spec, symptom description, serial output, and current code. Claude reasons through likely causes systematically and generates targeted fixes. Quality of diagnosis scales directly with quality of symptom description.</div>
+          <div class="tool-start-label">How to use for diagnosis</div>
+          <div class="tool-start"><ol>
+            <li>Open the full diagnosis prompt template (see Prompt Patterns)</li>
+            <li>Fill in every field &mdash; don&rsquo;t skip serial output</li>
+            <li>Paste your complete current code</li>
+            <li>Ask Claude to list likely causes in order of probability</li>
+            <li>Test the top cause before moving to the next</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://claude.ai" target="_blank">claude.ai</a></div>
+        </div>
+      </div>
+
+      <!-- Serial Monitor -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Arduino IDE 2 Serial Monitor panel — scrolling sensor readings, a visible error message or unexpected value highlighted, baud rate selector visible at bottom right -->
+          <!-- <img src="screenshots/hw-serial-monitor.png" alt="Arduino IDE Serial Monitor showing live sensor readings with an unexpected value visible"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Serial Monitor &mdash; live readings + unexpected values visible</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Serial Monitor</div>
+            <div class="tool-access free">Built into Arduino IDE</div>
+          </div>
+          <div class="tool-best">Primary debug window &middot; sensor readings &middot; state logging</div>
+          <div class="tool-desc">The most important debugging tool in physical computing. If your code has Serial.println() statements &mdash; and it should &mdash; this window shows you exactly what the microcontroller is seeing, in real time. Open it before you interact with any hardware. It tells you what's happening before you have to guess.</div>
+          <div class="tool-start-label">How to use it</div>
+          <div class="tool-start"><ol>
+            <li>Upload your code &rarr; immediately open Serial Monitor (Ctrl+Shift+M)</li>
+            <li>Match baud rate to Serial.begin() in your code</li>
+            <li>Watch for startup messages, sensor readings, state changes</li>
+            <li>Add Serial.println() statements to any section you&rsquo;re unsure about</li>
+            <li>Copy the output verbatim when bringing it to AI for diagnosis</li>
+          </ol></div>
+          <div class="tool-url">Tools &rarr; Serial Monitor &nbsp;&middot;&nbsp; Ctrl+Shift+M</div>
+        </div>
+      </div>
+
+      <!-- Serial Plotter -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Arduino IDE 2 Serial Plotter — a live graph showing sensor values over time, axis labels visible, a visible anomaly or flat line in the waveform -->
+          <!-- <img src="screenshots/hw-serial-plotter.png" alt="Arduino IDE Serial Plotter showing a live sensor waveform with a visible anomaly"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Serial Plotter &mdash; sensor waveform over time</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Serial Plotter</div>
+            <div class="tool-access free">Built into Arduino IDE</div>
+          </div>
+          <div class="tool-best">Visualize analog sensor data &middot; spot noise &middot; check response curves</div>
+          <div class="tool-desc">Graphs sensor values over time. Where Serial Monitor shows you numbers, Serial Plotter shows you shape &mdash; which makes it much easier to spot noise, response lag, stuck readings, or unexpected oscillation. Especially useful for analog sensors, distance sensors, and anything with a continuous output value.</div>
+          <div class="tool-start-label">How to use it</div>
+          <div class="tool-start"><ol>
+            <li>In your code, print only the numeric values you want to graph</li>
+            <li>Use Serial.println(sensorValue) &mdash; one value per line</li>
+            <li>Upload &rarr; open Serial Plotter (Tools &rarr; Serial Plotter)</li>
+            <li>Watch the waveform: is it smooth? Noisy? Stuck at 0 or max?</li>
+            <li>The shape of the problem is often immediately visible</li>
+          </ol></div>
+          <div class="tool-url">Tools &rarr; Serial Plotter</div>
+        </div>
+      </div>
+
+      <!-- Multimeter -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: A digital multimeter probing a breadboard circuit — probes touching two points, display showing a voltage reading. Clear view of the circuit and the meter display. -->
+          <!-- <img src="screenshots/hw-multimeter.png" alt="Digital multimeter probing a breadboard, display showing a voltage reading"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Multimeter &mdash; voltage check across a breadboard circuit</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Multimeter</div>
+            <div class="tool-access physical">Physical tool</div>
+          </div>
+          <div class="tool-best">Voltage measurement &middot; continuity check &middot; physical verification</div>
+          <div class="tool-desc">A multimeter lets you measure what the physical circuit is actually doing &mdash; not what you think it should be doing. Voltage across a component tells you if power is reaching it. Continuity mode tells you if two points are electrically connected. When AI diagnosis says "check your power rail," a multimeter is how you check it.</div>
+          <div class="tool-start-label">Two essential checks</div>
+          <div class="tool-start"><ol>
+            <li><strong>Voltage:</strong> Set to DC voltage range. Black probe to GND, red probe to the point you&rsquo;re checking. Should read 3.3V or 5V at power pins.</li>
+            <li><strong>Continuity:</strong> Set to continuity mode (beep symbol). Touch probes to two points &mdash; a beep means they&rsquo;re connected. Useful for checking connections without powering on.</li>
+          </ol></div>
+          <div class="tool-url">Available in the lab &mdash; ask a facilitator</div>
+        </div>
+      </div>
+
+      <!-- Wokwi -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Wokwi with a circuit that has an intentional problem — e.g. sensor not connected, Serial Monitor showing 0 or max reading. Useful for showing what "failure in simulation" looks like vs. working circuit. -->
+          <!-- <img src="screenshots/hw-wokwi-debug.png" alt="Wokwi showing a circuit with a disconnected sensor and the resulting Serial Monitor output showing 0"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Wokwi &mdash; isolating a firmware bug in simulation</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Wokwi</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Isolate firmware from hardware &middot; test fixes safely &middot; reproduce problems</div>
+          <div class="tool-desc">Run your exact code in simulation to isolate whether the problem is firmware or physical. If simulation reproduces the problem, it's definitely code. If simulation works but hardware doesn't, it's wiring or components. Wokwi also lets you test proposed fixes without risking real hardware.</div>
+          <div class="tool-start-label">For troubleshooting</div>
+          <div class="tool-start"><ol>
+            <li>Build the same circuit in Wokwi as your physical setup</li>
+            <li>Paste your current code exactly &mdash; no changes</li>
+            <li>Run and observe: does the problem reproduce?</li>
+            <li>If yes: firmware problem. Fix in code, test in simulation first.</li>
+            <li>If no: hardware problem. Focus on wiring, components, power.</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://wokwi.com" target="_blank">wokwi.com</a></div>
+        </div>
+      </div>
+
+      <!-- ChatGPT -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: ChatGPT responding to a component-specific question — e.g. "what is the I2C address of an SSD1306 OLED?" with a clear, specific answer including address variants -->
+          <!-- <img src="screenshots/hw-chatgpt.png" alt="ChatGPT answering a specific component question about I2C address with a detailed response"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">ChatGPT &mdash; component-specific question with precise answer</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">ChatGPT</div>
+            <div class="tool-access free">Free + Plus</div>
+          </div>
+          <div class="tool-best">Component Q&amp;A &middot; datasheet interpretation &middot; cross-check diagnoses</div>
+          <div class="tool-desc">Strong for component-specific questions: I2C addresses, pinout lookups, wiring conventions, library compatibility, and datasheet interpretation. Use it alongside Claude &mdash; generate a diagnosis in Claude, then cross-check or ask a component-level follow-up in ChatGPT. Having two independent diagnoses is better than one.</div>
+          <div class="tool-start-label">Best uses</div>
+          <div class="tool-start"><ol>
+            <li>"What is the default I2C address of [component]?"</li>
+            <li>"What are the correct wiring pins for [component] on [board]?"</li>
+            <li>"What library should I use for [component] in Arduino?"</li>
+            <li>"Cross-check this diagnosis: [paste Claude&rsquo;s response]. Do you agree?"</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://chatgpt.com" target="_blank">chatgpt.com</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Workflow</div>
+      <h2>A structured path through any hardware problem.</h2>
+      <p>Resist the urge to start changing things immediately. The first three steps are observation only &mdash; they tell you where to look before you touch anything.</p>
+    </div>
+    <div class="workflow-steps">
+
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Read the Serial Monitor &mdash; before anything else.</div>
+          <div class="step-body">Open Serial Monitor immediately after upload. Read every line. What is the microcontroller actually reporting? Sensor values, state changes, error messages, or silence &mdash; each tells you something different. Write down exactly what you see. This is your evidence before the investigation begins.</div>
+          <div class="step-tip">No Serial output at all? Check baud rate first &mdash; mismatch between code and monitor is the most common reason for a blank or garbled monitor.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Isolate the layer: firmware or hardware?</div>
+          <div class="step-body">Run your code in Wokwi with the same circuit setup. Observe the Serial Monitor output. Does the problem reproduce? If yes &mdash; firmware problem, focus on code. If no &mdash; hardware problem, focus on physical connections, power, and components. You've just cut your debugging space in half.</div>
+          <div class="step-tip">Wokwi doesn't perfectly simulate all components, but it catches the vast majority of firmware logic errors.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Check the physical layer systematically.</div>
+          <div class="step-body">If the problem is hardware: start at power and work outward. Is 3.3V or 5V reaching the component? (Measure with multimeter.) Are all connections seated firmly? Any jumper wires in the wrong row? Are polarized components (LEDs, electrolytic capacitors, diodes) oriented correctly? Work through one connection at a time.</div>
+          <div class="step-warn">Power and ground first, always. Seventy percent of hardware problems are power delivery issues.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Describe the symptom precisely.</div>
+          <div class="step-body">Before going to AI, write out: what you expected to happen, exactly what happened instead, what layer you've isolated to (firmware or hardware), what you've already tried. Specific symptom descriptions get specific diagnoses. "It doesn't work" gets a generic checklist that costs you twenty minutes.</div>
+          <div class="step-tip">The Symptom Reference above is a starting point &mdash; use it to name the category of symptom before writing your AI prompt.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Bring it to AI with full context.</div>
+          <div class="step-body">Use the full diagnosis prompt template: hardware spec, symptom, serial output (verbatim), what you've tried, full current code. Ask for likely causes listed in order of probability. Test the most likely cause before moving to the next. If AI's first suggestion doesn't fix it, report back with the new symptom &mdash; that follow-up often yields the real answer.</div>
+          <div class="step-tip">Copy your Serial Monitor output exactly &mdash; every character. AI finds patterns in the exact text that you might miss reading it yourself.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <div class="step-title">Fix one thing. Test. Confirm. Repeat.</div>
+          <div class="step-body">Apply the most likely fix. Test immediately. Did it change the symptom? Even if it didn't fully fix the problem, a changed symptom is progress &mdash; it tells you something real about the system. Report the new state to AI and continue. Never apply multiple fixes simultaneously. You'll never know which one worked.</div>
+          <div class="step-warn">If a fix makes things worse, undo it completely before trying anything else. Don't layer changes on top of a broken state.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT PATTERNS -->
+<section id="prompts">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Prompt Patterns</div>
+      <h2>Three prompts that get real diagnoses.</h2>
+      <p>The gap between a useful AI diagnosis and a generic checklist is almost entirely in how you describe the problem. These prompts are structured to give AI what it needs.</p>
+    </div>
+    <div class="prompt-blocks">
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">01 &nbsp;&middot;&nbsp; Full diagnosis prompt</span>
+          <span class="ptag">The standard template &mdash; use this every time</span>
+        </div>
+        <div class="prompt-text">Hardware:
+Board: <em>[board model]</em>
+Inputs: <em>[component, model, pin, protocol]</em>
+Outputs: <em>[component, pin]</em>
+
+Expected behavior: <em>[what should happen]</em>
+Actual behavior: <em>[exactly what happens instead &mdash; be specific]</em>
+Layer isolated to: <em>[firmware / hardware / unknown]</em>
+What I&rsquo;ve already tried: <em>[list changes made]</em>
+
+Serial Monitor output (exact):
+<em>[paste verbatim &mdash; every line]</em>
+
+Current code:
+<em>[paste complete sketch]</em>
+
+List the most likely causes of this symptom in order of probability. For each, tell me how to test it and what fix to apply if confirmed.</div>
+        <div class="prompt-note">Ask for causes in order of probability. This stops you from chasing the third most likely cause when the first one would have taken 30 seconds to test.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">02 &nbsp;&middot;&nbsp; Interpreting unexpected Serial output</span>
+          <span class="ptag">When output is there but doesn&rsquo;t make sense</span>
+        </div>
+        <div class="prompt-text">My code prints to Serial Monitor. The output I&rsquo;m seeing is unexpected.
+
+Hardware: <em>[board + relevant components]</em>
+
+What I expect to see: <em>[describe expected output]</em>
+
+What I actually see (exact):
+<em>[paste Serial Monitor output verbatim]</em>
+
+Relevant code section:
+<em>[paste the code that generates this output]</em>
+
+What does this output tell you about the state of the system? What is likely causing the discrepancy?</div>
+        <div class="prompt-note">"What does this output tell you about the state of the system?" shifts AI into diagnostic mode rather than generic suggestion mode. Often produces specific, actionable answers.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">03 &nbsp;&middot;&nbsp; After a fix didn&rsquo;t work</span>
+          <span class="ptag">Following up with a changed symptom</span>
+        </div>
+        <div class="prompt-text">Following up on our previous diagnosis.
+
+I tried: <em>[describe the fix you applied]</em>
+
+The symptom changed. Now:
+Expected behavior: <em>[same as before]</em>
+New actual behavior: <em>[what&rsquo;s happening now &mdash; note what changed]</em>
+
+New Serial Monitor output:
+<em>[paste updated output]</em>
+
+Updated code (if changed):
+<em>[paste current code]</em>
+
+Given this new information, what is your revised diagnosis?</div>
+        <div class="prompt-note">A changed symptom &mdash; even if the problem isn&rsquo;t fixed &mdash; is evidence. The follow-up prompt with a new symptom description often gets to the real cause faster than the original prompt did.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PITFALLS -->
+<section id="pitfalls">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Pitfalls</div>
+      <h2>Five ways hardware debugging goes sideways.</h2>
+    </div>
+    <div class="pitfall-grid">
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">01</div>
+        <h3>Changing multiple things at once.</h3>
+        <p>If three things change and the problem goes away, you don't know what fixed it &mdash; or whether the other changes introduced new problems you haven't found yet. You've also lost all the evidence.</p>
+        <div class="pitfall-fix">One change. Test. Confirm. Then the next. Every working state is a checkpoint.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">02</div>
+        <h3>Going to AI before checking Serial Monitor.</h3>
+        <p>AI can generate better diagnoses when it has real data. If you skip Serial Monitor and go straight to AI with a verbal description of the symptom, you're giving it less to work with than you have available. Collect evidence first.</p>
+        <div class="pitfall-fix">Read Serial Monitor. Copy the output. Then open the AI prompt template.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">03</div>
+        <h3>Assuming the problem is in the code.</h3>
+        <p>New programmers default to looking at code when something breaks. Experienced hardware people check power and connections first, because that's where most problems actually are. Isolate the layer before you assume.</p>
+        <div class="pitfall-fix">Simulate in Wokwi before editing code. If simulation works, stop looking at the code.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">04</div>
+        <h3>Trusting AI diagnosis without physical verification.</h3>
+        <p>AI can be wrong. It gives confident answers based on patterns, not direct observation of your hardware. Every diagnosis is a hypothesis. Test it physically before accepting it and moving on.</p>
+        <div class="pitfall-fix">Test the top cause before applying the fix. Measure with a multimeter. Confirm the symptom changes before declaring it solved.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">05</div>
+        <h3>Debugging a complex system before testing components individually.</h3>
+        <p>If you've never confirmed that each component works on its own, you don't know how many problems you're dealing with. A complex system that doesn't work could have one problem or five.</p>
+        <div class="pitfall-fix">Test each component with a simple standalone sketch first. Know that each piece works before wiring them together.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="AI_Guide_Microcontrollers.html">&larr; Microcontroller Programming</a>
+    <a href="AI_Guide_UI_Dev.html">User Interface Development &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>MicroArtistry 2026 &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

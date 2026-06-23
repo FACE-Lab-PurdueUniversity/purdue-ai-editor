@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Generation & Graphic Design — AI Design Guide</title>
+<style>
+  :root {
+    --bg: #0F0F0F;
+    --card: #1A1A1A;
+    --gold: #CEB888;
+    --gold-dim: #8C6D3F;
+    --head: #F2F2F2;
+    --muted: #8C8C8C;
+    --dim: #4A4A4A;
+    --green: #4A7C59;
+    --green-dim: #2C4A35;
+    --red: #7A3333;
+    --red-dim: #4A1F1F;
+    --amber: #B8862A;
+    --amber-dim: #6B4E18;
+    --blue: #2A5C8C;
+    --blue-dim: #1A3A5C;
+    --purple: #5A3A7C;
+    --purple-dim: #32204A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--head);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  .site-nav {
+    border-bottom: 1px solid var(--dim);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .site-nav a {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .site-nav a:hover { text-decoration: underline; }
+  .site-nav .sep { color: var(--dim); }
+
+  /* HERO */
+  .hero {
+    padding: 56px 40px 40px;
+    border-bottom: 1px solid var(--dim);
+    max-width: 900px;
+  }
+  .hero .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--head);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 640px;
+    line-height: 1.65;
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 900px;
+    padding: 48px 40px;
+    border-bottom: 1px solid var(--dim);
+  }
+  .section:last-of-type { border-bottom: none; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--head);
+    margin-bottom: 24px;
+  }
+
+  /* TWO-TRACK CALLOUT */
+  .two-track {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .track-card {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    padding: 20px 22px;
+  }
+  .track-card .track-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .track-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--head);
+    margin-bottom: 8px;
+  }
+  .track-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .track-card .track-tools {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--gold-dim);
+    letter-spacing: 0.03em;
+  }
+
+  /* APPROACH CARDS */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .approach-card {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-top: 3px solid var(--gold);
+    padding: 20px;
+    border-radius: 4px;
+  }
+  .approach-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .approach-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* TOOL CARDS */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tool-card.design-tool {
+    border-top: 2px solid var(--purple);
+  }
+  .tool-screenshot {
+    width: 100%;
+    height: 190px;
+    background: #111;
+    border-bottom: 1px dashed var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dim);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 12px;
+  }
+  .tool-screenshot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tool-info {
+    padding: 14px 16px 16px;
+  }
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .tool-info h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--head);
+  }
+  .tool-access {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .tool-access.free { background: var(--green-dim); color: #7FC496; border: 1px solid var(--green); }
+  .tool-access.freemium { background: var(--blue-dim); color: #7EB3DC; border: 1px solid var(--blue); }
+  .tool-access.paid { background: var(--red-dim); color: #E07070; border: 1px solid var(--red); }
+  .tool-access.graphic { background: var(--purple-dim); color: #B09ACC; border: 1px solid var(--purple); }
+  .tool-info p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .tool-use-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* VISUAL BRIEF CALLOUT */
+  .brief-callout {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-left: 4px solid var(--gold);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .brief-callout .brief-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .brief-callout p { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+  .brief-template {
+    background: #0A0A0A;
+    border: 1px solid var(--dim);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #B8C4B8;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  /* PROMPT ANATOMY */
+  .anatomy-block {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .anatomy-header {
+    padding: 12px 18px;
+    background: #111;
+    border-bottom: 1px solid var(--dim);
+  }
+  .anatomy-header h4 { font-size: 14px; color: var(--head); }
+  .anatomy-body {
+    padding: 16px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 2;
+    background: #0A0A0A;
+  }
+  .anatomy-line { display: flex; gap: 12px; align-items: baseline; }
+  .al-tag {
+    flex-shrink: 0;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 2px;
+    min-width: 80px;
+    text-align: center;
+    margin-top: 2px;
+  }
+  .al-tag.subject { background: rgba(206,184,136,0.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+  .al-tag.medium  { background: rgba(74,124,89,0.2); color: #7FC496; border: 1px solid var(--green); }
+  .al-tag.style   { background: rgba(42,92,140,0.2); color: #7EB3DC; border: 1px solid var(--blue); }
+  .al-tag.mood    { background: rgba(90,58,124,0.2); color: #B09ACC; border: 1px solid var(--purple); }
+  .al-tag.tech    { background: rgba(184,134,42,0.15); color: #D4A84B; border: 1px solid var(--amber); }
+  .al-tag.neg     { background: rgba(122,51,51,0.2); color: #E07070; border: 1px solid var(--red); }
+  .al-text { color: #C8D4C8; }
+  .anatomy-note {
+    padding: 10px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--dim);
+    background: var(--card);
+  }
+
+  /* WORKFLOW */
+  .workflow-list { display: flex; flex-direction: column; gap: 12px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .step.step-warn {
+    border-left: 3px solid var(--red);
+    background: #140F0F;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    color: var(--head);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-warn .step-num { background: var(--red); }
+  .step-body h4 { font-size: 14px; font-weight: 600; color: var(--head); margin-bottom: 4px; }
+  .step-body p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .step-body .tip {
+    display: inline-block;
+    margin-top: 8px;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: #7FC496;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+  }
+
+  /* PROMPT PATTERNS */
+  .pattern-block {
+    margin-bottom: 24px;
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .pattern-block:last-child { margin-bottom: 0; }
+  .pattern-header {
+    padding: 12px 18px;
+    background: #111;
+    border-bottom: 1px solid var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pattern-header .ph-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(206,184,136,0.12);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .pattern-header h4 { font-size: 13px; color: var(--head); }
+  .pattern-body {
+    padding: 16px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #B8C4B8;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    background: #0A0A0A;
+  }
+  .pattern-note {
+    padding: 10px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--dim);
+    background: var(--card);
+  }
+
+  /* ETHICS CALLOUT */
+  .ethics-block {
+    background: #120E08;
+    border: 1px solid var(--amber-dim);
+    border-left: 4px solid var(--amber);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-top: 24px;
+  }
+  .ethics-block .eth-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+  .ethics-block h4 { font-size: 14px; color: var(--head); margin-bottom: 12px; }
+  .ethics-list { display: flex; flex-direction: column; gap: 8px; }
+  .eth-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .eth-dot {
+    flex-shrink: 0;
+    margin-top: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  /* PITFALLS */
+  .pitfall-list { display: flex; flex-direction: column; gap: 12px; }
+  .pitfall {
+    background: var(--card);
+    border: 1px solid var(--dim);
+    border-left: 3px solid var(--red);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .pitfall h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E07070;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pitfall h4::before { content: '✕'; font-size: 11px; opacity: 0.7; }
+  .pitfall p { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .pitfall .fix {
+    font-size: 12px;
+    color: #7FC496;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    border-radius: 3px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .pitfall .fix::before { content: '✓'; flex-shrink: 0; }
+
+  /* PAGE NAV */
+  .page-nav {
+    max-width: 900px;
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--dim);
+  }
+  .page-nav a {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .page-nav a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <a href="AI_Design_Guide_v1.html">AI Design Guide</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Vibe_Coding.html">Vibe Coding</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Microcontrollers.html">Microcontrollers</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_Hardware.html">Hardware Troubleshooting</a>
+  <span class="sep">/</span>
+  <a href="AI_Guide_UI_Dev.html">UI Development</a>
+  <span class="sep">/</span>
+  <span style="color: var(--head);">Image &amp; Graphic Design</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">Part 2 · Workflows</div>
+  <h1>Image Generation<br>&amp; Graphic Design</h1>
+  <p>Two overlapping workflows: using AI to generate original images, and using design tools to compose, layout, and communicate visually. They work best together — AI creates raw material, design tools turn it into something intentional.</p>
+</div>
+
+<!-- TWO TRACKS -->
+<div class="section">
+  <div class="section-label">How This Workflow Splits</div>
+  <h2>Generation vs. composition — know which mode you're in</h2>
+  <div class="two-track">
+    <div class="track-card">
+      <div class="track-label">Track A</div>
+      <h3>AI Image Generation</h3>
+      <p>Prompting AI to create original images from scratch. Strong for concept art, mood reference, project visuals, and custom imagery where stock photos don't exist. Output quality depends almost entirely on prompt quality.</p>
+      <div class="track-tools">Tools: Claude · Midjourney · Adobe Firefly · DALL-E</div>
+    </div>
+    <div class="track-card">
+      <div class="track-label">Track B</div>
+      <h3>Graphic Design &amp; Composition</h3>
+      <p>Assembling images, type, and layout into a finished visual — a poster, a presentation graphic, a project handout, an exhibition label. AI generates assets; design tools turn them into communication.</p>
+      <div class="track-tools">Tools: Canva · Adobe Express · Figma</div>
+    </div>
+  </div>
+  <p style="color: var(--muted); font-size: 13px;">Most projects use both: generate a background image with AI, bring it into Canva, add typography and project info, export a finished graphic. The seam between tracks is where the interesting creative decisions happen.</p>
+</div>
+
+<!-- APPROACH -->
+<div class="section">
+  <div class="section-label">Core Approach</div>
+  <h2>Collect references before you prompt</h2>
+  <div class="approach-grid">
+
+    <div class="approach-card">
+      <h3>References before prompts</h3>
+      <p>Collect 3–5 images that gesture toward what you want — not to copy them, but to identify what they have in common. Is it the color temperature? The amount of negative space? The texture? Those observations become your prompt vocabulary.</p>
+    </div>
+
+    <div class="approach-card">
+      <h3>Describe the feeling, then the scene</h3>
+      <p>Lead with mood and emotional register before you describe what's in the image. "Melancholic and still, as if something just left the room — a bare wooden chair near a window" is stronger than starting with the chair. The emotional frame shapes every other decision the model makes.</p>
+    </div>
+
+    <div class="approach-card">
+      <h3>Iterate the prompt, not just the seed</h3>
+      <p>Don't re-roll the same prompt hoping for a different result. Study what came back: what's wrong, specifically? Too bright? Wrong medium? Off mood? Change one element of the prompt, re-run, compare. Prompt iteration is design iteration.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROMPT ANATOMY -->
+<div class="section">
+  <div class="section-label">Prompt Structure</div>
+  <h2>The anatomy of a strong image prompt</h2>
+
+  <div class="anatomy-block">
+    <div class="anatomy-header">
+      <h4>Six layers — work through them in order</h4>
+    </div>
+    <div class="anatomy-body">
+      <div class="anatomy-line">
+        <span class="al-tag subject">Subject</span>
+        <span class="al-text">What is in the image — person, object, place, abstract form</span>
+      </div>
+      <div class="anatomy-line">
+        <span class="al-tag medium">Medium</span>
+        <span class="al-text">How it's made — oil painting, digital illustration, photograph, watercolor, charcoal</span>
+      </div>
+      <div class="anatomy-line">
+        <span class="al-tag style">Style</span>
+        <span class="al-text">Visual language — Art Nouveau, brutalist, isometric, cinematic, editorial</span>
+      </div>
+      <div class="anatomy-line">
+        <span class="al-tag mood">Mood</span>
+        <span class="al-text">Emotional register — melancholic, urgent, calm, uncanny, nostalgic, celebratory</span>
+      </div>
+      <div class="anatomy-line">
+        <span class="al-tag tech">Technical</span>
+        <span class="al-text">Lighting, color palette, aspect ratio, camera angle, focal length</span>
+      </div>
+      <div class="anatomy-line">
+        <span class="al-tag neg">Exclude</span>
+        <span class="al-text">What NOT to include — text, faces, cluttered backgrounds, specific colors</span>
+      </div>
+    </div>
+    <div class="anatomy-note">Example: "A single wooden chair in an empty theater, oil painting, Art Nouveau linework, melancholic and expectant as if a performance just ended, warm amber footlight glow, deep shadows, no people, no text."</div>
+  </div>
+
+  <div class="brief-callout">
+    <div class="brief-label">Visual Brief — write this before generating</div>
+    <p>A short paragraph you keep open while prompting. Anchors your session and prevents drift across multiple generations.</p>
+    <div class="brief-template">Project: [Name — e.g., The Mirror installation]
+Emotional target: [What should viewers feel when they see this image?]
+Norman level I'm designing for: [visceral / behavioral / reflective — pick one primary]
+Visual tone: [3 adjectives — e.g., still, heavy, intimate]
+What this image is for: [background, poster, slide, exhibition panel, etc.]
+Constraints: [any hard requirements — color palette, no faces, specific dimensions]
+Reference images: [describe 1-2 images you've found that gesture toward this]</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="section">
+  <div class="section-label">Tools</div>
+  <h2>Generation tools and design tools</h2>
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Claude.ai showing an image generation response — the generated image visible in the chat window with the prompt above it. Filename: img-claude.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Claude</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Generates images directly in the chat window. Strongest for concept-level visuals and when you want to iterate quickly with natural-language feedback. Also excellent at writing detailed prompts for use in other tools.</p>
+        <span class="tool-use-tag">Generate · Prompt-write · Iterate</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Midjourney Discord interface or midjourney.com showing a 4-image grid output from a prompt. Show the /imagine command result. Filename: img-midjourney.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Midjourney</h3>
+          <span class="tool-access paid">Paid</span>
+        </div>
+        <p>Highest aesthetic quality of any image generator for artistic and conceptual work. Access via Discord or midjourney.com. Output is a 4-image grid — use U1–U4 to upscale the one you want. Strong style vocabulary support.</p>
+        <span class="tool-use-tag">High-quality concept art</span>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Adobe Firefly web interface showing the text-to-image panel with a generated image. Show the content credentials badge. Filename: img-firefly.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Adobe Firefly</h3>
+          <span class="tool-access freemium">Freemium</span>
+        </div>
+        <p>Trained on licensed content — commercially safer than most generators. Strong for realistic and photographic styles. Integrates with Photoshop and Express. Adds Content Credentials so viewers can see an image was AI-generated.</p>
+        <span class="tool-use-tag">Licensed-safe · Photorealistic</span>
+      </div>
+    </div>
+
+    <div class="tool-card design-tool">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Canva editor showing a design with a generated background image, overlaid text, and layout elements. Show the template/elements panel on the left. Filename: img-canva.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Canva</h3>
+          <span class="tool-access freemium">Freemium</span>
+          <span class="tool-access graphic">Design</span>
+        </div>
+        <p>The fastest path from a generated image to a finished graphic. Drag in your AI-generated image, add text, choose a layout, export. Built-in AI generation, background remover, and Magic Edit. Strong for posters, slides, and handouts.</p>
+        <span class="tool-use-tag">Compose · Layout · Export</span>
+      </div>
+    </div>
+
+    <div class="tool-card design-tool">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Adobe Express editor with a poster or social graphic visible — image background with bold type overlay. Show the brand kit or resize panel. Filename: img-express.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Adobe Express</h3>
+          <span class="tool-access freemium">Freemium</span>
+          <span class="tool-access graphic">Design</span>
+        </div>
+        <p>Adobe's free-tier design tool. Cleaner typography control than Canva and tighter integration with Firefly-generated images. Good for exhibition panels, presentation graphics, and print-ready PDFs. Included with most school Adobe licenses.</p>
+        <span class="tool-use-tag">Compose · Print-ready output</span>
+      </div>
+    </div>
+
+    <div class="tool-card design-tool">
+      <div class="tool-screenshot">
+        <!-- SCREENSHOT: Figma canvas with a frame showing a layout grid, an AI-generated image placed as a fill, and text layers. Show the layers panel. Filename: img-figma.png -->
+        screenshot placeholder
+      </div>
+      <div class="tool-info">
+        <div class="tool-header">
+          <h3>Figma</h3>
+          <span class="tool-access freemium">Freemium</span>
+          <span class="tool-access graphic">Design</span>
+        </div>
+        <p>More powerful than Canva for systematic design — use it when you need a consistent visual system across many assets (exhibition labels, slide templates, consistent poster series). Steeper learning curve but much better control over grids, spacing, and type.</p>
+        <span class="tool-use-tag">Visual systems · Multi-asset</span>
+      </div>
+    </div>
+
+  </div>
+  <p style="color: var(--muted); font-size: 12px; margin-top: 14px;">Cards with a <span style="color: #B09ACC;">purple</span> top border are graphic design tools — composition rather than generation.</p>
+</div>
+
+<!-- WORKFLOW -->
+<div class="section">
+  <div class="section-label">Workflow</div>
+  <h2>From blank brief to finished visual asset</h2>
+
+  <div class="workflow-list">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Write your Visual Brief before touching any tool</h4>
+        <p>What is this image for? What should a viewer feel? Which Norman level is primary — visceral (immediate sensory hit), behavioral (how they interact with it), or reflective (what it means after)? Write 4–6 sentences. This brief goes into every AI session for this visual.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Collect 3–5 reference images</h4>
+        <p>Search for images that gesture toward your emotional target — not to copy, but to identify what specific visual properties you're chasing. Save them in a folder. Before your first generation, describe what they share: "All of them have very little color. The light comes from one side only. There's a lot of empty space."</p>
+        <span class="tip">Those observations are your first prompt</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Write a structured prompt using the six layers</h4>
+        <p>Subject → Medium → Style → Mood → Technical → Exclusions. Start with the mood layer and work outward. If you're unsure how to describe a style, describe a reference image to Claude and ask: "What's the visual style of this? Give me 3–5 terms I could use in an image generation prompt."</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Generate and evaluate against your Visual Brief</h4>
+        <p>Run the first generation. Compare against your brief, not against a vague feeling. Write down what's wrong specifically: "Too bright — the mood I want is heavier." "The medium looks digital, not painterly." "Good composition but the color is pulling happy when I need melancholic." One issue at a time.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Iterate on the prompt, not the seed</h4>
+        <p>Change one thing in your prompt and regenerate. Keep a running log of what you changed and what it did. After 3–5 rounds, you'll have a much clearer picture of what variables actually matter for your specific vision. Save the prompt that got closest.</p>
+      </div>
+    </div>
+
+    <div class="step step-warn">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Check rights and document before using</h4>
+        <p>Before placing an AI-generated image in a final project, know: Who owns it? Can you use it in this context? Different tools have different policies — Firefly images are generally safer for broad use than Midjourney. Document your prompt and which tool generated it. In an academic or exhibition context, you should always be able to explain how an image was made.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Bring into Canva (or Figma) and compose</h4>
+        <p>The generated image is raw material. Import it into your design tool, crop to the right aspect ratio, set typography, add any other elements. The AI generates the asset; the design tool turns it into communication. Don't skip this step — a strong image in a weak layout still reads as unfinished.</p>
+        <span class="tip">Ask Claude: "What typography would complement this image's visual tone?"</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ethics callout embedded in workflow section -->
+  <div class="ethics-block">
+    <div class="eth-label">Ethics &amp; Authorship — know before you post or present</div>
+    <h4>Four questions to answer before using any AI-generated image</h4>
+    <div class="ethics-list">
+      <div class="eth-item">
+        <div class="eth-dot"></div>
+        <span><strong style="color: var(--head);">Training data:</strong> Was this model trained on licensed content? Midjourney and DALL-E have faced lawsuits; Adobe Firefly was trained on Adobe Stock. This doesn't make one choice automatically right or wrong — but you should know what you're using and be able to discuss it.</span>
+      </div>
+      <div class="eth-item">
+        <div class="eth-dot"></div>
+        <span><strong style="color: var(--head);">Authorship:</strong> Can you describe what creative decisions you made? Pressing "generate" is not enough. Your Visual Brief, your prompt construction, your evaluation and iteration — that's your creative contribution. Be able to describe it.</span>
+      </div>
+      <div class="eth-item">
+        <div class="eth-dot"></div>
+        <span><strong style="color: var(--head);">Transparency:</strong> In a class critique, exhibition, or public presentation — say that it's AI-generated. "I generated this image using [tool] with this prompt. Here's what I was going for and what I changed across iterations." That's the professional standard in design right now.</span>
+      </div>
+      <div class="eth-item">
+        <div class="eth-dot"></div>
+        <span><strong style="color: var(--head);">Energy:</strong> Image generation is computationally expensive. Generating 50 variations to find one you like has a real energy cost. Invest in prompt quality upfront so you iterate 5 times thoughtfully rather than 50 times randomly.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT PATTERNS -->
+<div class="section">
+  <div class="section-label">Prompt Patterns</div>
+  <h2>How to phrase it</h2>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 01</span>
+      <h4>Generating a project-specific image</h4>
+    </div>
+    <div class="pattern-body">Here is my Visual Brief:
+[Paste brief]
+
+Here are the reference images I collected:
+[Describe 2–3 images: what's in them, what visual properties they share]
+
+Using the reference images and the brief, write me a detailed image generation prompt using this structure:
+Subject / Medium / Style / Mood / Technical specs / Negative prompts
+
+Then generate the image using that prompt. After generating, tell me which layer of the prompt you think is doing the most work and which layer is weakest.</div>
+    <div class="pattern-note">Asking Claude to critique its own prompt after generating surfaces assumptions you'd otherwise miss until iteration 4.</div>
+  </div>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 02</span>
+      <h4>Iterating on mood — the image is close but the feeling is wrong</h4>
+    </div>
+    <div class="pattern-body">Here is my current image prompt:
+[Paste prompt]
+
+Here is what I got: [attach image or describe]
+
+The problem is specifically: the mood is [too bright / too neutral / too aggressive / etc.] — I want [specific emotional description]. The composition and subject are mostly right.
+
+Please revise only the mood and technical layers of the prompt (don't change the subject or medium). Explain what you changed and why it should shift the feeling in the direction I want.</div>
+    <div class="pattern-note">Isolating which prompt layer to revise keeps your other decisions stable — you're not starting over, you're adjusting one dial.</div>
+  </div>
+
+  <div class="pattern-block">
+    <div class="pattern-header">
+      <span class="ph-tag">Pattern 03</span>
+      <h4>Getting from generated image to Canva layout</h4>
+    </div>
+    <div class="pattern-body">I have a generated image I'm happy with. [Describe it briefly]
+
+I need to turn it into a [poster / exhibition label / slide graphic / handout] for [context: exhibition, class presentation, printed program].
+
+The information it needs to carry: [title, tagline, any other text]
+
+Given the image's visual tone, what typography recommendations do you have? Suggest:
+— Font category (serif / sans / display) and why
+— Weight (bold / regular / light) and size hierarchy
+— Color for the type (pull from image? high contrast? something neutral?)
+— Where in the composition the text should live
+
+I'll be building this in Canva.</div>
+    <div class="pattern-note">This bridges Track A (generation) to Track B (composition). The typography advice is grounded in the specific image you made — not generic advice.</div>
+  </div>
+
+</div>
+
+<!-- PITFALLS -->
+<div class="section">
+  <div class="section-label">Common Pitfalls</div>
+  <h2>What goes wrong and why</h2>
+
+  <div class="pitfall-list">
+
+    <div class="pitfall">
+      <h4>Prompting with vibes instead of vocabulary</h4>
+      <p>"Make it aesthetic" or "something cool and dark" produces generic results. AI image models respond to specific visual vocabulary — medium, style, mood, lighting — not to vague approval-seeking language.</p>
+      <div class="fix">Write your Visual Brief first. Then use the six-layer prompt structure. If you don't know what vocabulary to use, describe a reference image to Claude and ask it to extract the visual terms.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Re-rolling without changing the prompt</h4>
+      <p>Generating the same prompt 10 times hoping a better version appears is random search, not design. You'll get variation in the wrong dimensions while the core problem stays fixed.</p>
+      <div class="fix">Identify exactly what's wrong with the current result. Change one layer of the prompt. Generate once. Compare. Repeat. Five intentional iterations beats fifty random ones.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Treating the generated image as finished</h4>
+      <p>Almost no AI-generated image goes straight into a final project. It needs to be cropped, color-graded, composed with type, sized for its context. Dropping a raw generation onto a slide or poster shows — the edges don't match the intent.</p>
+      <div class="fix">Build the composition step into your plan from the start. The generated image is an asset, not a finished design. Always pass it through a design tool (Canva, Figma, Express) before final use.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Ignoring the ethics and authorship conversation</h4>
+      <p>In a design or engineering course — and especially in a public exhibition — AI image use without acknowledgment reads as evasive. Reviewers and faculty will notice and will ask. Not having an answer is worse than the conversation itself.</p>
+      <div class="fix">Document your prompt and tool choice. Prepare a one-sentence explanation: "I generated this using [tool] with this prompt, and here's what I was trying to achieve." That's the professional standard, and it demonstrates that you made real creative decisions.</div>
+    </div>
+
+    <div class="pitfall">
+      <h4>Using design tools as image generators (or vice versa)</h4>
+      <p>Canva's built-in AI generation is convenient but lower quality than dedicated generators. Using Midjourney to create a poster (when it can only generate an image) means wrestling with text and layout in a tool that doesn't support it.</p>
+      <div class="fix">Use the right tool for each step: dedicated image generators (Claude, Midjourney, Firefly) for asset creation; dedicated design tools (Canva, Express, Figma) for composition. Import assets across tools rather than forcing one tool to do both jobs.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE NAV -->
+<nav class="page-nav">
+  <a href="AI_Guide_UI_Dev.html">← UI Development</a>
+  <a href="AI_Guide_Documentation.html">Documentation &amp; Writing →</a>
+</nav>
+
+</body>
+</html>

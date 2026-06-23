@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microcontroller Programming &mdash; AI + Design Field Guide</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+    --red:   #7A3333;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 580px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 560px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* HARDWARE SPEC BLOCK */
+  .hw-spec-block {
+    margin: 2rem 0; background: var(--card);
+    border: 1px solid rgba(206,184,136,0.25); padding: 1.5rem 1.75rem;
+    position: relative;
+  }
+  .hw-spec-block::before {
+    content: 'HARDWARE SPEC TEMPLATE';
+    position: absolute; top: -0.55rem; left: 1.25rem;
+    background: var(--card); padding: 0 0.5rem;
+    font-size: 9px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase;
+  }
+  .hw-spec-block p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; max-width: 640px; }
+  .hw-fields {
+    background: var(--bg); border: 1px solid var(--dim);
+    padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .hw-field { display: flex; gap: 0.75rem; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; line-height: 1.5; }
+  .hw-field .fk { color: var(--gold); min-width: 150px; flex-shrink: 0; }
+  .hw-field .fv { color: var(--dim); font-style: italic; }
+
+  /* PRINCIPLE CARDS */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card { background: var(--card); padding: 1.75rem; position: relative; overflow: hidden; }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 14px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .tool-card { background: var(--card); display: flex; flex-direction: column; overflow: hidden; }
+  .tool-screenshot {
+    width: 100%; height: 190px; background: #0a0a0a;
+    border-bottom: 1px solid var(--dim);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.6rem; position: relative; overflow: hidden;
+  }
+  .tool-screenshot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tool-screenshot .shot-label {
+    font-size: 11px; color: var(--dim);
+    letter-spacing: 0.06em; font-style: italic;
+    text-align: center; padding: 0 1.2rem;
+  }
+  .tool-screenshot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim);
+    text-transform: uppercase; background: rgba(0,0,0,0.6);
+    padding: 0.2rem 0.5rem; border: 1px solid var(--dim); border-radius: 2px;
+  }
+  .tool-screenshot:not(:has(img)) { border: 1.5px dashed rgba(206,184,136,0.2); border-bottom: 1px solid var(--dim); }
+  .tool-body { padding: 1.5rem 1.6rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+  .tool-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+  .tool-name { font-size: 16px; font-weight: 500; color: var(--head); }
+  .tool-access {
+    font-size: 10px; letter-spacing: 0.09em; padding: 0.18rem 0.5rem;
+    background: var(--bg); border: 1px solid var(--dim); color: var(--dim);
+    text-transform: uppercase; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+  }
+  .tool-access.free { border-color: var(--green); color: var(--green); }
+  .tool-best { font-size: 11px; color: var(--gold); letter-spacing: 0.07em; text-transform: uppercase; }
+  .tool-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .tool-start-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .tool-start {
+    background: var(--bg); border: 1px solid var(--dim);
+    padding: 0.7rem 0.9rem; font-size: 12px; color: var(--muted); line-height: 1.65;
+  }
+  .tool-start ol { margin-left: 1.1rem; }
+  .tool-start ol li { margin-bottom: 0.2rem; }
+  .tool-url { font-size: 11px; color: var(--dim); margin-top: auto; padding-top: 0.4rem; }
+  .tool-url a { color: var(--gold); text-decoration: none; }
+  .tool-url a:hover { text-decoration: underline; }
+
+  /* WORKFLOW */
+  .workflow-steps { display: flex; flex-direction: column; }
+  .step {
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 0 1.75rem; padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num { font-size: 46px; font-weight: 200; color: var(--dim); line-height: 1; align-self: flex-start; padding-top: 0.05rem; }
+  .step-title { font-size: 15px; font-weight: 500; color: var(--head); margin-bottom: 0.4rem; }
+  .step-body { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+  .step-tip {
+    margin-top: 0.65rem; padding: 0.55rem 0.8rem;
+    background: var(--card); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic; max-width: 580px;
+  }
+  .step-warn {
+    margin-top: 0.65rem; padding: 0.55rem 0.8rem;
+    background: var(--card); border-left: 2px solid var(--red);
+    font-size: 12px; color: var(--muted); font-style: italic; max-width: 580px;
+  }
+
+  /* PROMPT PATTERNS */
+  .prompt-blocks { display: flex; flex-direction: column; gap: 1.25rem; }
+  .prompt-block { border: 1px solid var(--dim); background: var(--card); }
+  .prompt-label-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 1rem; border-bottom: 1px solid var(--dim);
+    background: rgba(0,0,0,0.3);
+  }
+  .prompt-label-bar .plabel { font-size: 10px; letter-spacing: 0.17em; color: var(--gold); text-transform: uppercase; }
+  .prompt-label-bar .ptag { font-size: 10px; color: var(--dim); }
+  .prompt-text {
+    padding: 1.1rem 1.25rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px; color: var(--muted); line-height: 1.7; white-space: pre-wrap;
+  }
+  .prompt-text em { color: var(--gold); font-style: normal; }
+  .prompt-note { padding: 0.55rem 1.25rem; border-top: 1px solid var(--dim); font-size: 11.5px; color: var(--dim); font-style: italic; }
+
+  /* PITFALLS */
+  .pitfall-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .pitfall-card { background: var(--card); padding: 1.4rem 1.5rem; }
+  .pitfall-num { font-size: 10px; color: var(--red); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .pitfall-card h3 { font-size: 13.5px; font-weight: 500; color: var(--head); margin-bottom: 0.5rem; }
+  .pitfall-card p { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .pitfall-fix {
+    margin-top: 0.65rem; padding: 0.5rem 0.75rem;
+    background: var(--bg); border-left: 2px solid var(--green);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="AI_Design_Guide_v1.html">AI + Design</a> &nbsp;/&nbsp; Microcontroller Programming</span>
+  <ul>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#prompts">Prompts</a></li>
+    <li><a href="#pitfalls">Pitfalls</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="AI_Design_Guide_v1.html">&larr; AI + Design Field Guide</a> &nbsp;&middot;&nbsp; Workflows</div>
+    <h1>Microcontroller <em>Programming</em></h1>
+    <p class="lead">Use AI to write firmware for physical computing &mdash; sensors, actuators, timing, and state. Describe the physical behavior you want. AI translates it to code. You test it, feel it, and iterate.</p>
+    <div class="quick-links">
+      <a href="#approach" class="quick-link">The Approach</a>
+      <a href="#tools" class="quick-link">Tools</a>
+      <a href="#workflow" class="quick-link">Workflow</a>
+      <a href="#prompts" class="quick-link">Prompt Patterns</a>
+      <a href="#pitfalls" class="quick-link">Pitfalls</a>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<section id="approach">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Approach</div>
+      <h2>Describe physical behavior. AI writes the firmware.</h2>
+      <p>The same principle as vibe coding &mdash; but with hardware in the loop. Your job is to specify what should happen physically: what triggers it, what responds, how it feels. AI handles `digitalWrite`, timing, and state machines.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Describe physical events, not code structure.</h3>
+        <p>"When the PIR sensor detects motion, the servo sweeps to 90&deg; and holds for 3 seconds, then returns slowly." That's a spec AI can act on. "Use a for loop to sweep the servo" is an implementation choice you haven't earned yet.</p>
+        <div class="rule">Name the trigger, the response, and the timing. Let AI handle the loops and registers.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>Specify your hardware precisely.</h3>
+        <p>Board model, component names, pin numbers. Ambiguity in hardware descriptions produces firmware that almost works &mdash; which is the hardest possible thing to debug. "A sensor" can mean fifty things. "DHT22 on GPIO 4" means one.</p>
+        <div class="rule">"ESP32 DevKit v1. DHT22 temperature sensor on GPIO 4. SSD1306 OLED on I2C (SDA GPIO 21, SCL GPIO 22)."</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>Simulate before you wire.</h3>
+        <p>Test your firmware logic in a browser simulator before connecting real hardware. A logic error found in simulation costs seconds. The same error found after soldering costs an hour and possibly a component. Simulation is not optional &mdash; it's the cheapest test you'll ever run.</p>
+        <div class="rule">Wokwi runs Arduino and ESP32 in the browser, free. Simulate first, always.</div>
+      </div>
+    </div>
+
+    <!-- Hardware spec block -->
+    <div class="hw-spec-block">
+      <p>Paste a hardware specification like this at the top of every firmware prompt. Precision here removes an entire category of AI error.</p>
+      <div class="hw-fields">
+        <div class="hw-field"><span class="fk">Board:</span><span class="fv">Arduino Uno / ESP32 DevKit v1 / Arduino Nano 33 IoT / etc.</span></div>
+        <div class="hw-field"><span class="fk">Inputs:</span><span class="fv">Component name, model if known, pin number(s), protocol (digital/analog/I2C/SPI).</span></div>
+        <div class="hw-field"><span class="fk">Outputs:</span><span class="fv">Component name, pin number(s), type (LED/servo/motor/display/speaker).</span></div>
+        <div class="hw-field"><span class="fk">Libraries:</span><span class="fv">Any libraries already installed, or "use standard Arduino libraries only."</span></div>
+        <div class="hw-field"><span class="fk">Behavior:</span><span class="fv">What should happen, when, in response to what &mdash; in plain language.</span></div>
+        <div class="hw-field"><span class="fk">Feel:</span><span class="fv">How the physical response should feel: snappy / gradual / weighted / playful / urgent.</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Tools</div>
+      <h2>Six tools across the microcontroller workflow.</h2>
+      <p>AI generates your firmware. Development environments upload it. Simulators let you test it before touching hardware. Know which tool belongs at which stage.</p>
+    </div>
+    <div class="tools-grid">
+
+      <!-- Claude -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Claude.ai — hardware spec template pasted at top, behavior description being typed, firmware response visible -->
+          <!-- <img src="screenshots/mc-claude.png" alt="Claude.ai with hardware spec pasted and firmware being generated"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Claude &mdash; hardware spec + behavior description &rarr; firmware</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Claude</div>
+            <div class="tool-access free">Free + Pro</div>
+          </div>
+          <div class="tool-best">Firmware generation &middot; behavior-to-code &middot; explanation</div>
+          <div class="tool-desc">The strongest tool for generating firmware from a physical behavior description. Paste your hardware spec and describe what should happen &mdash; Claude writes commented, readable code and will explain every section on request.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Paste your hardware specification template</li>
+            <li>Describe the physical behavior in plain language</li>
+            <li>Ask for commented Arduino/ESP32 code</li>
+            <li>Ask Claude to explain any section you don&rsquo;t understand</li>
+            <li>Copy the code &rarr; test in Wokwi before uploading</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://claude.ai" target="_blank">claude.ai</a></div>
+        </div>
+      </div>
+
+      <!-- Arduino IDE -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Arduino IDE 2.x — code loaded, Serial Monitor open at bottom showing sensor readings scrolling -->
+          <!-- <img src="screenshots/mc-arduino-ide.png" alt="Arduino IDE 2 with code loaded and Serial Monitor open showing live sensor output"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Arduino IDE &mdash; code loaded + Serial Monitor open</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Arduino IDE 2</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Upload to board &middot; Serial Monitor &middot; library management</div>
+          <div class="tool-desc">The standard environment for uploading code to Arduino and many ESP32 boards. Paste AI-generated code here, select your board and port, and upload. The Serial Monitor is your primary debugging window &mdash; treat it as essential, not optional.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Download Arduino IDE 2 at arduino.cc</li>
+            <li>Install board support: Tools &rarr; Board Manager</li>
+            <li>Paste AI-generated code into a new sketch</li>
+            <li>Select your board + port under Tools</li>
+            <li>Upload &rarr; open Serial Monitor (9600 or 115200 baud)</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://www.arduino.cc/en/software" target="_blank">arduino.cc/en/software</a></div>
+        </div>
+      </div>
+
+      <!-- Wokwi -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Wokwi browser simulator — circuit diagram with components wired up on left, code editor on right, simulation running, Serial Monitor output visible at bottom -->
+          <!-- <img src="screenshots/mc-wokwi.png" alt="Wokwi simulator showing a wired circuit, code editor, and running Serial Monitor output"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Wokwi &mdash; circuit diagram + code + running simulation</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Wokwi</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Browser simulation &middot; test before hardware &middot; Arduino + ESP32</div>
+          <div class="tool-desc">Simulates Arduino, ESP32, and many common components &mdash; sensors, servos, displays, LEDs, buttons &mdash; entirely in your browser. Test firmware logic before touching a single wire. Wokwi also has an AI assistant that can help build your circuit and generate starter code.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to wokwi.com &rarr; Start New Project</li>
+            <li>Choose your board (Arduino Uno, ESP32, etc.)</li>
+            <li>Add components from the &ldquo;+&rdquo; menu &rarr; wire them up</li>
+            <li>Paste your AI-generated code into the editor</li>
+            <li>Click Play &rarr; check Serial Monitor output</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://wokwi.com" target="_blank">wokwi.com</a></div>
+        </div>
+      </div>
+
+      <!-- PlatformIO -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: VS Code with PlatformIO extension — project sidebar showing src/main.cpp, PlatformIO toolbar at bottom, terminal showing upload success -->
+          <!-- <img src="screenshots/mc-platformio.png" alt="VS Code with PlatformIO sidebar, main.cpp open, terminal showing successful upload"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">PlatformIO in VS Code &mdash; project structure + upload terminal</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">PlatformIO</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Complex projects &middot; library management &middot; multiple boards</div>
+          <div class="tool-desc">A VS Code extension that replaces the Arduino IDE for more complex projects. Handles library dependencies automatically, supports hundreds of boards, and integrates with Cursor for AI-assisted editing of your firmware. Use it once your project grows beyond a single file.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Install PlatformIO extension in VS Code</li>
+            <li>Click PlatformIO icon &rarr; New Project</li>
+            <li>Select board + framework (Arduino)</li>
+            <li>Edit src/main.cpp &rarr; paste AI-generated code</li>
+            <li>Click Upload (arrow icon) in the bottom toolbar</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://platformio.org" target="_blank">platformio.org</a></div>
+        </div>
+      </div>
+
+      <!-- Tinkercad -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: Tinkercad Circuits — drag-and-drop circuit builder with breadboard, Arduino, components connected by colored wires, Start Simulation button visible -->
+          <!-- <img src="screenshots/mc-tinkercad.png" alt="Tinkercad Circuits showing a breadboard circuit with Arduino and components connected"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">Tinkercad Circuits &mdash; drag-and-drop circuit + simulation</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">Tinkercad Circuits</div>
+            <div class="tool-access free">Free</div>
+          </div>
+          <div class="tool-best">Beginner-friendly simulation &middot; circuit design &middot; wiring practice</div>
+          <div class="tool-desc">A drag-and-drop circuit builder and simulator. More visual and forgiving than Wokwi &mdash; good for learning component connections before committing to real wire. The code editor is basic; use it for circuit design and wiring visualization, then move to Wokwi or Arduino IDE for serious firmware work.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to tinkercad.com &rarr; sign in (free) &rarr; Circuits</li>
+            <li>Drag components from the right panel onto the canvas</li>
+            <li>Click component leads &rarr; drag to connect wires</li>
+            <li>Click Code &rarr; paste or write Arduino code</li>
+            <li>Click Start Simulation to run</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://www.tinkercad.com/circuits" target="_blank">tinkercad.com/circuits</a></div>
+        </div>
+      </div>
+
+      <!-- ChatGPT -->
+      <div class="tool-card">
+        <div class="tool-screenshot">
+          <!-- SCREENSHOT: ChatGPT interface — a hardware spec + behavior description in the user message, Arduino code with comments generated in response -->
+          <!-- <img src="screenshots/mc-chatgpt.png" alt="ChatGPT showing a hardware description prompt with annotated Arduino firmware in response"> -->
+          <div class="shot-badge">Screenshot</div>
+          <span class="shot-label">ChatGPT &mdash; hardware prompt &rarr; annotated firmware</span>
+        </div>
+        <div class="tool-body">
+          <div class="tool-header-row">
+            <div class="tool-name">ChatGPT</div>
+            <div class="tool-access free">Free + Plus</div>
+          </div>
+          <div class="tool-best">Alternative firmware generation &middot; electronics Q&amp;A &middot; datasheet interpretation</div>
+          <div class="tool-desc">A strong alternative to Claude for firmware generation, and particularly good at answering electronics questions &mdash; component datasheets, wiring conventions, communication protocols. Use it alongside Claude: generate in one, verify or cross-check in the other.</div>
+          <div class="tool-start-label">How to start</div>
+          <div class="tool-start"><ol>
+            <li>Go to chatgpt.com &rarr; start a new chat</li>
+            <li>Paste your hardware specification</li>
+            <li>Describe the physical behavior you want</li>
+            <li>Ask for Arduino or ESP32 code with comments</li>
+            <li>Cross-check pin assignments against your board&rsquo;s pinout diagram</li>
+          </ol></div>
+          <div class="tool-url"><a href="https://chatgpt.com" target="_blank">chatgpt.com</a></div>
+        </div>
+      </div>
+
+    </div><!-- /tools-grid -->
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Workflow</div>
+      <h2>From behavior description to working hardware.</h2>
+      <p>Hardware adds a constraint vibe coding doesn't have: the physical world doesn't forgive logic errors gracefully. Simulation and serial monitoring are non-negotiable steps, not shortcuts you skip when you're in a hurry.</p>
+    </div>
+    <div class="workflow-steps">
+
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Describe the physical behavior.</div>
+          <div class="step-body">Before opening any tool, write out what should happen physically: the trigger (sensor reading, button press, time elapsed), the response (motor moves, LED fades, display updates), and the feel (snappy, gradual, pulsing). One paragraph. Plain language. No code.</div>
+          <div class="step-tip">"When the button is held for 2 seconds, the motor ramps up slowly and holds until released" is enough. That's your brief.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Fill in your hardware specification.</div>
+          <div class="step-body">Complete the hardware spec template: board, inputs with pin numbers, outputs with pin numbers, any libraries already installed. This takes two minutes and eliminates an entire category of AI error. Paste it at the top of every prompt in this project.</div>
+          <div class="step-tip">If you don't know a pin number, look it up on your board's pinout diagram before prompting &mdash; not after.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Generate the firmware.</div>
+          <div class="step-body">Paste your hardware spec + behavior description into Claude or ChatGPT. Ask for Arduino or ESP32 code with inline comments explaining each section. Read through the output: check that pin numbers match your spec, that libraries referenced are ones you can install, and that the logic matches the behavior you described.</div>
+          <div class="step-warn">AI makes confident errors in pin assignments and library names. Always check these against your actual hardware before moving on.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Simulate it first.</div>
+          <div class="step-body">Open Wokwi, build your circuit, paste the firmware, and run the simulation. Watch the Serial Monitor output. Does the behavior match what you described? If the logic is wrong here, fix it before wiring anything real. Simulation catches the 80% of errors that don't require physical hardware to surface.</div>
+          <div class="step-tip">Wokwi's Serial Monitor shows the same output as Arduino IDE's. If it's not printing what you expect, something is wrong &mdash; take that output to Claude for diagnosis.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Wire and upload to real hardware.</div>
+          <div class="step-body">Once simulation passes, wire your circuit. Double-check every connection against your schematic before powering on. Upload via Arduino IDE or PlatformIO. Open Serial Monitor immediately &mdash; before you interact with the hardware &mdash; and watch for startup messages, sensor readings, and any error output.</div>
+          <div class="step-warn">Power the board last. Check all connections first. A reversed power connection can damage components permanently.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <div class="step-title">Debug with Serial Monitor + AI.</div>
+          <div class="step-body">When behavior doesn't match expectations, Serial Monitor output is your evidence. Copy it exactly &mdash; every line &mdash; and paste it into Claude or ChatGPT alongside your code and hardware spec. Describe the symptom precisely: what you expected, what happened instead, and what you've already tried. Vague symptoms get generic diagnoses.</div>
+          <div class="step-tip">"The servo twitches instead of holding position" + serial output + code is a solvable problem. "It doesn't work" is not.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT PATTERNS -->
+<section id="prompts">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Prompt Patterns</div>
+      <h2>Three prompts you&rsquo;ll use constantly.</h2>
+    </div>
+    <div class="prompt-blocks">
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">01 &nbsp;&middot;&nbsp; First firmware generation</span>
+          <span class="ptag">Starting a new sketch</span>
+        </div>
+        <div class="prompt-text">Hardware:
+Board: <em>[Arduino Uno / ESP32 DevKit v1 / etc.]</em>
+Inputs: <em>[Component, model, pin, protocol]</em>
+Outputs: <em>[Component, pin, type]</em>
+Libraries: <em>[any installed, or "standard Arduino libraries only"]</em>
+
+Behavior: <em>[plain language description of what should happen, when, and how it should feel]</em>
+
+Write Arduino code for this. Add a comment above every function explaining what it does. Use Serial.println() to log key events so I can monitor behavior. Keep the code readable &mdash; I&rsquo;m going to be editing it.</div>
+        <div class="prompt-note">The "keep it readable" instruction matters. AI defaults to compact code that's hard to modify. Ask explicitly for clarity.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">02 &nbsp;&middot;&nbsp; Debugging with Serial output</span>
+          <span class="ptag">When behavior doesn&rsquo;t match expectation</span>
+        </div>
+        <div class="prompt-text">Hardware: <em>[paste hardware spec]</em>
+
+Expected behavior: <em>[what should happen]</em>
+Actual behavior: <em>[exactly what happens instead]</em>
+What I&rsquo;ve already tried: <em>[any changes made]</em>
+
+Serial Monitor output:
+<em>[paste every line of output exactly as it appears]</em>
+
+Current code:
+<em>[paste full sketch]</em>
+
+What is causing this, and how would you fix it?</div>
+        <div class="prompt-note">Paste the Serial output verbatim &mdash; every line. This is your evidence. AI diagnosis improves dramatically with real output versus a description of output.</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-label-bar">
+          <span class="plabel">03 &nbsp;&middot;&nbsp; Adding a behavior to existing code</span>
+          <span class="ptag">Iterating on a working sketch</span>
+        </div>
+        <div class="prompt-text">Current working code:
+<em>[paste full sketch]</em>
+
+I want to add the following behavior: <em>[describe the new physical event, trigger, and response]</em>
+
+The new behavior should work alongside the existing behavior without interrupting it.
+Add the new code with comments. Do not change anything that is already working.
+After the code, tell me if the new behavior requires any wiring changes.</div>
+        <div class="prompt-note">"Do not change anything already working" is critical. Without it, AI will often refactor your whole sketch while adding the new behavior, breaking things that were fine.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PITFALLS -->
+<section id="pitfalls">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Pitfalls</div>
+      <h2>Five ways this goes wrong.</h2>
+    </div>
+    <div class="pitfall-grid">
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">01</div>
+        <h3>Trusting AI-generated pin assignments.</h3>
+        <p>AI assigns pins confidently and incorrectly more often than any other firmware error. It may use a pin that doesn't exist on your board, is reserved, or conflicts with a library. Always verify against your board's actual pinout diagram.</p>
+        <div class="pitfall-fix">Check every pin number against the board pinout before uploading. This takes 60 seconds and prevents the most common hardware failure.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">02</div>
+        <h3>Not opening Serial Monitor.</h3>
+        <p>Most firmware problems are invisible without Serial output. If you're debugging by observation alone &mdash; watching what the hardware does &mdash; you're missing the most important diagnostic tool you have. AI can't help you either without it.</p>
+        <div class="pitfall-fix">Open Serial Monitor every single time you upload. Make it the first thing you do after code goes on the board.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">03</div>
+        <h3>Skipping simulation.</h3>
+        <p>Uploading untested firmware directly to hardware and then debugging the result is the slowest possible workflow. Wiring, power, and hardware introduce variables. Simulation isolates the code. Find logic errors there, not on the bench.</p>
+        <div class="pitfall-fix">Simulate in Wokwi before uploading. One caught error in simulation saves more time than the simulation takes.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">04</div>
+        <h3>Vague hardware descriptions.</h3>
+        <p>"A sensor" or "an LED strip" leaves AI guessing at component models, communication protocols, and library choices. The result is code that almost works &mdash; which requires a full debugging session to fix what a precise description would have prevented.</p>
+        <div class="pitfall-fix">Use the hardware spec template every time. Component name, model, pin, protocol. Four fields. Two minutes.</div>
+      </div>
+
+      <div class="pitfall-card">
+        <div class="pitfall-num">05</div>
+        <h3>Adding multiple new behaviors at once.</h3>
+        <p>Adding three sensors and two new outputs in a single code update makes it impossible to know which change caused a problem when something breaks. Hardware debugging is already hard enough without entangled variables.</p>
+        <div class="pitfall-fix">Add one new behavior. Test it. Confirm it works. Then add the next. Every working state is a checkpoint you can return to.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="AI_Guide_Vibe_Coding.html">&larr; Vibe Coding</a>
+    <a href="AI_Guide_Hardware.html">Hardware Troubleshooting &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>MicroArtistry 2026 &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

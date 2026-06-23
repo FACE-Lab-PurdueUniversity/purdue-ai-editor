@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI + Design — A Field Guide for Prototypers</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --card2: #111111;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+    --red:   #7A3333;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 52px;
+    backdrop-filter: blur(6px);
+  }
+  nav .nav-brand {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0.25rem;
+  }
+  nav ul li a {
+    display: block;
+    padding: 0.3rem 0.9rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover {
+    color: var(--gold);
+    background: rgba(206,184,136,0.08);
+  }
+
+  /* ── LAYOUT ──────────────────────────────────── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+
+  section { padding: 5rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+
+  /* ── HERO ────────────────────────────────────── */
+  #hero {
+    padding: 6rem 0 5rem;
+    border-bottom: 1px solid var(--dim);
+  }
+  #hero .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  #hero h1 {
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--head);
+    margin-bottom: 1.2rem;
+    max-width: 700px;
+  }
+  #hero h1 em {
+    color: var(--gold);
+    font-style: normal;
+  }
+  #hero p.lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+  .part-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .part-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1.1rem;
+    background: var(--card);
+    border: 1px solid var(--dim);
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    transition: border-color 0.15s, color 0.15s;
+    border-radius: 2px;
+  }
+  .part-link:hover { border-color: var(--gold); color: var(--gold); }
+  .part-link .num { color: var(--gold); font-weight: 600; }
+
+  /* ── SECTION HEADERS ─────────────────────────── */
+  .section-header {
+    margin-bottom: 3rem;
+  }
+  .section-header .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(206,184,136,0.25);
+  }
+  .section-header h2 {
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 300;
+    color: var(--head);
+    line-height: 1.2;
+    margin-bottom: 0.7rem;
+  }
+  .section-header p {
+    color: var(--muted);
+    max-width: 600px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── PRINCIPLE CARDS (Part 1) ─────────────────── */
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    margin-bottom: 3rem;
+    border: 1.5px solid var(--dim);
+  }
+  .principle-card {
+    background: var(--card);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .principle-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+  .principle-card .p-num {
+    font-size: 38px;
+    font-weight: 200;
+    color: var(--dim);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+  .principle-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+  .principle-card p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .principle-card .rule {
+    margin-top: 1rem;
+    padding: 0.65rem 0.9rem;
+    background: var(--bg);
+    border-left: 2px solid var(--gold);
+    font-size: 12.5px;
+    color: var(--head);
+    font-style: italic;
+  }
+
+  /* ── CAPABILITY MAP (Part 1) ─────────────────── */
+  .capability-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--dim);
+    border: 1px solid var(--dim);
+    margin-bottom: 3rem;
+  }
+  .cap-cell {
+    background: var(--card);
+    padding: 1.5rem 1.75rem;
+  }
+  .cap-cell.strong .cap-label { color: var(--green); }
+  .cap-cell.weak .cap-label { color: var(--red); }
+  .cap-cell .cap-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+  }
+  .cap-cell ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .cap-cell ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .cap-cell.strong ul li::before { content: '+'; color: var(--green); font-weight: 700; }
+  .cap-cell.weak ul li::before { content: '–'; color: var(--red); font-weight: 700; }
+
+  /* ── WORKFLOW CARDS (Part 2) ─────────────────── */
+  .workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px;
+    background: var(--dim);
+    border: 1px solid var(--dim);
+  }
+  .workflow-card {
+    background: var(--card);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-card .wf-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+  }
+  .workflow-card .wf-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg);
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    color: var(--gold);
+    border-radius: 2px;
+    opacity: 0.8;
+  }
+  .workflow-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.04em;
+  }
+  .workflow-card .wf-when {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .workflow-card .wf-body {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.1rem;
+  }
+  .workflow-card .wf-principle {
+    font-size: 13px;
+    color: var(--head);
+    line-height: 1.55;
+    padding: 0.7rem 0.9rem;
+    background: var(--bg);
+    border-left: 2px solid var(--gold);
+    margin-bottom: 1.1rem;
+    font-style: italic;
+  }
+  .workflow-card .wf-try {
+    margin-top: auto;
+  }
+  .workflow-card .wf-try-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.45rem;
+  }
+  .workflow-card .wf-try-text {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: var(--bg);
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--dim);
+  }
+  .workflow-card .wf-pitfall {
+    margin-top: 0.75rem;
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.55;
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--red);
+  }
+  .workflow-card .wf-pitfall strong { color: var(--muted); }
+
+  /* ── ETHICS CARDS (Part 3) ───────────────────── */
+  .ethics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--dim);
+    border: 1px solid var(--dim);
+  }
+  .ethics-card {
+    background: var(--card);
+    padding: 1.75rem;
+  }
+  .ethics-card .eth-num {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .ethics-card h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--head);
+    margin-bottom: 0.75rem;
+  }
+  .ethics-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+  .ethics-card .eth-commitment {
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border-left: 2px solid var(--gold);
+    font-size: 12px;
+    color: var(--head);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ── CONTEXT DOC BLOCK (Part 2 callout) ──────── */
+  .context-block {
+    margin: 2.5rem 0;
+    border: 1px solid rgba(206,184,136,0.3);
+    background: var(--card);
+    padding: 2rem 2.25rem;
+    position: relative;
+  }
+  .context-block::before {
+    content: 'CONTEXT-BUILDING';
+    position: absolute;
+    top: -0.6rem;
+    left: 1.5rem;
+    background: var(--card);
+    padding: 0 0.5rem;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .context-block h3 {
+    font-size: 18px;
+    color: var(--head);
+    margin-bottom: 0.7rem;
+    font-weight: 400;
+  }
+  .context-block p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 700px;
+    margin-bottom: 1.2rem;
+  }
+  .did-template {
+    background: var(--bg);
+    border: 1px solid var(--dim);
+    padding: 1.25rem 1.5rem;
+  }
+  .did-template .did-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+  .did-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .did-field {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 12.5px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    line-height: 1.5;
+  }
+  .did-field .field-key { color: var(--gold); min-width: 160px; flex-shrink: 0; }
+  .did-field .field-val { color: var(--dim); font-style: italic; }
+
+  /* ── FOOTER ─────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--dim);
+    padding: 2.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+  footer .footer-mark { color: var(--gold); }
+
+  .workflow-card { text-decoration: none; }
+  .workflow-card:hover { background: #1e1e1e; }
+  .wf-explore {
+    display: inline-block; margin-top: 0.9rem;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(206,184,136,0.3);
+    padding-bottom: 1px;
+    transition: border-color 0.15s;
+  }
+  .wf-explore:hover { border-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────── -->
+<nav>
+  <span class="nav-brand">AI + Design &nbsp;·&nbsp; Field Guide</span>
+  <ul>
+    <li><a href="#part1"><span class="num">01</span> Mental Model</a></li>
+    <li><a href="#part2"><span class="num">02</span> Workflows</a></li>
+    <li><a href="#part3"><span class="num">03</span> Ethics</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────── -->
+<div id="hero">
+  <div class="container">
+    <div class="eyebrow">IDE 495 · Prototyping for Experience &nbsp;·&nbsp; MicroArtistry 2026</div>
+    <h1>AI amplifies the quality of<br><em>your</em> thinking.</h1>
+    <p class="lead">A field guide to productive AI workflows and ethical practice for designers, artists, and engineers who build things.</p>
+    <div class="part-links">
+      <a href="#part1" class="part-link"><span class="num">01</span> The Mental Model</a>
+      <a href="#part2" class="part-link"><span class="num">02</span> Workflows for Prototyping</a>
+      <a href="#part3" class="part-link"><span class="num">03</span> Ethical Commitments</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── PART 1: MENTAL MODEL ─────────────────────────── -->
+<section id="part1">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Part 01 &nbsp;·&nbsp; The Mental Model</div>
+      <h2>What AI is — and isn't — in a design context.</h2>
+      <p>Before you touch a tool, build the right mental model. AI in design is not magic, not a shortcut, and not a replacement for your judgment. It is a translation engine: it translates your intent into form. The quality of what comes out is directly determined by the quality of what you put in.</p>
+    </div>
+
+    <!-- Three principles -->
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Specificity produces resonance.</h3>
+        <p>AI is a translation engine, not a creativity engine. It translates your intent into form. Vague intent produces vague output — usable, pleasant, and forgettable. A specific emotional argument, a precise context, a clear constraint: these produce output that means something because you gave it something to mean.</p>
+        <div class="rule">"Hopeful" is not a prompt. "The kind of hope that has already made peace with uncertainty" is a prompt.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>Context is everything — and you build it.</h3>
+        <p>AI knows nothing about your project until you tell it. It doesn't know your design argument, your user, your tone, your constraints, or your influences. Every time you start a session or a new prompt chain, you are starting from zero unless you actively feed in context. Your job is to build that context — and keep feeding it in.</p>
+        <div class="rule">Write a Design Intent Document. Paste it at the start of every session. This one practice changes everything.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>The last mile of judgment is always yours.</h3>
+        <p>AI can generate a hundred options in the time it used to take you to sketch one. None of them are good or bad until you say so. Choosing what aligns with your design argument — and being able to say why — is where your authorship lives. Accept nothing you can't explain. Discard freely. The curation is the design work.</p>
+        <div class="rule">If you can't say why you kept something, you haven't made a design decision yet.</div>
+      </div>
+    </div>
+
+    <!-- Capability map -->
+    <div class="section-header" style="margin-bottom:1.5rem">
+      <div class="eyebrow">Capability Map</div>
+      <h2 style="font-size:1.2rem">What AI is strong at — and where it misleads.</h2>
+    </div>
+    <div class="capability-grid">
+      <div class="cap-cell strong">
+        <div class="cap-label">Strong at</div>
+        <ul>
+          <li>Generating many variations quickly</li>
+          <li>Translating intent into code syntax</li>
+          <li>Producing plausible first drafts</li>
+          <li>Suggesting alternatives you hadn't considered</li>
+          <li>Explaining what existing code or systems do</li>
+          <li>Diagnosing errors from symptom descriptions</li>
+          <li>Maintaining style and structure across iterations</li>
+        </ul>
+      </div>
+      <div class="cap-cell weak">
+        <div class="cap-label">Weak at — or misleading in</div>
+        <ul>
+          <li>Knowing what's <em>good</em> — that's your job</li>
+          <li>Understanding your design argument without context</li>
+          <li>Producing original ideas (it recombines what it's seen)</li>
+          <li>Catching its own confident errors</li>
+          <li>Representing all bodies, cultures, and aesthetics equally</li>
+          <li>Knowing when to stop generating</li>
+          <li>Telling you what it doesn't know</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PART 2: WORKFLOWS ─────────────────────────────── -->
+<section id="part2">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Part 02 &nbsp;·&nbsp; Productive Workflows</div>
+      <h2>Design with AI, not through it.</h2>
+      <p>These workflows are organized around what you're trying to build — not around specific tools. The tools change; the design practice doesn't. In every workflow, the principle is the same: you bring the intent, AI brings the execution speed. The judgment is yours.</p>
+    </div>
+
+    <!-- Context-Building callout (before individual workflows) -->
+    <div class="context-block">
+      <h3>Before any workflow: build your context.</h3>
+      <p>AI doesn't know your project. You have to tell it — and you have to tell it every session, because AI has no memory between conversations. The single highest-leverage practice in this entire guide is writing a short Design Intent Document and pasting it at the start of every AI conversation. It takes five minutes. It saves you from spending the whole session wrestling AI back toward your argument.</p>
+      <div class="did-template">
+        <div class="did-label">Design Intent Document — Template</div>
+        <div class="did-fields">
+          <div class="did-field"><span class="field-key">Project:</span><span class="field-val">What you're making and for whom.</span></div>
+          <div class="did-field"><span class="field-key">Design argument:</span><span class="field-val">What you want a user to feel, think, or understand.</span></div>
+          <div class="did-field"><span class="field-key">Tone:</span><span class="field-val">Hopeful / Cautionary / Ambiguous — and what that means for this project.</span></div>
+          <div class="did-field"><span class="field-key">Constraints:</span><span class="field-val">Budget, materials, platform, time, skill level.</span></div>
+          <div class="did-field"><span class="field-key">Influences:</span><span class="field-val">References, precedents, works you're in conversation with.</span></div>
+          <div class="did-field"><span class="field-key">What I need right now:</span><span class="field-val">The specific task for this session.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow cards -->
+    <div class="workflow-grid">
+
+      <!-- 1. Vibe Coding -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#60;/&#62;</div>
+          <div>
+            <h3><a href="AI_Guide_Vibe_Coding.html" style="color:inherit;text-decoration:none;">Vibe Coding</a></h3>
+            <div class="wf-when">Web / App / Interactive behavior</div>
+          </div>
+        </div>
+        <div class="wf-body">Direct AI to write code by describing what you want it to <em>do</em> and <em>feel</em> — not by describing the code structure you think you need. Stay at the level of design intent. The syntax is AI's problem; the experience is yours.</div>
+        <div class="wf-principle">Describe the interaction the way a user would experience it. "When someone hovers over this element, I want them to feel a slight hesitation — like the interface is making a decision." That's a prompt. "Add a CSS transition" is a task, not a design brief.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">I'm building [type of experience]. When [user action], I want the user to feel [emotional quality]. The response should feel [characteristic — immediate/delayed/weighted/playful]. Here is the current code: [paste]. Revise so that [design goal].</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> Accepting code you can't explain. If you can't describe what the code does in plain language, you don't own it yet. Ask AI to explain every block before you move on.</div>
+          <a href="AI_Guide_Vibe_Coding.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+      <!-- 2. Microcontroller Programming -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#9889;</div>
+          <div>
+            <h3><a href="AI_Guide_Microcontrollers.html" style="color:inherit;text-decoration:none;">Microcontroller Programming</a></h3>
+            <div class="wf-when">Arduino / ESP32 / Sensors / Actuators</div>
+          </div>
+        </div>
+        <div class="wf-body">Use AI to write firmware for physical computing — sensor reads, output control, timing loops, state machines, communication protocols. The approach is the same as vibe coding: describe the physical behavior you want before you ask for code.</div>
+        <div class="wf-principle">Describe the physical event chain before asking for code. "When the distance sensor reads under 30cm, I want the LED to pulse twice — fast — then hold at low brightness." That's a spec. That's what produces usable firmware.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">I'm using [Arduino Uno / ESP32 / etc.]. My setup: [sensor type on pin X], [output type on pin Y]. Behavior: when [condition], [output] should [response]. The feeling should be [quality]. Write Arduino code and include comments explaining each section.</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> AI makes confident errors in pin assignments, timing values, and library calls that only surface on hardware. Always test generated code on the actual board before assuming it's correct.</div>
+          <a href="AI_Guide_Microcontrollers.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+      <!-- 3. Hardware Troubleshooting -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#9881;</div>
+          <div>
+            <h3><a href="AI_Guide_Hardware.html" style="color:inherit;text-decoration:none;">Hardware Troubleshooting</a></h3>
+            <div class="wf-when">Wiring / Power / Sensors / Serial debug</div>
+          </div>
+        </div>
+        <div class="wf-body">When physical systems fail, AI is a strong diagnostic partner — if you give it enough to work with. The more specific your symptom description, the more targeted the diagnosis. "It doesn't work" gets you a checklist. A precise symptom gets you a root cause.</div>
+        <div class="wf-principle">Describe the symptom, not your theory about the cause. Your theory may be wrong; the symptom is a fact. Tell AI what you expected to happen, exactly what happened instead, and what your serial output shows.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">Component: [name, model if known]. Connected to: [pin / bus / power rail]. Expected behavior: [X]. Actual behavior: [Y]. What I've already tried: [Z]. Serial output: [paste]. Code: [paste relevant section]. What could cause this?</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> Skipping the serial output step. Most hardware bugs are visible in serial output — if you're not checking it, you're troubleshooting blind and so is AI.</div>
+          <a href="AI_Guide_Hardware.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+      <!-- 4. User Interface Development -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#9707;</div>
+          <div>
+            <h3><a href="AI_Guide_UI_Dev.html" style="color:inherit;text-decoration:none;">User Interface Development</a></h3>
+            <div class="wf-when">HTML / CSS / JS / Data visualization</div>
+          </div>
+        </div>
+        <div class="wf-body">Build web-based UIs — control interfaces, data dashboards, interactive experiences, presentation layers — through AI-generated HTML/CSS/JS. Design the emotional register of the interface before you describe the components. What should a user feel when the page loads?</div>
+        <div class="wf-principle">Aesthetic intent first, component list second. If you open with "I need a nav bar and three cards," you'll get the most generic version of that layout. If you open with the emotional experience you're designing for, AI will make different choices.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">Build a [type of interface] for [purpose]. The visual feel should be [aesthetic qualities — dark/minimal/warm/etc.]. The user should feel [emotional quality] when they first see it. Color palette: []. Typography feel: []. Key interactions: [list]. Output a single self-contained HTML file.</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> Not pushing back on the default aesthetic. AI's default UI style is clean, bright, and generic. Name the aesthetic you want in the first prompt — or you'll spend your time undoing instead of building.</div>
+          <a href="AI_Guide_UI_Dev.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+      <!-- 5. Image Generation -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#9670;</div>
+          <div>
+            <h3><a href="AI_Guide_Image_Gen.html" style="color:inherit;text-decoration:none;">Image Generation</a></h3>
+            <div class="wf-when">Visual ideation / Concept / Assets</div>
+          </div>
+        </div>
+        <div class="wf-body">Use AI image tools for rapid visual ideation, concept communication, mood board building, and placeholder assets. Image generation rewards emotional specificity above almost everything else — the more precisely you name the feeling, the more the image delivers it.</div>
+        <div class="wf-principle">Specificity is craft. "Hopeful" produces stock imagery. "The kind of hope that has already made peace with uncertainty" produces something that could only mean one thing. The difference between those two prompts is the difference between a placeholder and a design argument.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">[Scene: who/what, setting, time] &mdash; [Emotion target: specific, grounded in a situation] &mdash; [Technique: lighting, medium feel, color temperature, framing] &mdash; [What it should do for a viewer: which Norman level]</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> Using the first generated image. The first output reveals what's possible; the second or third — after critique and revision — is where the design work actually happens. Treat generation as a conversation, not a delivery.</div>
+          <a href="AI_Guide_Image_Gen.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+      <!-- 6. Documentation & Writing -->
+      <div class="workflow-card">
+        <div class="wf-header">
+          <div class="wf-icon">&#9998;</div>
+          <div>
+            <h3><a href="AI_Guide_Documentation.html" style="color:inherit;text-decoration:none;">Documentation &amp; Design Writing</a></h3>
+            <div class="wf-when">Process docs / Rationale / Reflection</div>
+          </div>
+        </div>
+        <div class="wf-body">Use AI to help you articulate, structure, and refine your design rationale — not to generate it. Your job is to have the thoughts; AI's job is to help you get them from your head into clear language. The design argument must come from you first.</div>
+        <div class="wf-principle">Never ask AI to write your rationale from scratch. Give it your rough thinking — even bullet points and fragments — and ask it to help you find what you're actually trying to say. The difference: one produces your voice, the other produces generic design-speak.</div>
+        <div class="wf-try">
+          <div class="wf-try-label">Prompt structure</div>
+          <div class="wf-try-text">Here are my rough notes on [design decision]: [paste fragments]. Help me articulate the design argument I'm making. Keep my voice — don't smooth it into generic language. What I'm trying to say is approximately: [your attempt]. Make it clearer without making it someone else's.</div>
+          <div class="wf-pitfall"><strong>Pitfall:</strong> Accepting polished-sounding output that doesn't actually represent your thinking. Read it aloud. If it doesn't sound like you defending your work, revise it until it does.</div>
+          <a href="AI_Guide_Documentation.html" class="wf-explore">Explore &rarr;</a>
+        </div>
+      </div>
+
+    </div><!-- /workflow-grid -->
+
+  </div>
+</section>
+
+<!-- ── PART 3: ETHICS ──────────────────────────────────── -->
+<section id="part3">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Part 03 &nbsp;·&nbsp; Ethical Commitments</div>
+      <h2>Being an honest and responsible AI designer.</h2>
+      <p>These aren't rules imposed from outside — they're the practices of a designer who takes their work seriously. Transparency is a posture of confidence, not confession. Knowing where your authorship lives is a professional skill, not an admission. Each of these commitments makes you a better designer, not just a more ethical one.</p>
+    </div>
+
+    <div class="ethics-grid">
+
+      <div class="ethics-card">
+        <div class="eth-num">01 &nbsp;·&nbsp; Authorship</div>
+        <h3>Know where your creative contribution lives.</h3>
+        <p>Your authorship is in the choices you made: what context you built, what emotional argument you brought, what you kept and what you discarded, and why. You can't claim authorship of work you accepted without evaluation. You can absolutely claim authorship of a rigorous, AI-assisted design process — if you can account for the decisions.</p>
+        <div class="eth-commitment">"I used AI to generate [X]. The design intent driving that generation — and every choice about what to keep — was mine."</div>
+      </div>
+
+      <div class="ethics-card">
+        <div class="eth-num">02 &nbsp;·&nbsp; Transparency &amp; Disclosure</div>
+        <h3>Say what you used AI for — and what you didn't.</h3>
+        <p>Transparency about AI use is a professional norm that's still being established. Be part of establishing it well. Name specifically what AI contributed to your work and what you contributed. The strongest version of this isn't "I used AI" — it's a precise account of the division of labor that reveals the quality of your design thinking.</p>
+        <div class="eth-commitment">"AI generated the initial firmware. I specified the sensor thresholds, the timing logic, and the behavior feel — and revised the output three times before the interaction felt right."</div>
+      </div>
+
+      <div class="ethics-card">
+        <div class="eth-num">03 &nbsp;·&nbsp; Copyright &amp; Style</div>
+        <h3>Understand what "in the style of" actually means.</h3>
+        <p>When you prompt "in the style of [artist]," AI reproduces patterns extracted from that artist's work — work that was in the training data, often without the artist's consent. That artist's style, developed over a career, is being imitated at scale. Use style prompts with full awareness of what you're doing, and consider whether the original artist would want their visual language used this way.</p>
+        <div class="eth-commitment">Use style references as inspiration points you can articulate, not copy-paste commands. Know whose work you're drawing on — and be able to say why.</div>
+      </div>
+
+      <div class="ethics-card">
+        <div class="eth-num">04 &nbsp;·&nbsp; Bias &amp; Representation</div>
+        <h3>AI reflects its training data — which reflects historical inequity.</h3>
+        <p>AI image and text models overrepresent certain bodies, aesthetics, cultures, and worldviews because that's what the training data contained. If you don't actively push back on defaults, you're inheriting and reproducing those biases in your work. Notice who appears in your generated images. Notice whose design aesthetic reads as "neutral." It isn't.</p>
+        <div class="eth-commitment">Actively specify representation in your prompts. If you're designing for a particular community, make that specificity visible in what you generate — don't let the model's defaults make that decision for you.</div>
+      </div>
+
+      <div class="ethics-card">
+        <div class="eth-num">05 &nbsp;·&nbsp; Energy &amp; Environment</div>
+        <h3>AI has a real environmental cost that's easy to ignore.</h3>
+        <p>Generating images, running large language models, and training AI systems consume significant amounts of energy and water for cooling — far more than most users realize. This cost is invisible in the interface, which makes it easy to use AI habitually rather than intentionally. Use AI deliberately: iterate with purpose, not volume.</p>
+        <div class="eth-commitment">Generate fewer, more considered iterations. Twenty images with clear intent will teach you more and cost the environment less than two hundred generated because generation is easy.</div>
+      </div>
+
+      <div class="ethics-card">
+        <div class="eth-num">06 &nbsp;·&nbsp; Data &amp; Privacy</div>
+        <h3>What you put in may not stay private.</h3>
+        <p>Prompts, images, and text you enter into AI tools may be stored and used to improve future models, depending on the platform and your account settings. Treat AI conversations as semi-public spaces. Don't paste proprietary work, personal data, research data about human subjects, or anything that would be harmful if made public.</p>
+        <div class="eth-commitment">Check the data retention settings of every tool you use. Know the difference between what the interface implies and what the terms of service actually say.</div>
+      </div>
+
+    </div><!-- /ethics-grid -->
+
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    <p>IDE 495 · Prototyping for Experience &nbsp;·&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>MicroArtistry 2026 &nbsp;·&nbsp; v1 draft &nbsp;·&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>
