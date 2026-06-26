@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 camp_users.csv
+
+# Cache
+__pycache__/
+*.pyc
