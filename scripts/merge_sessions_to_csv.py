@@ -25,7 +25,9 @@ import csv
 import shutil
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 # Allow large content fields (multi-line code / long system prompts).
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
@@ -49,6 +51,9 @@ REQUIRED_FILES = [
 EVENT_COLUMNS = [
     "Event ID",
     "Timestamp",
+    "Time (Eastern)",
+    "Date (Eastern)",
+    "Day of Week",
     "Type",
     "Code Save Source",
     "Code Tab Name",
@@ -98,11 +103,37 @@ def sanitize_folder(name):
     return text[:120]
 
 
+EASTERN_TZ = ZoneInfo("America/New_York")
+
+
+def parse_eastern(timestamp):
+    """Parse a GMT/UTC ISO-8601 timestamp string into an Eastern-time datetime."""
+    if is_blank(timestamp):
+        return None
+    text = str(timestamp).strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(EASTERN_TZ)
+
+
 def build_event(event_type, timestamp, **fields):
     """Create a blank event row, then fill in the type-specific fields."""
     row = {col: "" for col in EVENT_COLUMNS}
     row["Type"] = event_type
     row["Timestamp"] = timestamp or ""
+
+    eastern = parse_eastern(timestamp)
+    if eastern is not None:
+        row["Time (Eastern)"] = eastern.strftime("%H:%M:%S.%f%z")
+        row["Date (Eastern)"] = eastern.strftime("%Y-%m-%d")
+        row["Day of Week"] = eastern.strftime("%A")
+
     for key, value in fields.items():
         row[key] = "" if value is None else value
     return row
