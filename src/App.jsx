@@ -12,6 +12,7 @@ import StudentGroupModal from './components/StudentGroupModal';
 import DebugManager, { debugLog } from './components/DebugManager';
 import DataExtractor from './components/data_extractor/DataExtractor';
 import AdminUsageDashboard from './components/admin_usage/AdminUsageDashboard';
+import ReplayView from './components/replay/ReplayView';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SessionProvider, useSession } from './contexts/SessionContext';
 import { logConsole } from './services/dataLogger';
@@ -366,15 +367,27 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <SessionProvider>
-        <Routes>
-          <Route path="/" element={<AppContent />} />
-          <Route path="/data" element={<DataExtractor />} />
-          <Route path="/usage" element={<AdminUsageDashboard />} />
-        </Routes>
-      </SessionProvider>
-    </AuthProvider>
+    <Routes>
+      {/*
+        Replay viewer is public and must never touch auth/Supabase, so it is
+        rendered OUTSIDE AuthProvider/SessionProvider (both hit Supabase on mount).
+      */}
+      <Route path="/view-data" element={<ReplayView />} />
+      <Route
+        path="/*"
+        element={
+          <AuthProvider>
+            <SessionProvider>
+              <Routes>
+                <Route path="/" element={<AppContent />} />
+                <Route path="/data" element={<DataExtractor />} />
+                <Route path="/usage" element={<AdminUsageDashboard />} />
+              </Routes>
+            </SessionProvider>
+          </AuthProvider>
+        }
+      />
+    </Routes>
   );
 }
 
