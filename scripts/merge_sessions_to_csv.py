@@ -35,6 +35,7 @@ RESEARCH_DIR = SCRIPT_DIR.parent / "research_data"
 OUT_DIR = RESEARCH_DIR / "by_session"
 
 REQUIRED_FILES = [
+    "code.csv",
     "code_snapshots.csv",
     "console.csv",
     "conversations.csv",
@@ -50,11 +51,13 @@ EVENT_COLUMNS = [
     "Timestamp",
     "Type",
     "Code Save Source",
+    "Code Tab Name",
     "Code",
     "Console Save Source",
     "Console",
     "Button Clicked",
     "Message Author",
+    "Chat Tab Name",
     "Message",
     "LLM Coding Level",
     "AI Model",
@@ -118,6 +121,7 @@ def main():
 
     # --- Load all source tables ---------------------------------------------
     sessions = load_csv(RESEARCH_DIR / "sessions.csv")
+    code_records = load_csv(RESEARCH_DIR / "code.csv")
     code_snapshots = load_csv(RESEARCH_DIR / "code_snapshots.csv")
     console_rows = load_csv(RESEARCH_DIR / "console.csv")
     interactions = load_csv(RESEARCH_DIR / "interactions.csv")
@@ -131,6 +135,10 @@ def main():
     # Dereference targets for message context attachments.
     snapshot_by_id = {r["id"]: r for r in code_snapshots}
     console_by_id = {r["id"]: r for r in console_rows}
+
+    # Tab-name lookups: code_id -> code tab name, conversation_id -> chat tab name.
+    code_name_by_id = {r["id"]: r.get("name", "") for r in code_records}
+    conversation_name_by_id = {r["id"]: r.get("name", "") for r in conversations}
 
     code_by_session = defaultdict(list)
     for r in code_snapshots:
@@ -186,6 +194,7 @@ def main():
                     r.get("timestamp"),
                     **{
                         "Code Save Source": r.get("save_source"),
+                        "Code Tab Name": code_name_by_id.get(r.get("code_id"), ""),
                         "Code": r.get("content"),
                     },
                 )
@@ -230,6 +239,7 @@ def main():
                         r.get("timestamp"),
                         **{
                             "Message Author": r.get("role"),
+                            "Chat Tab Name": conversation_name_by_id.get(conv_id, ""),
                             "Message": r.get("content"),
                             "LLM Coding Level": r.get("coding_level"),
                             "AI Model": r.get("ai_model"),
