@@ -15,6 +15,11 @@ import {
   toPromptHardwareConfig,
   flattenMappings,
 } from '../services/hardwareConfig';
+import {
+  getEsp32HardwareCatalog,
+  getCurrentUserEsp32HardwareConfig,
+  saveCurrentUserEsp32HardwareConfig,
+} from '../services/esp32HardwareConfig';
 import { streamChatCompletionWithBudget } from '../utils/chatStream';
 import { fetchModelMetadata, pickInitialModel } from '../services/aiModels';
 
@@ -60,7 +65,7 @@ function renderPartPreview(part, className) {
   return null;
 }
 
-const HardwareConfigModal = ({ visible, onClose }) => {
+const HardwareConfigModal = ({ visible, onClose, platformId = 'lilybot' }) => {
   const [catalog, setCatalog] = useState({ mpus: [], components: [], templates: [] });
   const [config, setConfig] = useState(null);
   const [activeMpuPinId, setActiveMpuPinId] = useState(null);
@@ -83,10 +88,10 @@ const HardwareConfigModal = ({ visible, onClose }) => {
       setLoading(true);
       setError('');
       try {
-        const catalogData = await getHardwareCatalog(true);
+        const catalogData = await (platformId === 'esp32' ? getEsp32HardwareCatalog(true) : getHardwareCatalog(true));
         let savedConfig = null;
         try {
-          savedConfig = await getCurrentUserHardwareConfig();
+          savedConfig = await (platformId === 'esp32' ? getCurrentUserEsp32HardwareConfig() : getCurrentUserHardwareConfig());
         } catch (userConfigError) {
           console.warn('Unable to load user hardware config, using defaults:', userConfigError);
         }
@@ -111,7 +116,7 @@ const HardwareConfigModal = ({ visible, onClose }) => {
       active = false;
       wiringCheckActiveRef.current = false;
     };
-  }, [visible]);
+  }, [visible, platformId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedMpu = useMemo(
     () => catalog.mpus.find((mpu) => mpu.id === config?.selectedMpuId) || null,
@@ -290,7 +295,7 @@ const HardwareConfigModal = ({ visible, onClose }) => {
     setIsSaving(true);
     setError('');
     try {
-      await saveCurrentUserHardwareConfig(config);
+      await (platformId === 'esp32' ? saveCurrentUserEsp32HardwareConfig(config) : saveCurrentUserHardwareConfig(config));
       window.dispatchEvent(new Event('hardware-config-updated'));
       onClose?.();
     } catch (err) {

@@ -355,6 +355,7 @@ function AppContent() {
       <HardwareConfigModal
         visible={showHardwareConfigModal}
         onClose={() => setShowHardwareConfigModal(false)}
+        platformId={activeSession?.hardware_platform}
       />
       <StudentGroupModal
         visible={profileChecked && needsStudentGroup}

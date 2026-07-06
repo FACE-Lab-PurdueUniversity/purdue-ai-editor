@@ -126,7 +126,7 @@ const TitleBar = ({
               EDITOR SESSIONS
             </button>
           )}
-          {onOpenHardwareConfig && activeSession?.hardware_platform === 'lilybot' && (
+          {onOpenHardwareConfig && (activeSession?.hardware_platform === 'lilybot' || activeSession?.hardware_platform === 'esp32') && (
             <button
               className="topbar-button"
               onClick={onOpenHardwareConfig}

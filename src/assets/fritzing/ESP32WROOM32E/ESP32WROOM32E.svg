@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 416.69289 838.77407"
+     width="1.1023622in"
+     height="2.2206204in">
+
+  <!-- Board background -->
+  <rect x="0" y="0" width="416.69289" height="838.77407" fill="#0d1a0d" rx="12" ry="12"/>
+
+  <!-- PCB board body -->
+  <rect x="35" y="8" width="346" height="822" fill="#1a3a0e" rx="6" ry="6"/>
+
+  <!-- ESP32 module (WROOM module body) -->
+  <rect x="78" y="100" width="260" height="380" fill="#888888" rx="4" ry="4"/>
+  <rect x="82" y="104" width="252" height="372" fill="#999999" rx="3" ry="3"/>
+
+  <!-- Antenna at top of module -->
+  <rect x="168" y="80" width="80" height="28" fill="#888888" rx="3" ry="3"/>
+  <rect x="172" y="83" width="72" height="22" fill="#aaaaaa" rx="2" ry="2"/>
+
+  <!-- Module label -->
+  <text x="208" y="268" text-anchor="middle" fill="#222222" font-size="18" font-family="monospace" font-weight="bold">ESP32</text>
+  <text x="208" y="288" text-anchor="middle" fill="#333333" font-size="12" font-family="monospace">WROOM-32E</text>
+
+  <!-- USB connector area at bottom -->
+  <rect x="168" y="770" width="80" height="40" fill="#cccccc" rx="3" ry="3"/>
+  <rect x="174" y="774" width="68" height="32" fill="#aaaaaa" rx="2" ry="2"/>
+
+  <!-- Board label -->
+  <text x="208" y="756" text-anchor="middle" fill="#5aaa55" font-size="10" font-family="monospace">ESP32-WROOM-32E / ESP32-S</text>
+
+  <!-- ================================================ -->
+  <!-- LEFT SIDE PIN LABELS (connector1pin..19pin)      -->
+  <!-- ================================================ -->
+  <text x="42" y="69"  fill="#ff6655" font-size="12" font-family="monospace" font-weight="bold">3V3</text>
+  <text x="42" y="107" fill="#bbbbbb" font-size="12" font-family="monospace">EN</text>
+  <text x="42" y="145" fill="#8888ff" font-size="12" font-family="monospace">GPIO36</text>
+  <text x="42" y="183" fill="#8888ff" font-size="12" font-family="monospace">GPIO39</text>
+  <text x="42" y="221" fill="#8888ff" font-size="12" font-family="monospace">GPIO34</text>
+  <text x="42" y="259" fill="#8888ff" font-size="12" font-family="monospace">GPIO35</text>
+  <text x="42" y="297" fill="#cccc44" font-size="12" font-family="monospace">GPIO32</text>
+  <text x="42" y="335" fill="#cccc44" font-size="12" font-family="monospace">GPIO33</text>
+  <text x="42" y="373" fill="#cccc44" font-size="12" font-family="monospace">GPIO25</text>
+  <text x="42" y="411" fill="#cccc44" font-size="12" font-family="monospace">GPIO26</text>
+  <text x="42" y="449" fill="#cccc44" font-size="12" font-family="monospace">GPIO27</text>
+  <text x="42" y="487" fill="#cccc44" font-size="12" font-family="monospace">GPIO14</text>
+  <text x="42" y="525" fill="#cccc44" font-size="12" font-family="monospace">GPIO12</text>
+  <text x="42" y="563" fill="#888888" font-size="12" font-family="monospace" font-weight="bold">GND</text>
+  <text x="42" y="601" fill="#cccc44" font-size="12" font-family="monospace">GPIO13</text>
+  <text x="42" y="639" fill="#ff6600" font-size="11" font-family="monospace">GPIO9 UNSAFE</text>
+  <text x="42" y="677" fill="#ff6600" font-size="11" font-family="monospace">GPIO10 UNSAFE</text>
+  <text x="42" y="715" fill="#ff6600" font-size="11" font-family="monospace">GPIO11 UNSAFE</text>
+  <text x="42" y="753" fill="#ff6655" font-size="12" font-family="monospace" font-weight="bold">VIN</text>
+
+  <!-- ================================================ -->
+  <!-- RIGHT SIDE PIN LABELS (connector38pin..20pin)    -->
+  <!-- Top→bottom: GND,23,22,1/TX,3/RX,21,GND,19,18,5,17,16,4,0,2,15,8,7,6 -->
+  <!-- ================================================ -->
+  <text x="374" y="69"  text-anchor="end" fill="#888888" font-size="12" font-family="monospace" font-weight="bold">GND</text>
+  <text x="374" y="107" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO23</text>
+  <text x="374" y="145" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO22</text>
+  <text x="374" y="183" text-anchor="end" fill="#55aaff" font-size="12" font-family="monospace">GPIO1/TX</text>
+  <text x="374" y="221" text-anchor="end" fill="#55aaff" font-size="12" font-family="monospace">GPIO3/RX</text>
+  <text x="374" y="259" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO21</text>
+  <text x="374" y="297" text-anchor="end" fill="#888888" font-size="12" font-family="monospace" font-weight="bold">GND</text>
+  <text x="374" y="335" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO19</text>
+  <text x="374" y="373" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO18</text>
+  <text x="374" y="411" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO5</text>
+  <text x="374" y="449" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO17</text>
+  <text x="374" y="487" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO16</text>
+  <text x="374" y="525" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO4</text>
+  <text x="374" y="563" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO0</text>
+  <text x="374" y="601" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO2</text>
+  <text x="374" y="639" text-anchor="end" fill="#cccc44" font-size="12" font-family="monospace">GPIO15</text>
+  <text x="374" y="677" text-anchor="end" fill="#ff6600" font-size="11" font-family="monospace">UNSAFE GPIO8</text>
+  <text x="374" y="715" text-anchor="end" fill="#ff6600" font-size="11" font-family="monospace">UNSAFE GPIO7</text>
+  <text x="374" y="753" text-anchor="end" fill="#ff6600" font-size="11" font-family="monospace">UNSAFE GPIO6</text>
+
+  <!-- ================================================ -->
+  <!-- LEFT SIDE PIN CIRCLES (connector1pin..19pin)     -->
+  <!-- cx=20, y spacing=38, start y=64                  -->
+  <!-- ================================================ -->
+  <circle id="connector1pin"  cx="20" cy="64"  r="11" fill="#cc2200" stroke="#881500" stroke-width="2"/>
+  <circle id="connector2pin"  cx="20" cy="102" r="11" fill="#666666" stroke="#333333" stroke-width="2"/>
+  <circle id="connector3pin"  cx="20" cy="140" r="11" fill="#4455aa" stroke="#223388" stroke-width="2"/>
+  <circle id="connector4pin"  cx="20" cy="178" r="11" fill="#4455aa" stroke="#223388" stroke-width="2"/>
+  <circle id="connector5pin"  cx="20" cy="216" r="11" fill="#4455aa" stroke="#223388" stroke-width="2"/>
+  <circle id="connector6pin"  cx="20" cy="254" r="11" fill="#4455aa" stroke="#223388" stroke-width="2"/>
+  <circle id="connector7pin"  cx="20" cy="292" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector8pin"  cx="20" cy="330" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector9pin"  cx="20" cy="368" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector10pin" cx="20" cy="406" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector11pin" cx="20" cy="444" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector12pin" cx="20" cy="482" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector13pin" cx="20" cy="520" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector14pin" cx="20" cy="558" r="11" fill="#222222" stroke="#000000" stroke-width="2"/>
+  <circle id="connector15pin" cx="20" cy="596" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector16pin" cx="20" cy="634" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+  <circle id="connector17pin" cx="20" cy="672" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+  <circle id="connector18pin" cx="20" cy="710" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+  <circle id="connector19pin" cx="20" cy="748" r="11" fill="#cc2200" stroke="#881500" stroke-width="2"/>
+
+  <!-- ================================================ -->
+  <!-- RIGHT SIDE PIN CIRCLES (connector38pin..20pin)   -->
+  <!-- cx=396, y spacing=38, start y=64                 -->
+  <!-- Top→bottom: 38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20 -->
+  <!-- ================================================ -->
+  <circle id="connector38pin" cx="396" cy="64"  r="11" fill="#222222" stroke="#000000" stroke-width="2"/>
+  <circle id="connector37pin" cx="396" cy="102" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector36pin" cx="396" cy="140" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector35pin" cx="396" cy="178" r="11" fill="#225588" stroke="#113366" stroke-width="2"/>
+  <circle id="connector34pin" cx="396" cy="216" r="11" fill="#225588" stroke="#113366" stroke-width="2"/>
+  <circle id="connector33pin" cx="396" cy="254" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector32pin" cx="396" cy="292" r="11" fill="#222222" stroke="#000000" stroke-width="2"/>
+  <circle id="connector31pin" cx="396" cy="330" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector30pin" cx="396" cy="368" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector29pin" cx="396" cy="406" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector28pin" cx="396" cy="444" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector27pin" cx="396" cy="482" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector26pin" cx="396" cy="520" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector25pin" cx="396" cy="558" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector24pin" cx="396" cy="596" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector23pin" cx="396" cy="634" r="11" fill="#886600" stroke="#554400" stroke-width="2"/>
+  <circle id="connector22pin" cx="396" cy="672" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+  <circle id="connector21pin" cx="396" cy="710" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+  <circle id="connector20pin" cx="396" cy="748" r="11" fill="#993300" stroke="#661100" stroke-width="2"/>
+
+</svg>

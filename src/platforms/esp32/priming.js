@@ -365,6 +365,127 @@ print("Connected:", wlan.ifconfig())   # (ip, subnet, gateway, dns)
 \`\`\`
 `;
 
-export function buildEsp32Priming() {
-  return ESP32_PRIMING;
+const ESP32_COMPONENT_PROMPTS = {
+  'led-5mm': `\`\`\`python
+from machine import Pin
+led = Pin(<PIN>, Pin.OUT)
+led.value(1)   # on
+led.value(0)   # off
+led.toggle()   # flip state
+\`\`\``,
+
+  'dht11': `\`\`\`python
+import dht
+from machine import Pin
+import time
+
+sensor = dht.DHT11(Pin(<DATA_PIN>))
+
+while True:
+    sensor.measure()
+    print("Temp:", sensor.temperature(), "°C  Humidity:", sensor.humidity(), "%")
+    time.sleep(2)
+\`\`\``,
+
+  'hc-sr04': `\`\`\`python
+from machine import Pin
+import time
+
+TRIG = Pin(<TRIG_PIN>, Pin.OUT)
+ECHO = Pin(<ECHO_PIN>, Pin.IN)
+
+def distance_cm():
+    TRIG.off()
+    time.sleep_us(2)
+    TRIG.on()
+    time.sleep_us(10)
+    TRIG.off()
+    while not ECHO.value(): pass
+    t1 = time.ticks_us()
+    while ECHO.value(): pass
+    t2 = time.ticks_us()
+    return time.ticks_diff(t2, t1) * 340 / 2 / 10000
+
+print(f"Distance: {distance_cm():.1f} cm")
+\`\`\``,
+
+  'sg90': `\`\`\`python
+from machine import Pin, PWM
+
+servo = PWM(Pin(<SIGNAL_PIN>), freq=50)
+
+def servo_write(angle):  # 0–180 degrees
+    pulse_ms = 0.5 + (angle / 180) * 2.0
+    duty = int(pulse_ms / 20.0 * 1023)
+    servo.duty(duty)
+
+servo_write(90)   # centre
+servo_write(0)    # full left
+servo_write(180)  # full right
+\`\`\``,
+
+  'buzzer': `\`\`\`python
+from machine import Pin, PWM
+import time
+
+buzzer = PWM(Pin(<PIN>))
+
+def tone(freq, ms):
+    buzzer.freq(freq)
+    buzzer.duty(512)   # ~50% duty (ESP32 range: 0–1023)
+    time.sleep_ms(ms)
+    buzzer.duty(0)
+
+# Note frequencies (Hz)
+C4, D4, E4, G4, A4 = 262, 294, 330, 392, 440
+
+tone(C4, 250)
+tone(G4, 500)
+buzzer.deinit()
+\`\`\``,
+
+  'neopixel': `\`\`\`python
+from machine import Pin
+from neopixel import NeoPixel
+
+NUM_LEDS = 8
+pixels = NeoPixel(Pin(<DIN_PIN>, Pin.OUT), NUM_LEDS)
+
+pixels[0] = (255, 0, 0)    # red
+pixels[1] = (0, 255, 0)    # green
+pixels[2] = (0, 0, 255)    # blue
+pixels.write()              # send to strip
+
+# Turn all off
+for i in range(NUM_LEDS):
+    pixels[i] = (0, 0, 0)
+pixels.write()
+\`\`\``,
+};
+
+export function buildEsp32Priming(hardwareConfig) {
+  if (!hardwareConfig) return ESP32_PRIMING;
+
+  let priming = ESP32_PRIMING;
+
+  const componentPrompts = (hardwareConfig.componentPrompts || []).map((cp) => ({
+    ...cp,
+    prompt: ESP32_COMPONENT_PROMPTS[cp.componentId] || cp.prompt,
+  }));
+
+  if (componentPrompts.length > 0) {
+    priming += '\n\n---\n\n## Connected Components\n\nThe student has configured the following components:';
+    for (const { name, prompt } of componentPrompts) {
+      priming += `\n\n### ${name}\n${prompt}`;
+    }
+  }
+
+  if (hardwareConfig.mappingLines?.length > 0) {
+    priming += '\n\n---\n\n## Pin Mappings\n\n';
+    priming += 'The student has wired their components to these specific GPIO pins:\n';
+    priming += hardwareConfig.mappingLines.join('\n');
+    priming += '\n\nAlways use these exact GPIO numbers when writing code for this student.';
+  }
+
+  return priming;
 }

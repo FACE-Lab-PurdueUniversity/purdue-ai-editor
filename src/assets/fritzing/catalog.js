@@ -101,7 +101,19 @@ const fritzingCatalog = [
     name: "Photoresistor",
     kind: "component",
     folder: 'Photoresistor',
-  }
+  },
+  {
+    id: 'esp32-wroom-32e',
+    name: 'ESP32-WROOM-32E / ESP32-S',
+    kind: 'mpu',
+    folder: 'ESP32WROOM32E',
+  },
+  {
+    id: 'neopixel',
+    name: 'NeoPixel WS2812 LED Strip',
+    kind: 'component',
+    folder: 'NeoPixel',
+  },
 ];
 
 export default fritzingCatalog;

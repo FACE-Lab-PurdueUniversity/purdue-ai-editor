@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module moduleId="NeoPixel_WS2812_strip_v1" fritzingVersion="0.9.4">
+  <version>1</version>
+  <author>FaceLab AI</author>
+  <title>NeoPixel WS2812 LED Strip</title>
+  <label>NeoPixel</label>
+  <date>2026-07-03</date>
+  <tags>
+    <tag>NeoPixel</tag>
+    <tag>WS2812</tag>
+    <tag>LED strip</tag>
+    <tag>RGB</tag>
+  </tags>
+  <properties>
+    <property name="family">NeoPixel</property>
+    <property name="variant">WS2812 Strip</property>
+  </properties>
+  <description>WS2812 / NeoPixel addressable RGB LED strip. Connect DIN to any ESP32 GPIO output pin. Requires 5V power.</description>
+  <views>
+    <breadboardView>
+      <layers image="breadboard/NeoPixel.svg">
+        <layer layerId="breadboard"/>
+      </layers>
+    </breadboardView>
+  </views>
+  <connectors>
+    <connector id="din" name="DIN" type="female">
+      <description>DIN / Data Input</description>
+      <views><breadboardView><p svgId="dinpin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="vcc" name="VCC" type="female">
+      <description>VCC / 5V Power</description>
+      <views><breadboardView><p svgId="vccpin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gnd" name="GND" type="female">
+      <description>GND / Ground</description>
+      <views><breadboardView><p svgId="gndpin" layer="breadboard"/></breadboardView></views>
+    </connector>
+  </connectors>
+</module>

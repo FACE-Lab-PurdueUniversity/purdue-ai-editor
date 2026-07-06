@@ -27,6 +27,7 @@ import {
 } from '../services/dataLogger';
 import { getPlatform, PLATFORMS } from '../platforms';
 import { getCurrentUserHardwareConfig, getHardwareCatalog, toPromptHardwareConfig } from '../services/hardwareConfig';
+import { getEsp32HardwareCatalog, getCurrentUserEsp32HardwareConfig } from '../services/esp32HardwareConfig';
 
 const SessionContext = createContext();
 
@@ -43,17 +44,24 @@ export const SessionProvider = ({ children }) => {
   const [pendingPlatformSession, setPendingPlatformSession] = useState(null);
   const [hardwarePromptConfig, setHardwarePromptConfig] = useState(null);
   const loadHardwarePromptConfig = useCallback(async () => {
+    const platformId = activeSession?.hardware_platform;
+    if (!platformId) { setHardwarePromptConfig(null); return; }
     try {
-      const [catalog, config] = await Promise.all([
-        getHardwareCatalog(),
-        getCurrentUserHardwareConfig(),
-      ]);
+      let catalog, config;
+      if (platformId === 'esp32') {
+        [catalog, config] = await Promise.all([getEsp32HardwareCatalog(), getCurrentUserEsp32HardwareConfig()]);
+      } else if (platformId === 'lilybot') {
+        [catalog, config] = await Promise.all([getHardwareCatalog(), getCurrentUserHardwareConfig()]);
+      } else {
+        setHardwarePromptConfig(null);
+        return;
+      }
       setHardwarePromptConfig(toPromptHardwareConfig(config, catalog));
     } catch (error) {
       console.error('Error loading hardware prompt configuration:', error);
       setHardwarePromptConfig(null);
     }
-  }, []);
+  }, [activeSession?.hardware_platform]); // eslint-disable-line react-hooks/exhaustive-deps
 
   
   // Debounce timer for live code saving

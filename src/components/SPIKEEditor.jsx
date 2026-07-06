@@ -6,6 +6,11 @@ import {
   findAuthorizedMicrobitSerialPort,
   waitForMicrobitSerialPort,
 } from '../utils/microbitInstall.js';
+import {
+  openEsp32FlashSession,
+  looksLikeMissingMicroPythonEsp32,
+  waitForEsp32SerialPort,
+} from '../utils/esp32Install.js';
 import { applyPostConnectFiles, uploadFileToMicrobit } from '../utils/postConnectFiles.js';
 import CodeEditor from './CodeEditor.jsx';
 import ControlPanel from './ControlPanel.jsx';
@@ -32,6 +37,11 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
   const [buffer, setBuffer] = useState('');
   // 'idle' | 'probing' | 'flashing' | 'reconnecting'
   const [connectPhase, setConnectPhase] = useState('idle');
+  const [flashDevice, setFlashDevice] = useState('device');
+  // True after a probe finds no MicroPython on ESP32 — shows instructions + Flash button
+  const [esp32FlashRequired, setEsp32FlashRequired] = useState(false);
+  // Port obtained during the ESP32 probe; reused for the subsequent flash
+  const esp32ProbePortRef = useRef(null);
   const [flashProgress, setFlashProgress] = useState(undefined);
   const [flashMessage, setFlashMessage] = useState('');
 
@@ -122,6 +132,9 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
       return message;
     }
     if (/MicroPython install requires WebUSB access/i.test(message)) {
+      return message;
+    }
+    if (/Bootloader entry timed out/i.test(message)) {
       return message;
     }
     if (/did not respond like a MicroPython REPL/i.test(message)) {
@@ -367,6 +380,7 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
   //   idle → probing → (flashing → reconnecting →) probing → connected
   // No "arm + click again" step: flashing happens inline on the first click.
   const connectMicrobit = async (board) => {
+    setFlashDevice('micro:bit');
     setConnectPhase('probing');
     setFlashProgress(undefined);
     setFlashMessage('Opening micro:bit serial port...');
@@ -454,17 +468,135 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
     setConnectedBoard('pico');
   };
 
+  // Probe-only: tries to connect to MicroPython REPL. If MicroPython is not installed,
+  // saves the port to esp32ProbePortRef and throws Esp32FlashRequiredError so the
+  // caller can show the "Flash MicroPython" instructions without a generic error banner.
   const connectEsp32 = async (board) => {
-    setStatusBanner({
-      type: 'info',
-      message: 'Waiting for ESP32 serial device selection...'
-    });
-    await board.connect(replContainerRef.current, true, { boardType: 'esp32' });
-    await board.interrupt(150);
-    if (activePlatform?.stopCode) {
-      await board.paste(activePlatform.stopCode, { hidden: true });
+    setFlashDevice('ESP32');
+    setStatusBanner({ type: 'info', message: 'Select your ESP32 in the serial device picker...' });
+    const port = await navigator.serial.requestPort({});
+    esp32ProbePortRef.current = port;
+
+    try {
+      await board.connect(replContainerRef.current, true, { boardType: 'esp32', serialPort: port });
+      await board.interrupt(150);
+      if (activePlatform?.stopCode) {
+        await board.paste(activePlatform.stopCode, { hidden: true });
+      }
+      setConnectedBoard('esp32');
+      setEsp32FlashRequired(false);
+    } catch (error) {
+      if (!looksLikeMissingMicroPythonEsp32(error)) throw error;
+      // MicroPython not installed — signal caller to show Flash instructions
+      const err = new Error('ESP32_FLASH_REQUIRED');
+      err.code = 'ESP32_FLASH_REQUIRED';
+      throw err;
     }
-    setConnectedBoard('esp32');
+  };
+
+  // Flash MicroPython onto an ESP32 that has no MicroPython (AT firmware or blank).
+  // Requires the board to already be in bootloader mode (user held BOOT + pressed EN)
+  // so we use 'no_reset' and skip the DTR/RTS reset that causes USB to briefly disconnect.
+  const handleFlashEsp32 = async () => {
+    const board = boardRef.current;
+    if (!board || isConnecting || connected) return;
+
+    const port = esp32ProbePortRef.current;
+    if (!port) {
+      setStatusBanner({ type: 'error', message: 'No ESP32 port found. Click Connect ESP32 first.' });
+      return;
+    }
+
+    setIsConnecting(true);
+    setFlashDevice('ESP32');
+    setConnectPhase('flashing');
+    setFlashProgress(undefined);
+    setFlashMessage('Syncing with ESP32 bootloader...');
+    void logInteractionSafe('flash_esp32_micropython');
+
+    try {
+      // Flash with skipReset — board is already in bootloader mode, no DTR/RTS needed
+      let flashSession = null;
+      try {
+        flashSession = await openEsp32FlashSession(port, {
+          onStatus: (msg) => setFlashMessage(msg),
+          skipReset: true,
+        });
+        await flashSession.flashMicroPython({
+          onStatus: (msg) => setFlashMessage(msg),
+          onProgress: (pct) => setFlashProgress(pct),
+        });
+      } finally {
+        if (flashSession) {
+          try { await flashSession.close(); } catch {}
+        }
+      }
+
+      // Wait for ESP32 to reboot into MicroPython, then reconnect REPL.
+      // The CP2102 re-enumerates quickly after the RTS hard-reset, but the ESP32
+      // itself needs a few seconds to boot MicroPython before the REPL is ready.
+      setConnectPhase('reconnecting');
+      setFlashProgress(undefined);
+      setFlashMessage('Waiting for ESP32 to boot MicroPython...');
+      await new Promise((resolve) => setTimeout(resolve, 4000));
+
+      const reconnectPort = await waitForEsp32SerialPort(port, 6000);
+      if (!reconnectPort) {
+        throw new Error(
+          'ESP32 did not reappear after flashing. Unplug and replug the board, then click Connect ESP32.'
+        );
+      }
+
+      // Retry the REPL probe — boot time can vary; give the ESP32 up to ~10 s total
+      let replConnected = false;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) {
+          setFlashMessage(`ESP32 still booting, retrying... (${attempt + 1}/3)`);
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        } else {
+          setFlashMessage('Reconnecting to ESP32 REPL...');
+        }
+        try {
+          await board.connect(replContainerRef.current, true, { boardType: 'esp32', serialPort: reconnectPort });
+          replConnected = true;
+          break;
+        } catch (err) {
+          if (!looksLikeMissingMicroPythonEsp32(err)) throw err;
+          // REPL not ready yet — retry
+        }
+      }
+      if (!replConnected) {
+        throw new Error('ESP32 REPL not ready after flashing. Unplug/replug the board, then click Connect ESP32.');
+      }
+
+      await board.interrupt(150);
+      if (activePlatform?.stopCode) {
+        await board.paste(activePlatform.stopCode, { hidden: true });
+      }
+      setConnectedBoard('esp32');
+      setConnectedPlatformId(activePlatform?.id || null);
+      setEsp32FlashRequired(false);
+      esp32ProbePortRef.current = null;
+
+      try {
+        await applyPostConnectFiles(board, activePlatform);
+      } catch (error) {
+        console.error('Post-connect file install failed:', error);
+        setStatusBanner({
+          type: 'error',
+          message: `Failed to install ${error?.label || 'driver'} on device — try reconnecting.`,
+        });
+      }
+    } catch (error) {
+      console.error('ESP32 flash failed:', error);
+      const message = getConnectionErrorMessage(error);
+      setStatusBanner({ type: 'error', message });
+    } finally {
+      setConnectPhase('idle');
+      setFlashProgress(undefined);
+      setFlashMessage('');
+      setIsConnecting(false);
+    }
   };
 
   const handleConnect = async (targetBoard) => {
@@ -515,6 +647,18 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
       }
       setConnectedPlatformId(activePlatform?.id || null);
     } catch (error) {
+      // ESP32 probe found no MicroPython — show instructions instead of a generic error
+      if (error?.code === 'ESP32_FLASH_REQUIRED') {
+        setEsp32FlashRequired(true);
+        setStatusBanner({
+          type: 'warning',
+          message:
+            'MicroPython not found on this ESP32. To flash it: ' +
+            '1) Hold the BOOT button  2) Press and release EN/RST  3) Release BOOT — ' +
+            'then click "Flash MicroPython".',
+        });
+        return;
+      }
       console.error('Connection failed:', error);
       setConnected(false);
       setConnectedBoard(null);
@@ -767,6 +911,7 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
         phase={connectPhase}
         progress={flashProgress}
         message={flashMessage}
+        device={flashDevice}
       />
       <CodeTabs
         codeRecords={codeRecords}
@@ -798,6 +943,8 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
               onConnectMicrobit={() => handleConnect('microbit')}
               onConnectPico={() => handleConnect('pico')}
               onConnectEsp32={() => handleConnect('esp32')}
+              onFlashEsp32={handleFlashEsp32}
+              esp32FlashRequired={esp32FlashRequired}
               onDisconnect={handleDisconnect}
               onRun={handleRun}
               onCtrlC={handleCtrlC}

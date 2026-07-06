@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="20mm" height="11mm">
+  <!-- Board body -->
+  <rect x="40" y="70" width="320" height="110" fill="#1a1a2e" rx="8" ry="8"/>
+  <text x="200" y="120" text-anchor="middle" fill="#ffffff" font-size="26" font-family="monospace" font-weight="bold">NeoPixel</text>
+  <text x="200" y="148" text-anchor="middle" fill="#8888cc" font-size="18" font-family="monospace">WS2812</text>
+
+  <!-- Pin labels -->
+  <text x="80"  y="68" text-anchor="middle" fill="#cccccc" font-size="18" font-family="monospace">DIN</text>
+  <text x="200" y="68" text-anchor="middle" fill="#ff8888" font-size="18" font-family="monospace">VCC</text>
+  <text x="320" y="68" text-anchor="middle" fill="#888888" font-size="18" font-family="monospace">GND</text>
+
+  <!-- Pin circles (at top, above board) -->
+  <circle id="dinpin" cx="80"  cy="40" r="16" fill="#d4aa00" stroke="#8b7000" stroke-width="3"/>
+  <circle id="vccpin" cx="200" cy="40" r="16" fill="#cc2200" stroke="#881500" stroke-width="3"/>
+  <circle id="gndpin" cx="320" cy="40" r="16" fill="#444444" stroke="#111111" stroke-width="3"/>
+
+  <!-- Connection lines from pins to board -->
+  <line x1="80"  y1="56"  x2="80"  y2="70"  stroke="#888888" stroke-width="2"/>
+  <line x1="200" y1="56"  x2="200" y2="70"  stroke="#888888" stroke-width="2"/>
+  <line x1="320" y1="56"  x2="320" y2="70"  stroke="#888888" stroke-width="2"/>
+</svg>

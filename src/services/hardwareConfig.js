@@ -134,12 +134,13 @@ async function fetchTemplatesFromConfig() {
     .eq('key', APP_CONFIG_TEMPLATES_KEY)
     .maybeSingle();
 
-  if (error) throw new Error(`Failed to fetch templates from app_config: ${error.message}`);
-  if (!data?.value) throw new Error(`No data found for ${APP_CONFIG_TEMPLATES_KEY} in app_config`);
+  if (error) {
+    console.warn(`Could not fetch hardware templates: ${error.message}`);
+    return [];
+  }
+  if (!data?.value) return [];
 
-  // Support both a single template object and an array of templates
   const raw = Array.isArray(data.value) ? data.value : [data.value];
-  if (raw.length === 0) throw new Error(`${APP_CONFIG_TEMPLATES_KEY} in app_config is empty`);
   return raw;
 }
 
@@ -251,6 +252,70 @@ function getPromptPinName(pin) {
     if (firstToken) return firstToken;
   }
   return pin.name || pin.id || '';
+}
+
+/**
+ * Creates hardware-catalog and user-config service functions for any platform.
+ * Identical in behavior to getHardwareCatalog / getCurrentUserHardwareConfig /
+ * saveCurrentUserHardwareConfig but driven by caller-supplied Supabase keys.
+ */
+export function createPlatformHardwareConfig({ mpuKey, componentsKey, templatesKey, userConfigKey }) {
+  let cachedPromise = null;
+
+  async function fetchPlatformTemplates() {
+    if (!templatesKey) return [];
+    const { data, error } = await supabase.from('app_config').select('value').eq('key', templatesKey).maybeSingle();
+    if (error) { console.warn(`Could not fetch ${templatesKey}: ${error.message}`); return []; }
+    if (!data?.value) return [];
+    const raw = Array.isArray(data.value) ? data.value : [data.value];
+    return raw;
+  }
+
+  return {
+    getHardwareCatalog: async (forceRefresh = false) => {
+      if (forceRefresh) cachedPromise = null;
+      if (cachedPromise) return cachedPromise;
+      cachedPromise = (async () => {
+        const [mpus, components, templates] = await Promise.all([
+          fetchPartIdsFromConfig(mpuKey),
+          fetchPartIdsFromConfig(componentsKey),
+          fetchPlatformTemplates(),
+        ]);
+        const [resolvedMpus, resolvedComponents] = await Promise.all([
+          Promise.all(mpus.map(resolvePartPins)),
+          Promise.all(components.map(resolvePartPins)),
+        ]);
+        return {
+          mpus: resolvedMpus,
+          components: resolvedComponents,
+          templates: templates.map((t) => normalizeHardwareConfig(t)),
+        };
+      })();
+      return cachedPromise;
+    },
+
+    getCurrentUserHardwareConfig: async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return normalizeHardwareConfig(data?.user?.user_metadata?.[userConfigKey]);
+    },
+
+    saveCurrentUserHardwareConfig: async (config) => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      const normalizedConfig = normalizeHardwareConfig(config) || getDefaultHardwareConfig();
+      const existingMetadata = data?.user?.user_metadata || {};
+      const mergedData = {
+        ...existingMetadata,
+        [userConfigKey]: {
+          ...normalizedConfig,
+          updatedAt: new Date().toISOString(),
+        },
+      };
+      const { error: updateError } = await supabase.auth.updateUser({ data: mergedData });
+      if (updateError) throw updateError;
+    },
+  };
 }
 
 export function toPromptHardwareConfig(config, catalog) {

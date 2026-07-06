@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module moduleId="ESP32WROOM32E_38pin_v2" fritzingVersion="0.9.4">
+  <version>2</version>
+  <author>FaceLab AI</author>
+  <title>ESP32-WROOM-32E / ESP32-S</title>
+  <label>U</label>
+  <date>2026-07-04</date>
+  <tags>
+    <tag>ESP32</tag>
+    <tag>ESP32-WROOM-32E</tag>
+    <tag>ESP32-S</tag>
+    <tag>microcontroller</tag>
+    <tag>38-pin</tag>
+    <tag>WiFi</tag>
+  </tags>
+  <properties>
+    <property name="family">ESP32</property>
+    <property name="variant">38-pin wide</property>
+    <property name="pins">38</property>
+  </properties>
+  <description>ESP32-WROOM-32E / ESP32-S 38-pin development board. Safe output GPIOs: 0,2,4,5,12-19,21-23,25-27,32-33. Input-only: 34,35,36,39. Never use 6-11 (internal flash — hardware damage risk).</description>
+  <views>
+    <breadboardView>
+      <layers image="breadboard/ESP32WROOM32E.svg">
+        <layer layerId="breadboard"/>
+      </layers>
+    </breadboardView>
+  </views>
+  <connectors>
+    <!-- ====== LEFT SIDE (top to bottom, svgId = connector1pin .. connector19pin) ====== -->
+    <connector id="3v3" name="3.3V" type="male">
+      <description>3.3V / Power Output</description>
+      <views><breadboardView><p svgId="connector1pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="en" name="EN" type="male">
+      <description>EN / Enable / Reset</description>
+      <views><breadboardView><p svgId="connector2pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio36" name="GPIO36" type="male">
+      <description>GPIO36 / SVP / ADC1 / Input-only</description>
+      <views><breadboardView><p svgId="connector3pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio39" name="GPIO39" type="male">
+      <description>GPIO39 / SVN / ADC1 / Input-only</description>
+      <views><breadboardView><p svgId="connector4pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio34" name="GPIO34" type="male">
+      <description>GPIO34 / ADC1 / Input-only</description>
+      <views><breadboardView><p svgId="connector5pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio35" name="GPIO35" type="male">
+      <description>GPIO35 / ADC1 / Input-only</description>
+      <views><breadboardView><p svgId="connector6pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio32" name="GPIO32" type="male">
+      <description>GPIO32 / ADC1 / Touch9</description>
+      <views><breadboardView><p svgId="connector7pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio33" name="GPIO33" type="male">
+      <description>GPIO33 / ADC1 / Touch8</description>
+      <views><breadboardView><p svgId="connector8pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio25" name="GPIO25" type="male">
+      <description>GPIO25 / ADC2 / DAC1</description>
+      <views><breadboardView><p svgId="connector9pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio26" name="GPIO26" type="male">
+      <description>GPIO26 / ADC2 / DAC2</description>
+      <views><breadboardView><p svgId="connector10pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio27" name="GPIO27" type="male">
+      <description>GPIO27 / ADC2 / Touch7</description>
+      <views><breadboardView><p svgId="connector11pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio14" name="GPIO14" type="male">
+      <description>GPIO14 / ADC2 / Touch6 / SPI_CLK</description>
+      <views><breadboardView><p svgId="connector12pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio12" name="GPIO12" type="male">
+      <description>GPIO12 / ADC2 / Touch5 / SPI_MISO</description>
+      <views><breadboardView><p svgId="connector13pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gnd1" name="GND" type="male">
+      <description>GND / Ground</description>
+      <views><breadboardView><p svgId="connector14pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio13" name="GPIO13" type="male">
+      <description>GPIO13 / ADC2 / Touch4 / SPI_MOSI</description>
+      <views><breadboardView><p svgId="connector15pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio9" name="GPIO9" type="male">
+      <description>GPIO9 / UNSAFE / Internal Flash SD2 - Do Not Use</description>
+      <views><breadboardView><p svgId="connector16pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio10" name="GPIO10" type="male">
+      <description>GPIO10 / UNSAFE / Internal Flash SD3 - Do Not Use</description>
+      <views><breadboardView><p svgId="connector17pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio11" name="GPIO11" type="male">
+      <description>GPIO11 / UNSAFE / Internal Flash CMD - Do Not Use</description>
+      <views><breadboardView><p svgId="connector18pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="vin" name="VIN" type="male">
+      <description>VIN / 5V Power Input</description>
+      <views><breadboardView><p svgId="connector19pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+
+    <!-- ====== RIGHT SIDE (top to bottom: GND,23,22,1,3,21,GND,19,18,5,17,16,4,0,2,15,8,7,6) ====== -->
+    <!-- svgId counts DOWN from connector38pin (top-right) to connector20pin (bottom-right) -->
+    <connector id="gnd3" name="GND" type="male">
+      <description>GND / Ground</description>
+      <views><breadboardView><p svgId="connector38pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio23" name="GPIO23" type="male">
+      <description>GPIO23 / SPI_MOSI</description>
+      <views><breadboardView><p svgId="connector37pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio22" name="GPIO22" type="male">
+      <description>GPIO22 / I2C_SCL</description>
+      <views><breadboardView><p svgId="connector36pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio1" name="GPIO1" type="male">
+      <description>GPIO1 / TX / UART0</description>
+      <views><breadboardView><p svgId="connector35pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio3" name="GPIO3" type="male">
+      <description>GPIO3 / RX / UART0</description>
+      <views><breadboardView><p svgId="connector34pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio21" name="GPIO21" type="male">
+      <description>GPIO21 / I2C_SDA</description>
+      <views><breadboardView><p svgId="connector33pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gnd2" name="GND" type="male">
+      <description>GND / Ground</description>
+      <views><breadboardView><p svgId="connector32pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio19" name="GPIO19" type="male">
+      <description>GPIO19 / SPI_MISO</description>
+      <views><breadboardView><p svgId="connector31pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio18" name="GPIO18" type="male">
+      <description>GPIO18 / SPI_CLK</description>
+      <views><breadboardView><p svgId="connector30pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio5" name="GPIO5" type="male">
+      <description>GPIO5 / SPI_CS</description>
+      <views><breadboardView><p svgId="connector29pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio17" name="GPIO17" type="male">
+      <description>GPIO17 / UART2_TX</description>
+      <views><breadboardView><p svgId="connector28pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio16" name="GPIO16" type="male">
+      <description>GPIO16 / UART2_RX</description>
+      <views><breadboardView><p svgId="connector27pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio4" name="GPIO4" type="male">
+      <description>GPIO4 / ADC2 / Touch0</description>
+      <views><breadboardView><p svgId="connector26pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio0" name="GPIO0" type="male">
+      <description>GPIO0 / ADC2 / BOOT</description>
+      <views><breadboardView><p svgId="connector25pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio2" name="GPIO2" type="male">
+      <description>GPIO2 / ADC2 / Touch2</description>
+      <views><breadboardView><p svgId="connector24pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio15" name="GPIO15" type="male">
+      <description>GPIO15 / ADC2 / Touch3 / SPI_SS</description>
+      <views><breadboardView><p svgId="connector23pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio8" name="GPIO8" type="male">
+      <description>GPIO8 / UNSAFE / Internal Flash SD1 - Do Not Use</description>
+      <views><breadboardView><p svgId="connector22pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio7" name="GPIO7" type="male">
+      <description>GPIO7 / UNSAFE / Internal Flash SD0 - Do Not Use</description>
+      <views><breadboardView><p svgId="connector21pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+    <connector id="gpio6" name="GPIO6" type="male">
+      <description>GPIO6 / UNSAFE / Internal Flash CLK - Do Not Use</description>
+      <views><breadboardView><p svgId="connector20pin" layer="breadboard"/></breadboardView></views>
+    </connector>
+  </connectors>
+  <buses>
+    <bus id="GND">
+      <nodeMember connectorId="gnd1"/>
+      <nodeMember connectorId="gnd2"/>
+      <nodeMember connectorId="gnd3"/>
+    </bus>
+  </buses>
+</module>

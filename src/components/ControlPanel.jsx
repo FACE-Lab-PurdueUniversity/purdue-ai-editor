@@ -6,6 +6,8 @@ const ControlPanel = ({
   onConnectMicrobit,
   onConnectPico,
   onConnectEsp32,
+  onFlashEsp32,
+  esp32FlashRequired = false,
   onDisconnect,
   onRun,
   onCtrlC,
@@ -54,6 +56,15 @@ const ControlPanel = ({
                 disabled={isConnecting}
               >
                 {isConnecting ? 'Connecting...' : 'Connect ESP32'}
+              </button>
+            )}
+            {platformConnectionType === 'esp32' && esp32FlashRequired && (
+              <button
+                onClick={onFlashEsp32}
+                className="button run-button"
+                disabled={isConnecting}
+              >
+                {isConnecting ? 'Flashing...' : 'Flash MicroPython'}
               </button>
             )}
           </>
