@@ -59,6 +59,11 @@
   font-weight: 500;
 }
 
+/* Persona tabs get a small accent bar so they're visually distinct from regular chats */
+.chat-tab.persona-tab {
+  box-shadow: inset 0 2px 0 0 var(--brand-accent);
+}
+
 /* Tab name */
 .chat-tab-name {
   flex: 1;

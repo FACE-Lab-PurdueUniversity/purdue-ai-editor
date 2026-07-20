@@ -11,17 +11,21 @@ import { logMessage, logConsole } from '../services/dataLogger';
 import { streamChatCompletionWithBudget } from '../utils/chatStream';
 import { getUserAccessLevel, getDailyBudgetUsage } from '../services/aiUsage';
 import { fetchModelMetadata, pickInitialModel } from '../services/aiModels';
-import { 
+import {
   LEVEL_INSTRUCTION_PREFIX,
   beginnerPrompt,
   intermediatePrompt,
   experiencedPrompt,
 } from '../prompts/codingLevels';
+import { getPresetPersonaById, isPresetPersonaType, presetIdFromPersonaType } from '../prompts/personas';
+import { buildCustomPersonaSystemPrompt } from '../prompts/customPersonaGuardrail';
 import CodeModal from './CodeModal';
 import ConsoleModal from './ConsoleModal';
 import BudgetErrorModal from './BudgetErrorModal';
 import ChatConfiguration from './ChatConfiguration';
 import ChatTabs from './ChatTabs';
+import NewChatModal from './NewChatModal';
+import CustomPersonaModal from './CustomPersonaModal';
 import './ChatPanel.css';
 
 // Configure marked for better markdown rendering
@@ -71,8 +75,25 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
   const [consoleHasContent, setConsoleHasContent] = useState(false);
   const [budgetErrorVisible, setBudgetErrorVisible] = useState(false);
   const [userAccessLevel, setUserAccessLevel] = useState('standard');
+  const [newChatModalOpen, setNewChatModalOpen] = useState(false);
+  const [customPersonaModalOpen, setCustomPersonaModalOpen] = useState(false);
 
   const selectedModelStreaming = modelMetadata.streamableByModel[selectedModel] ?? false;
+
+  const activeConversation = conversations.find((c) => c.id === currentConversationId) || null;
+  const personaType = activeConversation?.persona_type || null;
+  const isPersonaConversation = !!personaType;
+
+  const getPersonaSystemPrompt = () => {
+    if (isPresetPersonaType(personaType)) {
+      const preset = getPresetPersonaById(presetIdFromPersonaType(personaType));
+      return preset ? preset.systemPrompt : '';
+    }
+    if (personaType === 'custom') {
+      return buildCustomPersonaSystemPrompt(activeConversation?.persona_prompt);
+    }
+    return '';
+  };
 
   const chatBodyRef = useRef(null);
   const streamingMessageRef = useRef(null);
@@ -324,7 +345,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
         conversation_id: conversationId,
         role: 'user',
         content: text,
-        coding_level: codingLevel,
+        coding_level: isPersonaConversation ? 'persona' : codingLevel,
         code_context_id: codeContextId,
         console_context_id: consoleContextId,
       });
@@ -332,20 +353,29 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
 
     // Build conversation for AI
     const conversation = [];
-    
-    // Add system priming
-    conversation.push({
-      role: 'system',
-      content: getSystemPriming(),
-    });
 
-    // Add coding level instructions
-    const levelInstructions = getLevelPrompt(codingLevel);
-    if (levelInstructions) {
+    if (isPersonaConversation) {
+      // Persona conversations use only the persona's own priming — no
+      // platform/hardware priming and no coding-level layer.
       conversation.push({
         role: 'system',
-        content: `${LEVEL_INSTRUCTION_PREFIX}\n\n${levelInstructions}`,
+        content: getPersonaSystemPrompt(),
       });
+    } else {
+      // Add system priming
+      conversation.push({
+        role: 'system',
+        content: getSystemPriming(),
+      });
+
+      // Add coding level instructions
+      const levelInstructions = getLevelPrompt(codingLevel);
+      if (levelInstructions) {
+        conversation.push({
+          role: 'system',
+          content: `${LEVEL_INSTRUCTION_PREFIX}\n\n${levelInstructions}`,
+        });
+      }
     }
 
     // Add conversation history
@@ -441,7 +471,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
         conversation_id: conversationId,
         role: 'assistant',
         content: fullResponse,
-        coding_level: codingLevel,
+        coding_level: isPersonaConversation ? 'persona' : codingLevel,
         ai_model: actualModel,
         prompt_tokens: usageData?.input_tokens || 0,
         completion_tokens: usageData?.output_tokens || 0,
@@ -633,6 +663,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
         selectedModelStreaming={selectedModelStreaming}
         dailyUsagePercentage={dailyUsagePercentage}
         dailyUsageLoading={dailyUsageLoading}
+        isPersonaConversation={isPersonaConversation}
       />
 
       {activeSession && conversations.length > 0 && (
@@ -640,7 +671,7 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
           conversations={conversations}
           currentConversationId={currentConversationId}
           onSwitchConversation={switchConversation}
-          onCreateConversation={createNewConversation}
+          onCreateConversation={() => setNewChatModalOpen(true)}
           onRenameConversation={updateConversationName}
         />
       )}
@@ -663,25 +694,27 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
       </div>
 
       <div className="chat-input-area">
-        <div className="chat-context-controls">
-          <button
-            type="button"
-            className={`context-checkbox-btn ${attachedContext.includeCode ? 'context-checkbox-btn--active' : ''}`}
-            onClick={() => setAttachedContext(prev => ({ ...prev, includeCode: !prev.includeCode }))}
-          >
-            <span className="context-checkbox-btn__box">{attachedContext.includeCode ? '✓' : ''}</span>
-            <span className="context-checkbox-btn__label">Add Code to Chat</span>
-          </button>
-          <button
-            type="button"
-            className={`context-checkbox-btn ${attachedContext.includeConsole ? 'context-checkbox-btn--active' : ''}`}
-            onClick={() => setAttachedContext(prev => ({ ...prev, includeConsole: !prev.includeConsole }))}
-            disabled={!consoleHasContent}
-          >
-            <span className="context-checkbox-btn__box">{attachedContext.includeConsole ? '✓' : ''}</span>
-            <span className="context-checkbox-btn__label">Add Console to Chat</span>
-          </button>
-        </div>
+        {!isPersonaConversation && (
+          <div className="chat-context-controls">
+            <button
+              type="button"
+              className={`context-checkbox-btn ${attachedContext.includeCode ? 'context-checkbox-btn--active' : ''}`}
+              onClick={() => setAttachedContext(prev => ({ ...prev, includeCode: !prev.includeCode }))}
+            >
+              <span className="context-checkbox-btn__box">{attachedContext.includeCode ? '✓' : ''}</span>
+              <span className="context-checkbox-btn__label">Add Code to Chat</span>
+            </button>
+            <button
+              type="button"
+              className={`context-checkbox-btn ${attachedContext.includeConsole ? 'context-checkbox-btn--active' : ''}`}
+              onClick={() => setAttachedContext(prev => ({ ...prev, includeConsole: !prev.includeConsole }))}
+              disabled={!consoleHasContent}
+            >
+              <span className="context-checkbox-btn__box">{attachedContext.includeConsole ? '✓' : ''}</span>
+              <span className="context-checkbox-btn__label">Add Console to Chat</span>
+            </button>
+          </div>
+        )}
 
         <div className="chat-input-row">
           <textarea
@@ -724,6 +757,19 @@ const ChatPanel = ({ onReplaceCode, getCodeContent, getConsoleContent }) => {
         accessLevel={userAccessLevel}
         premiumModels={modelMetadata.premiumModels}
         nonPremiumModels={modelMetadata.nonPremiumModels}
+      />
+
+      {/* New Chat Picker */}
+      <NewChatModal
+        isOpen={newChatModalOpen}
+        onClose={() => setNewChatModalOpen(false)}
+        onOpenCustomPersona={() => setCustomPersonaModalOpen(true)}
+      />
+
+      {/* Custom Persona Creation */}
+      <CustomPersonaModal
+        isOpen={customPersonaModalOpen}
+        onClose={() => setCustomPersonaModalOpen(false)}
       />
 
     </div>

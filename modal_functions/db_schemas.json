@@ -111,6 +111,14 @@
           "default": "Unnamed Chat",
           "nullable": true,
           "type": "string"
+        },
+        "persona_type": {
+          "nullable": true,
+          "type": "string"
+        },
+        "persona_prompt": {
+          "nullable": true,
+          "type": "string"
         }
       },
       "required": [

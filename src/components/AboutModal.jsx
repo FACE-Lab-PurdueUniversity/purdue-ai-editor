@@ -13,7 +13,7 @@ const AboutModal = ({ visible, onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="about-header">
-          <h1 className="about-title">LilyBot AI Editor</h1>
+          <h1 className="about-title">FACE Lab</h1>
           <p className="about-subtitle">
             An AI-powered environment for working with LilyBot robots.
           </p>

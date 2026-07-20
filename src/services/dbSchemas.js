@@ -92,6 +92,8 @@ export const conversationSchema = z.object({
   start_time: fields.timestamp,
   last_updated: fields.timestamp,
   name: z.string().optional().nullable().default('Unnamed Chat'),
+  persona_type: z.string().optional().nullable(),
+  persona_prompt: z.string().optional().nullable(),
 });
 
 /**
@@ -101,6 +103,8 @@ export const conversationInsertSchema = z.object({
   user_id: fields.userId,
   session_id: fields.id,
   name: z.string().optional().default('Unnamed Chat'),
+  persona_type: z.string().optional().nullable(),
+  persona_prompt: z.string().optional().nullable(),
 });
 
 /**

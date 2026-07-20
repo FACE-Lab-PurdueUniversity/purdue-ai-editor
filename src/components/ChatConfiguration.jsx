@@ -5,8 +5,8 @@
 
 import './ChatConfiguration.css';
 
-const ChatConfiguration = ({ 
-  codingLevel, 
+const ChatConfiguration = ({
+  codingLevel,
   onCodingLevelChange,
   selectedModel,
   onModelChange,
@@ -17,23 +17,28 @@ const ChatConfiguration = ({
   selectedModelStreaming,
   dailyUsagePercentage,
   dailyUsageLoading,
+  isPersonaConversation,
 }) => {
   const usagePercent = Number.isFinite(dailyUsagePercentage) ? Math.max(0, Math.min(100, Math.round(dailyUsagePercentage))) : 0;
-  
+
   return (
     <div className="chat-configuration">
       <div className="config-left">
-        <label htmlFor="coding-level-selector">Coding Level:</label>
-        <select
-          id="coding-level-selector"
-          className="chat-level-selector"
-          value={codingLevel}
-          onChange={(e) => onCodingLevelChange(e.target.value)}
-        >
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="experienced">Experienced</option>
-        </select>
+        {!isPersonaConversation && (
+          <>
+            <label htmlFor="coding-level-selector">Coding Level:</label>
+            <select
+              id="coding-level-selector"
+              className="chat-level-selector"
+              value={codingLevel}
+              onChange={(e) => onCodingLevelChange(e.target.value)}
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="experienced">Experienced</option>
+            </select>
+          </>
+        )}
 
         <label htmlFor="model-selector" style={{ marginLeft: '15px' }}>AI Model:</label>
         <select

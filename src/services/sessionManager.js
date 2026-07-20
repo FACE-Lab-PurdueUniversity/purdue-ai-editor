@@ -361,12 +361,15 @@ export const getSessionConversations = async (sessionId) => {
 };
 
 /**
- * Create a new conversation for a session
+ * Create a new conversation for a session.
+ * @param {number} sessionId
+ * @param {string} name
+ * @param {{ personaType?: string|null, personaPrompt?: string|null }} [options]
  */
-export const createConversation = async (sessionId, name = 'Chat 1') => {
+export const createConversation = async (sessionId, name = 'Chat 1', { personaType = null, personaPrompt = null } = {}) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     if (!user || !sessionId) {
       console.error('User and session_id are required');
       return null;
@@ -376,6 +379,8 @@ export const createConversation = async (sessionId, name = 'Chat 1') => {
       user_id: user.id,
       session_id: sessionId,
       name,
+      persona_type: personaType,
+      persona_prompt: personaPrompt,
     };
 
     const validation = validate(conversationInsertSchema, payload);

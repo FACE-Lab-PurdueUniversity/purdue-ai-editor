@@ -336,17 +336,18 @@ export const SessionProvider = ({ children }) => {
   }, [activeSession]);
 
   /**
-   * Create a new conversation in the current session
+   * Create a new conversation in the current session.
+   * @param {{ name?: string, personaType?: string|null, personaPrompt?: string|null }} [options]
    */
-  const createNewConversation = useCallback(async () => {
+  const createNewConversation = useCallback(async ({ name, personaType = null, personaPrompt = null } = {}) => {
     if (!activeSession) {
       console.error('No active session');
       return null;
     }
 
     try {
-      const name = `Chat ${conversations.length + 1}`;
-      const newConversation = await createConversation(activeSession.id, name);
+      const resolvedName = name || `Chat ${conversations.length + 1}`;
+      const newConversation = await createConversation(activeSession.id, resolvedName, { personaType, personaPrompt });
       if (newConversation) {
         // Reload conversations list
         await loadConversations(activeSession.id);

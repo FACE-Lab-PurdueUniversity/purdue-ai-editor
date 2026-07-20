@@ -1,5 +1,5 @@
 const brand = {
-  name: "LilyBot AI Editor",
+  name: "FACE Lab",
   logoSrc: "/PU-H-Full-RGB.svg",
   logoAlt: "Purdue University",
   logoHeight: 40,

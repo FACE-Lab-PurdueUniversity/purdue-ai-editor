@@ -1,0 +1,136 @@
+.new-chat-modal {
+  max-width: 480px;
+}
+
+.new-chat-modal h2 {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+}
+
+.new-chat-modal-subtitle {
+  margin: 0 0 20px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.new-chat-option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.new-chat-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.new-chat-option:hover {
+  background: #f0f0f0;
+  border-color: var(--brand-accent);
+}
+
+.new-chat-option-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.new-chat-option-desc {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.custom-persona-label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.custom-persona-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.custom-persona-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.custom-persona-file-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  color: #333;
+  border: 1.5px dashed #aaa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.custom-persona-file-button:hover {
+  background: #f5f5f5;
+  border-color: var(--brand-accent);
+}
+
+.custom-persona-file-name {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.custom-persona-error {
+  margin: 10px 0 0;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.custom-persona-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.custom-persona-actions .modal-close-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.custom-persona-cancel {
+  padding: 10px 24px;
+  background: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.custom-persona-cancel:hover {
+  background: #f5f5f5;
+}

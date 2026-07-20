@@ -62,11 +62,12 @@ const ChatTabs = ({
           const isActive = conversation.id === currentConversationId;
           const isEditing = editingId === conversation.id;
           const displayName = conversation.name || `Chat ${index + 1}`;
+          const isPersonaTab = !!conversation.persona_type && conversation.persona_type !== 'regular';
 
           return (
             <div
               key={conversation.id}
-              className={`chat-tab ${isActive ? 'active' : ''}`}
+              className={`chat-tab ${isActive ? 'active' : ''} ${isPersonaTab ? 'persona-tab' : ''}`}
               onClick={() => !isEditing && onSwitchConversation(conversation.id)}
             >
               {isEditing ? (
@@ -85,17 +86,19 @@ const ChatTabs = ({
                   <span className="chat-tab-name">
                     {displayName}
                   </span>
-                  <button
-                    type="button"
-                    className="chat-tab-edit"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleStartEdit(conversation, index);
-                    }}
-                    aria-label="Rename tab"
-                  >
-                    &#9998;
-                  </button>
+                  {!isPersonaTab && (
+                    <button
+                      type="button"
+                      className="chat-tab-edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit(conversation, index);
+                      }}
+                      aria-label="Rename tab"
+                    >
+                      &#9998;
+                    </button>
+                  )}
                 </>
               )}
             </div>
