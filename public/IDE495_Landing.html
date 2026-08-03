@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDE 495 — Prototyping for Experience</title>
+<style>
+:root {
+  --bg: #0F0F0F;
+  --card: #1A1A1A;
+  --gold: #CEB888;
+  --head: #F2F2F2;
+  --muted: #8C8C8C;
+  --dim: #4A4A4A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--head);
+  font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,15,15,0.96);
+  border-bottom: 1px solid var(--dim);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 52px;
+  backdrop-filter: blur(6px);
+}
+nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+nav a.nav-link {
+  font-size: 12px; letter-spacing: 0.08em; color: var(--muted);
+  text-decoration: none; padding: 0.3rem 0.9rem; border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+nav a.nav-link:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+section { padding: 5rem 0; }
+section + section { border-top: 1px solid var(--dim); }
+#hero { padding: 6rem 0 5rem; border-bottom: 1px solid var(--dim); }
+#hero .eyebrow {
+  font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 1.2rem;
+}
+#hero h1 {
+  font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 300; line-height: 1.1;
+  color: var(--head); margin-bottom: 1.2rem; max-width: 700px;
+}
+#hero h1 em { color: var(--gold); font-style: normal; }
+#hero p.lead {
+  font-size: 15px; color: var(--muted); max-width: 560px; line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.tag-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0; }
+.tag {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold); border: 1px solid rgba(206,184,136,0.35);
+  padding: 0.3rem 0.7rem; border-radius: 2px;
+}
+.section-header { margin-bottom: 3rem; }
+.section-header .eyebrow {
+  font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 0.6rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(206,184,136,0.25);
+}
+.section-header h2 {
+  font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 300; color: var(--head);
+  line-height: 1.2; margin-bottom: 0.7rem;
+}
+.section-header p { color: var(--muted); max-width: 640px; font-size: 14px; line-height: 1.7; }
+.resource-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+}
+.resource-card {
+  background: var(--card); padding: 1.9rem 1.75rem; text-decoration: none;
+  display: flex; flex-direction: column; gap: 0.6rem; transition: background 0.15s;
+}
+.resource-card:hover { background: #1e1e1e; }
+.resource-card .r-icon {
+  width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--gold);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  color: var(--gold); border-radius: 2px; opacity: 0.85;
+}
+.resource-card h3 { font-size: 16px; font-weight: 500; color: var(--gold); letter-spacing: 0.02em; }
+.resource-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.resource-card .r-go {
+  margin-top: 0.4rem; font-size: 11px; color: var(--gold); letter-spacing: 0.1em;
+  text-transform: uppercase; border-bottom: 1px solid rgba(206,184,136,0.3);
+  padding-bottom: 1px; align-self: flex-start;
+}
+footer {
+  border-top: 1px solid var(--dim); padding: 2.5rem 0;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">IDE 495 &nbsp;·&nbsp; Prototyping for Experience</span>
+  <a class="nav-link" href="/ai_design_guide_v1">AI + Design Field Guide &rarr;</a>
+</nav>
+
+<div id="hero">
+  <div class="container">
+    <div class="eyebrow">Purdue MDE &nbsp;·&nbsp; Studio Course &nbsp;·&nbsp; Fall 2026</div>
+    <h1>Design. Fabricate. <em>Evoke.</em></h1>
+    <p class="lead">IDE 495 is a new junior/senior studio course where students prototype physical, sensing, and responsive objects built to evoke a specific emotional response, using AI as a working partner rather than a shortcut. This page collects the workflow resources built for the course and its MicroArtistry 2026 pilot.</p>
+    <div class="tag-row">
+      <span class="tag">Norman's Three Levels</span>
+      <span class="tag">Compassionate Design</span>
+      <span class="tag">Engineering For/With/As People</span>
+    </div>
+  </div>
+</div>
+
+<section id="resources">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">AI Design Guide</div>
+      <h2>Workflow resources for building with AI</h2>
+      <p>Each guide covers one part of the prototyping stack: how to think about it, the tools that fit, a worked prompt structure, and the pitfalls that show up in practice. Start with the full field guide, or jump straight to the workflow you need.</p>
+    </div>
+    <div class="resource-grid">
+      <a class="resource-card" href="/ai_design_guide_v1">
+        <div class="r-icon">&#9670;</div>
+        <h3>AI + Design — Full Field Guide</h3>
+        <p>The mental model, all five workflows, and the ethical commitments in one place. Start here if you're new.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_vibe_coding">
+        <div class="r-icon">&#60;/&#62;</div>
+        <h3>Vibe Coding</h3>
+        <p>Directing AI to write web/app behavior by describing intent and feel, not code structure.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_microcontrollers">
+        <div class="r-icon">&#9889;</div>
+        <h3>Microcontroller Programming</h3>
+        <p>AI-assisted firmware for Arduino/ESP32 sensors, actuators, and physical behavior.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_hardware">
+        <div class="r-icon">&#9881;</div>
+        <h3>Hardware Troubleshooting</h3>
+        <p>Using AI as a diagnostic partner for wiring, power, and sensor problems.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_ui_dev">
+        <div class="r-icon">&#9707;</div>
+        <h3>User Interface Development</h3>
+        <p>Building web-based control interfaces and displays with an emotional register in mind.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_image_gen">
+        <div class="r-icon">&#9998;</div>
+        <h3>Image Generation</h3>
+        <p>Rapid visual ideation and concept assets, with prompt specificity as the core craft.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; width:100%;">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>Test deploy &middot; August 3, 2026 &middot; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>
