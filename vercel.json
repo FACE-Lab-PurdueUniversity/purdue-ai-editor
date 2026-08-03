@@ -1,32 +1,12 @@
 {
   "rewrites": [
-    {
-      "source": "/ai_guide_ui_dev",
-      "destination": "/AI_Guide_UI_Dev.html"
-    },
-    {
-      "source": "/ai_guide_hardware",
-      "destination": "/AI_Guide_Hardware.html"
-    },
-    {
-      "source": "/ai_guide_image_gen",
-      "destination": "/AI_Guide_Image_Gen.html"
-    },
-    {
-      "source": "/ai_design_guide_v1",
-      "destination": "/AI_Design_Guide_v1.html"
-    },
-    {
-      "source": "/ai_guide_microcontrollers",
-      "destination": "/AI_Guide_Microcontrollers.html"
-    },
-    {
-      "source": "/ai_guide_vibe_coding",
-      "destination": "/AI_Guide_Vibe_Coding.html"
-    },
-    {
-      "source": "/((?!.*\\.).*)",
-      "destination": "/"
-    }
+    { "source": "/ai_guide_ui_dev", "destination": "/AI_Guide_UI_Dev.html" },
+    { "source": "/ai_guide_hardware", "destination": "/AI_Guide_Hardware.html" },
+    { "source": "/ai_guide_image_gen", "destination": "/AI_Guide_Image_Gen.html" },
+    { "source": "/ai_design_guide_v1", "destination": "/AI_Design_Guide_v1.html" },
+    { "source": "/ai_guide_microcontrollers", "destination": "/AI_Guide_Microcontrollers.html" },
+    { "source": "/ai_guide_vibe_coding", "destination": "/AI_Guide_Vibe_Coding.html" },
+    { "source": "/ide495", "destination": "/IDE495_Landing.html" },
+    { "source": "/((?!.*\\.).*)", "destination": "/" }
   ]
 }
