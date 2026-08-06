@@ -1,0 +1,69 @@
+<svg width="1600" height="500" viewBox="0 0 1600 500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1A1A1A" stroke-width="1"/>
+          </pattern>
+          <radialGradient id="glow" cx="78%" cy="45%" r="60%">
+                  <stop offset="0%" stop-color="#CEB888" stop-opacity="0.14"/>
+                  <stop offset="100%" stop-color="#CEB888" stop-opacity="0"/>
+          </radialGradient>
+    </defs>
+
+    <rect x="0" y="0" width="1600" height="500" fill="#0F0F0F"/>
+    <rect x="0" y="0" width="1600" height="500" fill="url(#grid)"/>
+    <rect x="0" y="0" width="1600" height="500" fill="url(#glow)"/>
+
+    <rect x="0" y="0" width="120" height="6" fill="#CEB888"/>
+    <rect x="0" y="0" width="6" height="120" fill="#CEB888"/>
+    <rect x="1480" y="494" width="120" height="6" fill="#CEB888"/>
+    <rect x="1594" y="380" width="6" height="120" fill="#CEB888"/>
+
+    <g stroke="#CEB888" stroke-width="1.4" fill="none" opacity="0.55">
+          <line x1="980" y1="120" x2="1120" y2="90"/>
+          <line x1="1120" y1="90" x2="1260" y2="140"/>
+          <line x1="1120" y1="90" x2="1150" y2="220"/>
+          <line x1="1260" y1="140" x2="1400" y2="110"/>
+          <line x1="1260" y1="140" x2="1300" y2="260"/>
+          <line x1="1150" y1="220" x2="1300" y2="260"/>
+          <line x1="1300" y1="260" x2="1440" y2="290"/>
+          <line x1="1300" y1="260" x2="1240" y2="370"/>
+          <line x1="1440" y1="290" x2="1500" y2="200"/>
+          <line x1="1150" y1="220" x2="1060" y2="330"/>
+          <line x1="1060" y1="330" x2="1240" y2="370"/>
+          <line x1="1240" y1="370" x2="1380" y2="400"/>
+    </g>
+    <g fill="#CEB888">
+          <circle cx="980" cy="120" r="4.5" opacity="0.85"/>
+          <circle cx="1120" cy="90" r="5.5"/>
+          <circle cx="1260" cy="140" r="4.5" opacity="0.85"/>
+          <circle cx="1400" cy="110" r="4" opacity="0.7"/>
+          <circle cx="1150" cy="220" r="5.5"/>
+          <circle cx="1300" cy="260" r="6" opacity="0.9"/>
+          <circle cx="1440" cy="290" r="4.5" opacity="0.8"/>
+          <circle cx="1500" cy="200" r="4" opacity="0.65"/>
+          <circle cx="1060" cy="330" r="4.5" opacity="0.8"/>
+          <circle cx="1240" cy="370" r="5.5"/>
+          <circle cx="1380" cy="400" r="4" opacity="0.7"/>
+    </g>
+    <g stroke="#CEB888" stroke-width="1.2" fill="none" opacity="0.5">
+          <rect x="1115" y="85" width="10" height="10" transform="rotate(45 1120 90)"/>
+          <rect x="1295" y="255" width="10" height="10" transform="rotate(45 1300 260)"/>
+          <rect x="1235" y="365" width="10" height="10" transform="rotate(45 1240 370)"/>
+    </g>
+
+    <text x="120" y="178" font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="16" letter-spacing="4" fill="#CEB888">PURDUE MDE &#183; STUDIO COURSE &#183; FALL 2026</text>
+
+    <text x="118" y="270" font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="94" font-weight="700" fill="#F2F2F2">IDE <tspan fill="#CEB888">495</tspan></text>
+
+    <text x="120" y="316" font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="24" font-style="italic" fill="#8C8C8C">Design. Fabricate. <tspan fill="#CEB888" font-style="normal">Evoke.</tspan></text>
+
+    <text x="120" y="358" font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="15" fill="#8C8C8C">Prototyping physical, sensing, and responsive objects &#8212; with AI as a working partner.</text>
+
+    <g font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="12" letter-spacing="1">
+          <rect x="120" y="384" width="176" height="30" rx="2" fill="none" stroke="#CEB888" stroke-opacity="0.4"/>
+          <text x="136" y="404" fill="#CEB888">NORMAN'S THREE LEVELS</text>
+
+          <rect x="308" y="384" width="200" height="30" rx="2" fill="none" stroke="#CEB888" stroke-opacity="0.4"/>
+          <text x="324" y="404" fill="#CEB888">COMPASSIONATE DESIGN</text>
+    </g>
+</svg>
