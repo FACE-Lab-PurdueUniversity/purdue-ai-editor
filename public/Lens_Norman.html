@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norman's Three Levels &mdash; IDE 495 Design Lenses</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 620px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 600px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PRINCIPLE CARDS (the three levels) */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card {
+    background: var(--card); padding: 1.75rem;
+    position: relative; overflow: hidden;
+  }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 15px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* IMAGE PLACEHOLDER CARDS */
+  .example-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .example-card { background: var(--card); border: 1px solid var(--dim); }
+  .example-shot {
+    width: 100%; height: 170px; background: #0a0a0a;
+    border-bottom: 1px solid var(--dim);
+    border: 1.5px dashed rgba(206,184,136,0.25);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; position: relative;
+  }
+  .example-shot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase;
+    background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border: 1px solid var(--dim); border-radius: 2px;
+  }
+  .example-shot .shot-icon { font-size: 22px; color: var(--dim); }
+  .example-shot .shot-label { font-size: 11px; color: var(--dim); font-style: italic; text-align: center; padding: 0 1rem; }
+  .example-body { padding: 1.1rem 1.3rem; }
+  .example-body .e-label { font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.4rem; }
+  .example-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* WHERE IT SHOWS UP — timeline */
+  .timeline { display: flex; flex-direction: column; }
+  .t-step {
+    display: grid; grid-template-columns: 120px 1fr;
+    gap: 0 1.75rem; padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .t-step:last-child { border-bottom: none; }
+  .t-day { font-size: 13px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; align-self: flex-start; padding-top: 0.1rem; }
+  .t-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+  .t-body strong { color: var(--head); font-weight: 500; }
+
+  /* SELF-CHECK LIST */
+  .check-list { display: flex; flex-direction: column; gap: 1px; background: var(--dim); border: 1px solid var(--dim); }
+  .check-item { background: var(--card); padding: 1rem 1.4rem; display: flex; gap: 1rem; align-items: baseline; }
+  .check-item .c-label { font-size: 11px; letter-spacing: 0.08em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; width: 90px; }
+  .check-item p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* SOURCE */
+  .source-block {
+    border: 1px solid var(--dim); background: var(--card);
+    padding: 1.4rem 1.6rem; display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .source-block .s-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .source-block p { font-size: 13.5px; color: var(--head); }
+  .source-block em { color: var(--gold); font-style: italic; }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="IDE495_Landing.html">IDE 495</a> &nbsp;/&nbsp; Design Lenses &nbsp;/&nbsp; Norman's Three Levels</span>
+  <ul>
+    <li><a href="#big-idea">Big Idea</a></li>
+    <li><a href="#three-levels">Three Levels</a></li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#course">In the Course</a></li>
+    <li><a href="#apply">Self-Check</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="IDE495_Landing.html">&larr; IDE 495 Home</a> &nbsp;&middot;&nbsp; Design Lenses</div>
+    <h1>Norman's <em>Three Levels</em></h1>
+    <p class="lead">A way of asking whether something works on more than one level at once &mdash; the split between how a thing strikes you instantly, how it behaves when you use it, and what it means once you've put it down.</p>
+    <div class="quick-links">
+      <a href="#big-idea" class="quick-link">The Big Idea</a>
+      <a href="#three-levels" class="quick-link">The Three Levels</a>
+      <a href="#examples" class="quick-link">Everyday Examples</a>
+      <a href="#course" class="quick-link">In the Course</a>
+      <a href="#apply" class="quick-link">Self-Check</a>
+    </div>
+  </div>
+</div>
+
+<!-- BIG IDEA -->
+<section id="big-idea">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Big Idea</div>
+      <h2>People process design on three different levels at once.</h2>
+      <p>Don Norman's framework splits the experience of a product into three levels of processing that happen in a different order than you'd expect: an instant, pre-thought reaction; a layer about whether it actually works the way you expect; and a slower layer about what it means, once the interaction is over. A design can succeed at one level and fail at another &mdash; and knowing which level you're solving for changes what "good" even means.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THREE LEVELS -->
+<section id="three-levels">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Three Levels</div>
+      <h2>Visceral, behavioral, reflective.</h2>
+      <p>These aren't stages of a process &mdash; they're three simultaneous layers of response. Every object you design will land somewhere on all three, whether you intended it to or not.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Visceral</h3>
+        <p>The immediate, pre-conscious reaction to how something looks, feels, and sounds &mdash; before any use or thought is involved. This is appearance, weight, texture, first impression.</p>
+        <div class="rule">"I want to pick that up" happens before you know why.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>Behavioral</h3>
+        <p>Whether the thing works the way you expected it to when you actually use it &mdash; function, performance, and usability. This is the level most usability testing lives at.</p>
+        <div class="rule">Does it do what it promised, without a fight?</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>Reflective</h3>
+        <p>The meaning, story, and self-image a thing carries after the interaction is over &mdash; pride of ownership, memory, what it says about you. This is the slowest and longest-lasting level.</p>
+        <div class="rule">What does owning or having made this say about you?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES (image placeholders) -->
+<section id="examples">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Everyday Examples</div>
+      <h2>One object, three levels.</h2>
+      <p>Images to come &mdash; the plan is one example per level, showing how the same kind of object can be evaluated at each layer independently.</p>
+    </div>
+    <div class="example-grid">
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">Visceral example</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">Visceral</div>
+          <p>An object chosen for how it looks or feels before anyone has touched it.</p>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">Behavioral example</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">Behavioral</div>
+          <p>An object chosen for how it performs &mdash; or fails to &mdash; once someone actually uses it.</p>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">Reflective example</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">Reflective</div>
+          <p>An object chosen for what it means to own, keep, or have made, well after first use.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHERE IT SHOWS UP -->
+<section id="course">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">In the Course</div>
+      <h2>Where this shows up in IDE 495.</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-step">
+        <div class="t-day">Day 1</div>
+        <div class="t-body">First introduced alongside Compassionate Design and Engineering For/With/As People as one of the three lenses that run through the whole semester. A reading is assigned via jigsaw, split across groups.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Day 3</div>
+        <div class="t-body">Full deep-dive: jigsaw groups pitch their section of the reading, then a recap of the three levels with worked examples, before teams move into planning their <strong>Product Archaeology</strong> repurposing project.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Day 13</div>
+        <div class="t-body">Called back explicitly as the course pivots from physical objects to screens &mdash; the same three levels apply to interfaces, not just physical products.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Ongoing</div>
+        <div class="t-body">Used as one of three evaluation lenses (alongside Compassionate Design and For/With/As) for project critiques through the rest of the semester, including the final project.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELF-CHECK -->
+<section id="apply">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Self-Check</div>
+      <h2>Applying it to your own work.</h2>
+      <p>Three questions to ask about anything you're building, at any stage.</p>
+    </div>
+    <div class="check-list">
+      <div class="check-item">
+        <div class="c-label">Visceral</div>
+        <p>What's someone's first reaction before they've used it at all &mdash; and is that the reaction you actually want?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">Behavioral</div>
+        <p>When someone actually uses it, does it do what they expected, without confusion or friction?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">Reflective</div>
+        <p>After they've set it down, what story does having used it tell &mdash; about them, or about you as its maker?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCE -->
+<section id="source" style="padding-top: 0;">
+  <div class="container">
+    <div class="source-block">
+      <span class="s-label">Source</span>
+      <p>Don Norman, <em>The Design of Everyday Things</em> (1988, revised 2013).</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="IDE495_Landing.html">&larr; IDE 495 Home</a>
+    <a href="Lens_CompassionateDesign.html">Compassionate Design &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>Design Lenses &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

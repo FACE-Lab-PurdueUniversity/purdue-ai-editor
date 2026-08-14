@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering For/With/As People &mdash; IDE 495 Design Lenses</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 620px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 600px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PRINCIPLE CARDS (For / With / As) */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card {
+    background: var(--card); padding: 1.75rem;
+    position: relative; overflow: hidden;
+  }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 15px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* WORKED EXAMPLE (Purple Squirrel mapping) */
+  .example-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .example-card { background: var(--card); border: 1px solid var(--dim); }
+  .example-shot {
+    width: 100%; height: 170px; background: #0a0a0a;
+    border: 1.5px dashed rgba(206,184,136,0.25); border-bottom: 1px solid var(--dim);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; position: relative;
+  }
+  .example-shot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase;
+    background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border: 1px solid var(--dim); border-radius: 2px;
+  }
+  .example-shot .shot-icon { font-size: 22px; color: var(--dim); }
+  .example-shot .shot-label { font-size: 11px; color: var(--dim); font-style: italic; text-align: center; padding: 0 1rem; }
+  .example-body { padding: 1.1rem 1.3rem; }
+  .example-body .e-label { font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.4rem; }
+  .example-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; }
+  .t-step {
+    display: grid; grid-template-columns: 120px 1fr;
+    gap: 0 1.75rem; padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .t-step:last-child { border-bottom: none; }
+  .t-day { font-size: 13px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; align-self: flex-start; padding-top: 0.1rem; }
+  .t-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+  .t-body strong { color: var(--head); font-weight: 500; }
+
+  /* SELF-CHECK LIST */
+  .check-list { display: flex; flex-direction: column; gap: 1px; background: var(--dim); border: 1px solid var(--dim); }
+  .check-item { background: var(--card); padding: 1rem 1.4rem; display: flex; gap: 1rem; align-items: baseline; }
+  .check-item .c-label { font-size: 11px; letter-spacing: 0.08em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; width: 60px; }
+  .check-item p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* SOURCE */
+  .source-block {
+    border: 1px solid var(--dim); background: var(--card);
+    padding: 1.4rem 1.6rem; display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .source-block .s-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .source-block p { font-size: 13.5px; color: var(--head); }
+  .source-block em { color: var(--gold); font-style: italic; }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="IDE495_Landing.html">IDE 495</a> &nbsp;/&nbsp; Design Lenses &nbsp;/&nbsp; Engineering For/With/As People</span>
+  <ul>
+    <li><a href="#big-idea">Big Idea</a></li>
+    <li><a href="#three-lenses">Three Lenses</a></li>
+    <li><a href="#example">Worked Example</a></li>
+    <li><a href="#course">In the Course</a></li>
+    <li><a href="#apply">Self-Check</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="IDE495_Landing.html">&larr; IDE 495 Home</a> &nbsp;&middot;&nbsp; Design Lenses</div>
+    <h1>Engineering <em>For / With / As</em> People</h1>
+    <p class="lead">A framework for naming your relationship to the people you're designing for &mdash; because "the user" is never just one relationship, and the difference between designing <em>for</em>, <em>with</em>, and <em>as</em> someone changes what you're allowed to assume.</p>
+    <div class="quick-links">
+      <a href="#big-idea" class="quick-link">The Big Idea</a>
+      <a href="#three-lenses" class="quick-link">The Three Lenses</a>
+      <a href="#example" class="quick-link">Worked Example</a>
+      <a href="#course" class="quick-link">In the Course</a>
+      <a href="#apply" class="quick-link">Self-Check</a>
+    </div>
+  </div>
+</div>
+
+<!-- BIG IDEA -->
+<section id="big-idea">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Big Idea</div>
+      <h2>Your relationship to the people you design for isn't one thing.</h2>
+      <p>Drawing on Fila et al. (2014) and Hynes &amp; Swenson (2013), this framework splits "who is this for" into three distinct relational stances. You can design <em>for</em> a group you're not part of, <em>with</em> people as active collaborators, or <em>as</em> a way of designing from your own lived experience and values. Most real projects mix all three &mdash; naming which one you're in at any moment keeps you honest about what you actually know versus what you're assuming.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THREE LENSES -->
+<section id="three-lenses">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Three Lenses</div>
+      <h2>For, With, As.</h2>
+      <p>Each stance carries a different obligation &mdash; and a different way you can go wrong.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>For</h3>
+        <p>Designing for people whose experience you don't share &mdash; a different age group, ability, background, or role than your own. The obligation is humility: don't assume you already know what they need.</p>
+        <div class="rule">What would I need to ask, not assume, about this person's experience?</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>With</h3>
+        <p>Designing alongside people as active collaborators &mdash; teammates, co-designers, stakeholders with their own expertise. The obligation is shared authorship, not just consultation.</p>
+        <div class="rule">Whose expertise am I drawing on here, and are they actually shaping the decision?</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>As</h3>
+        <p>Designing from your own identity, values, and lived experience &mdash; when you are, in some real sense, the person you're designing for. The obligation is honesty about what's personal versus universal.</p>
+        <div class="rule">What am I bringing from my own experience, and does it actually generalize?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKED EXAMPLE -->
+<section id="example">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Worked Example</div>
+      <h2>Mapped onto the Purple Squirrel.</h2>
+      <p>The clearest example built so far in the course &mdash; how the three lenses land on one real project. Images to come for each.</p>
+    </div>
+    <div class="example-grid">
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">For</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">For</div>
+          <p>An audience unfamiliar with MDE &mdash; the squirrel has to make sense and feel welcoming to someone who's never heard of the program.</p>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">With</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">With</div>
+          <p>Teammates from across concentrations, each bringing different skills to the same build &mdash; the squirrel only comes together as shared work.</p>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">As</span>
+        </div>
+        <div class="example-body">
+          <div class="e-label">As</div>
+          <p>Your own personal values and taste &mdash; the squirrel is also a class-identity object, so part of it is designed from what you personally want it to say.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHERE IT SHOWS UP -->
+<section id="course">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">In the Course</div>
+      <h2>Where this shows up in IDE 495.</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-step">
+        <div class="t-day">Day 1</div>
+        <div class="t-body">First introduced alongside Norman's Three Levels and Compassionate Design as one of the three lenses used all semester.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Day 5</div>
+        <div class="t-body">Full deep-dive on For, With, and As, with a jigsaw assignment: each pair builds an analogous example for one lens and presents the following Tuesday. Ends with a light preview of <strong>Project 2</strong>, the Purple Squirrel.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Day 7</div>
+        <div class="t-body">Jigsaw pitches, then the "Connecting the Dots" bridge &mdash; mapping For/With/As explicitly onto the Purple Squirrel, the worked example above, before moving into squirrel studio time.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Ongoing</div>
+        <div class="t-body">Used as one of three evaluation lenses (alongside Norman and Compassionate Design) for project critiques through the rest of the semester, including the final project.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELF-CHECK -->
+<section id="apply">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Self-Check</div>
+      <h2>Applying it to your own work.</h2>
+      <p>Three questions to ask about anything you're building, at any stage.</p>
+    </div>
+    <div class="check-list">
+      <div class="check-item">
+        <div class="c-label">For</div>
+        <p>Who am I designing for that I'm not, and what am I still assuming about their experience instead of asking?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">With</div>
+        <p>Who's actually shaping this decision alongside me, and are they a real collaborator or just someone I checked in with?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">As</div>
+        <p>What part of this comes from my own experience or values &mdash; and am I being honest about where that stops applying to someone else?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCE -->
+<section id="source" style="padding-top: 0;">
+  <div class="container">
+    <div class="source-block">
+      <span class="s-label">Source</span>
+      <p>Fila et al., "Engineering For, With, or As People?" (2014); Hynes &amp; Swenson (2013).</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="Lens_CompassionateDesign.html">&larr; Compassionate Design</a>
+    <a href="IDE495_Landing.html">IDE 495 Home &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>Design Lenses &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

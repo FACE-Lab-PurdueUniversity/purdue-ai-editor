@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compassionate Design &mdash; IDE 495 Design Lenses</title>
+<style>
+  :root {
+    --bg:    #0F0F0F;
+    --card:  #1A1A1A;
+    --gold:  #CEB888;
+    --head:  #F2F2F2;
+    --muted: #8C8C8C;
+    --dim:   #4A4A4A;
+    --green: #4A7C59;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--head);
+    font-family: 'Segoe UI', Calibri, 'Gill Sans', Arial, sans-serif;
+    font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,15,0.96);
+    border-bottom: 1px solid var(--dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 52px; backdrop-filter: blur(6px);
+  }
+  nav .nav-brand { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  nav .nav-brand a { color: inherit; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 0.25rem; }
+  nav ul li a {
+    display: block; padding: 0.3rem 0.85rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.07em;
+    border-radius: 3px; transition: color 0.15s, background 0.15s;
+  }
+  nav ul li a:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  section { padding: 4rem 0; }
+  section + section { border-top: 1px solid var(--dim); }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem; border-bottom: 1px solid rgba(206,184,136,0.22);
+  }
+  .section-header { margin-bottom: 2.2rem; }
+  .section-header h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    font-weight: 300; color: var(--head); line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--muted); max-width: 640px; font-size: 13.5px; line-height: 1.65; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
+  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .page-header h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+    color: var(--head); line-height: 1.1; margin-bottom: 0.7rem;
+  }
+  .page-header h1 em { color: var(--gold); font-style: normal; }
+  .page-header .lead { font-size: 14px; color: var(--muted); max-width: 620px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .quick-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link {
+    padding: 0.28rem 0.8rem; background: var(--card);
+    border: 1px solid var(--dim); color: var(--muted);
+    text-decoration: none; font-size: 11px; letter-spacing: 0.07em;
+    border-radius: 2px; transition: border-color 0.15s, color 0.15s;
+  }
+  .quick-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PRINCIPLE CARDS (three considerations) */
+  .principle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--dim); border: 1.5px solid var(--dim);
+  }
+  .principle-card {
+    background: var(--card); padding: 1.75rem;
+    position: relative; overflow: hidden;
+  }
+  .principle-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
+  }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card h3 { font-size: 15px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
+  .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-card .rule {
+    margin-top: 0.85rem; padding: 0.55rem 0.8rem;
+    background: var(--bg); border-left: 2px solid var(--gold);
+    font-size: 12px; color: var(--head); font-style: italic;
+  }
+
+  /* CASE CARDS (foundational cases, w/ image placeholder) */
+  .case-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .case-card { background: var(--card); display: flex; flex-direction: column; overflow: hidden; }
+  .case-shot {
+    width: 100%; height: 180px; background: #0a0a0a;
+    border: 1.5px dashed rgba(206,184,136,0.25); border-bottom: 1px solid var(--dim);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; position: relative;
+  }
+  .case-shot .shot-badge {
+    position: absolute; top: 0.6rem; left: 0.7rem;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase;
+    background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border: 1px solid var(--dim); border-radius: 2px;
+  }
+  .case-shot .shot-icon { font-size: 22px; color: var(--dim); }
+  .case-shot .shot-label { font-size: 11px; color: var(--dim); font-style: italic; text-align: center; padding: 0 1rem; }
+  .case-body { padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .case-name { font-size: 16px; font-weight: 500; color: var(--head); }
+  .case-row { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+  .case-row .k { font-size: 10px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; display: block; margin-bottom: 0.15rem; }
+
+  /* OTHER CASES LIST */
+  .other-cases {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px; background: var(--dim); border: 1px solid var(--dim);
+  }
+  .other-case { background: var(--card); padding: 0.9rem 1.2rem; font-size: 13.5px; color: var(--head); }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; }
+  .t-step {
+    display: grid; grid-template-columns: 120px 1fr;
+    gap: 0 1.75rem; padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(74,74,74,0.5);
+  }
+  .t-step:last-child { border-bottom: none; }
+  .t-day { font-size: 13px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; align-self: flex-start; padding-top: 0.1rem; }
+  .t-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+  .t-body strong { color: var(--head); font-weight: 500; }
+
+  /* SELF-CHECK LIST */
+  .check-list { display: flex; flex-direction: column; gap: 1px; background: var(--dim); border: 1px solid var(--dim); }
+  .check-item { background: var(--card); padding: 1rem 1.4rem; display: flex; gap: 1rem; align-items: baseline; }
+  .check-item .c-label { font-size: 11px; letter-spacing: 0.08em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; width: 130px; }
+  .check-item p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* SOURCE */
+  .source-block {
+    border: 1px solid var(--dim); background: var(--card);
+    padding: 1.4rem 1.6rem; display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .source-block .s-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .source-block p { font-size: 13.5px; color: var(--head); }
+  .source-block em { color: var(--gold); font-style: italic; }
+
+  /* PAGE NAV */
+  .page-nav { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  .page-nav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .page-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.06em; padding: 0.45rem 0.85rem;
+    border: 1px solid var(--dim); border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .page-nav a:hover { color: var(--gold); border-color: var(--gold); }
+
+  footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer .footer-mark { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><a href="IDE495_Landing.html">IDE 495</a> &nbsp;/&nbsp; Design Lenses &nbsp;/&nbsp; Compassionate Design</span>
+  <ul>
+    <li><a href="#big-idea">Big Idea</a></li>
+    <li><a href="#considerations">Considerations</a></li>
+    <li><a href="#cases">Foundational Cases</a></li>
+    <li><a href="#course">In the Course</a></li>
+    <li><a href="#apply">Self-Check</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="IDE495_Landing.html">&larr; IDE 495 Home</a> &nbsp;&middot;&nbsp; Design Lenses</div>
+    <h1>Compassionate <em>Design</em></h1>
+    <p class="lead">A lens for designing with people who are often stigmatized, vulnerable, or overlooked &mdash; asking not just whether a design works, but whether it protects someone's dignity while it does.</p>
+    <div class="quick-links">
+      <a href="#big-idea" class="quick-link">The Big Idea</a>
+      <a href="#considerations" class="quick-link">Three Considerations</a>
+      <a href="#cases" class="quick-link">Foundational Cases</a>
+      <a href="#course" class="quick-link">In the Course</a>
+      <a href="#apply" class="quick-link">Self-Check</a>
+    </div>
+  </div>
+</div>
+
+<!-- BIG IDEA -->
+<section id="big-idea">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Big Idea</div>
+      <h2>Function isn't enough when dignity is on the line.</h2>
+      <p>Compassionate Design, as framed by Seshadri, Joslyn, Hynes &amp; Reid (2019), looks at products built for people in difficult or stigmatized circumstances &mdash; amputees, refugees, sick children, people experiencing poverty &mdash; and asks what separates the designs that quietly humiliate the people they're meant to help from the ones that restore some control and self-respect. Two products can solve the same technical problem and land completely differently on this scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THREE CONSIDERATIONS -->
+<section id="considerations">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Three Considerations</div>
+      <h2>Dignity, empowerment, sense of security.</h2>
+      <p>These are the three qualities the framework asks you to protect or restore, especially for people who have little say in what gets designed for them.</p>
+    </div>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <h3>Dignity</h3>
+        <p>Does the design treat the person as a full, capable person &mdash; or does it visibly mark them as a problem to be managed? Appearance and framing matter as much as function.</p>
+        <div class="rule">Would you be comfortable using this in public, exactly as it looks?</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <h3>Empowerment</h3>
+        <p>Does the design give someone more control over their own life and choices, or does it make decisions for them? Compassionate design hands agency back.</p>
+        <div class="rule">Who is doing the deciding once this is in someone's hands?</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <h3>Sense of Security</h3>
+        <p>Does the design account for the specific risks and fears of the situation it's used in &mdash; physical safety, social exposure, emotional distress &mdash; not just the average case?</p>
+        <div class="rule">What is this person actually afraid of, and does the design address it?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDATIONAL CASES -->
+<section id="cases">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Foundational Cases</div>
+      <h2>Three cases the course goes deep on.</h2>
+      <p>Images to come for each. These three get the full problem / response / why-compassionate treatment in class; nine more cases are covered by student jigsaw pitches (listed below).</p>
+    </div>
+    <div class="case-grid">
+
+      <div class="case-card">
+        <div class="case-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">Jaipur Foot</span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">Jaipur Foot</div>
+          <div class="case-row"><span class="k">Problem</span>An affordable prosthetic for amputees in regions where walking barefoot, squatting, and sitting cross-legged are part of daily life &mdash; needs Western prosthetics don't meet.</div>
+          <div class="case-row"><span class="k">Response</span>A low-cost, flexible prosthetic foot shaped and weighted to move and look like a natural bare foot.</div>
+          <div class="case-row"><span class="k">Why Compassionate</span>Restores culturally specific mobility and appearance, not just a generic definition of "walking."</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">Berkeley Darfur Stove</span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">Berkeley Darfur Stove</div>
+          <div class="case-row"><span class="k">Problem</span>Traditional three-stone fires in refugee camps required long firewood-gathering trips that exposed women to serious danger.</div>
+          <div class="case-row"><span class="k">Response</span>A fuel-efficient, engineered cookstove that sharply cuts how much firewood a household needs.</div>
+          <div class="case-row"><span class="k">Why Compassionate</span>Reduces exposure to a specific, named danger, not just fuel cost &mdash; the safety of the person, not only the efficiency of the stove.</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-shot">
+          <div class="shot-badge">Image coming</div>
+          <div class="shot-icon">&#9670;</div>
+          <span class="shot-label">GE MRI for Kids</span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">GE MRI for Kids</div>
+          <div class="case-row"><span class="k">Problem</span>MRI machines frighten young children badly enough that many need sedation just to complete a scan.</div>
+          <div class="case-row"><span class="k">Response</span>The room and machine are redecorated as a themed adventure, with staff guiding the child through it as a story rather than a procedure.</div>
+          <div class="case-row"><span class="k">Why Compassionate</span>Addresses the child's emotional experience directly &mdash; the scanner's technical function didn't change, but the person's experience of it did.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- OTHER CASES -->
+<section id="other-cases" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">The Other Nine</div>
+      <h2>Assigned across student jigsaw pairs.</h2>
+    </div>
+    <div class="other-cases">
+      <div class="other-case">Embrace Baby Warmer</div>
+      <div class="other-case">Rabbit Ray</div>
+      <div class="other-case">UV Waterworks</div>
+      <div class="other-case">SpeechVive</div>
+      <div class="other-case">LifeSaver Bottle</div>
+      <div class="other-case">Leveraged Freedom Chair</div>
+      <div class="other-case">Firefly Incubator</div>
+      <div class="other-case">Lemon Tree Hotels</div>
+      <div class="other-case">Playpump</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHERE IT SHOWS UP -->
+<section id="course">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">In the Course</div>
+      <h2>Where this shows up in IDE 495.</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-step">
+        <div class="t-day">Day 1</div>
+        <div class="t-body">First introduced alongside Norman's Three Levels and Engineering For/With/As People as one of the three lenses used all semester.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Day 9</div>
+        <div class="t-body">Full deep-dive: dignity, empowerment, and sense of security, with the three foundational cases above covered in depth. Jigsaw pairs are then assigned one of the other nine cases, present the following Tuesday, and connect it back to a product idea for the course. <strong>Project 3</strong> (Single-Sensor Interactive Object) launches the same day, with new teams.</div>
+      </div>
+      <div class="t-step">
+        <div class="t-day">Ongoing</div>
+        <div class="t-body">Used as one of three evaluation lenses (alongside Norman and For/With/As) for project critiques through the rest of the semester, including the final project.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELF-CHECK -->
+<section id="apply">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Self-Check</div>
+      <h2>Applying it to your own work.</h2>
+      <p>Three questions to ask about anything you're building, especially if it's meant for someone in a vulnerable or difficult situation.</p>
+    </div>
+    <div class="check-list">
+      <div class="check-item">
+        <div class="c-label">Dignity</div>
+        <p>Does this mark the person using it as someone with a problem, or does it treat them as a capable person, full stop?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">Empowerment</div>
+        <p>Does this give the person more control over their situation, or does it quietly take decisions away from them?</p>
+      </div>
+      <div class="check-item">
+        <div class="c-label">Sense of Security</div>
+        <p>What is this person specifically afraid of or at risk from &mdash; and does the design actually address that, or just the average case?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCE -->
+<section id="source" style="padding-top: 0;">
+  <div class="container">
+    <div class="source-block">
+      <span class="s-label">Source</span>
+      <p>Seshadri, Joslyn, Hynes &amp; Reid, "Compassionate Design" (2019).</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="container">
+    <a href="Lens_Norman.html">&larr; Norman's Three Levels</a>
+    <a href="Lens_ForWithAs.html">Engineering For/With/As People &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>Design Lenses &nbsp;&middot;&nbsp; v1 draft &nbsp;&middot;&nbsp; Morgan Hynes</p>
+  </div>
+</footer>
+
+</body>
+</html>

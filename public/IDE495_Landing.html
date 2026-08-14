@@ -40,9 +40,7 @@ nav a.nav-link:hover { color: var(--gold); background: rgba(206,184,136,0.08); }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
 section { padding: 5rem 0; }
 section + section { border-top: 1px solid var(--dim); }
-.hero-banner { width: 100%; display: block; border-bottom: 1px solid var(--dim); }
-.hero-banner img { width: 100%; display: block; }
-#hero { padding: 3rem 0 5rem; border-bottom: 1px solid var(--dim); }
+#hero { padding: 6rem 0 5rem; border-bottom: 1px solid var(--dim); }
 #hero .eyebrow {
   font-size: 10px; letter-spacing: 0.22em; color: var(--gold);
   text-transform: uppercase; margin-bottom: 1.2rem;
@@ -106,78 +104,106 @@ footer .footer-mark { color: var(--gold); }
 <body>
 
 <nav>
-<span class="nav-brand">IDE 495 &nbsp;·&nbsp; Prototyping for Experience</span>
-<a class="nav-link" href="/ai_design_guide_v1">AI + Design Field Guide &rarr;</a>
+  <span class="nav-brand">IDE 495 &nbsp;·&nbsp; Prototyping for Experience</span>
+  <a class="nav-link" href="/ai_design_guide_v1">AI + Design Field Guide &rarr;</a>
 </nav>
 
-<div class="hero-banner">
-<img src="/IDE495_Banner_Placeholder.svg" alt="IDE 495 — Design. Fabricate. Evoke. Purdue MDE Studio Course, Fall 2026">
+<div id="hero">
+  <div class="container">
+    <div class="eyebrow">Purdue MDE &nbsp;·&nbsp; Studio Course &nbsp;·&nbsp; Fall 2026</div>
+    <h1>Design. Fabricate. <em>Evoke.</em></h1>
+    <p class="lead">IDE 495 is a new junior/senior studio course where students prototype physical, sensing, and responsive objects built to evoke a specific emotional response, using AI as a working partner rather than a shortcut. This page collects the workflow resources built for the course and its MicroArtistry 2026 pilot.</p>
+    <div class="tag-row">
+      <span class="tag">Norman's Three Levels</span>
+      <span class="tag">Compassionate Design</span>
+      <span class="tag">Engineering For/With/As People</span>
+    </div>
+  </div>
 </div>
 
-<div id="hero">
-<div class="container">
-<p class="lead">IDE 495 is a new junior/senior studio course where students prototype physical, sensing, and responsive objects built to evoke a specific emotional response, using AI as a working partner rather than a shortcut. This page collects the workflow resources built for the course and its MicroArtistry 2026 pilot.</p>
-<div class="tag-row">
-<span class="tag">Norman's Three Levels</span>
-<span class="tag">Compassionate Design</span>
-<span class="tag">Engineering For/With/As People</span>
-</div>
-</div>
-</div>
+<section id="lenses">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Design Lenses</div>
+      <h2>The three frameworks that run through the semester</h2>
+      <p>Every project in the course gets evaluated against these three lenses together: how it lands emotionally and functionally, whether it protects the dignity of the people it's for, and what your relationship to those people actually is.</p>
+    </div>
+    <div class="resource-grid">
+      <a class="resource-card" href="Lens_Norman.html">
+        <div class="r-icon">&#9670;</div>
+        <h3>Norman's Three Levels</h3>
+        <p>Visceral, behavioral, reflective &mdash; how people process design on three levels at once.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="Lens_CompassionateDesign.html">
+        <div class="r-icon">&#9825;</div>
+        <h3>Compassionate Design</h3>
+        <p>Dignity, empowerment, sense of security &mdash; designing with people in vulnerable circumstances.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="Lens_ForWithAs.html">
+        <div class="r-icon">&#9737;</div>
+        <h3>Engineering For/With/As People</h3>
+        <p>Naming your relationship to the people you design for &mdash; for, with, or as them.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
 
 <section id="resources">
-<div class="container">
-<div class="section-header">
-<div class="eyebrow">AI Design Guide</div>
-<h2>Workflow resources for building with AI</h2>
-<p>Each guide covers one part of the prototyping stack: how to think about it, the tools that fit, a worked prompt structure, and the pitfalls that show up in practice. Start with the full field guide, or jump straight to the workflow you need.</p>
-</div>
-<div class="resource-grid">
-<a class="resource-card" href="/ai_design_guide_v1">
-<div class="r-icon">&#9670;</div>
-<h3>AI + Design — Full Field Guide</h3>
-<p>The mental model, all five workflows, and the ethical commitments in one place. Start here if you're new.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-<a class="resource-card" href="/ai_guide_vibe_coding">
-<div class="r-icon">&#60;/&#62;</div>
-<h3>Vibe Coding</h3>
-<p>Directing AI to write web/app behavior by describing intent and feel, not code structure.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-<a class="resource-card" href="/ai_guide_microcontrollers">
-<div class="r-icon">&#9889;</div>
-<h3>Microcontroller Programming</h3>
-<p>AI-assisted firmware for Arduino/ESP32 sensors, actuators, and physical behavior.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-<a class="resource-card" href="/ai_guide_hardware">
-<div class="r-icon">&#9881;</div>
-<h3>Hardware Troubleshooting</h3>
-<p>Using AI as a diagnostic partner for wiring, power, and sensor problems.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-<a class="resource-card" href="/ai_guide_ui_dev">
-<div class="r-icon">&#9707;</div>
-<h3>User Interface Development</h3>
-<p>Building web-based control interfaces and displays with an emotional register in mind.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-<a class="resource-card" href="/ai_guide_image_gen">
-<div class="r-icon">&#9998;</div>
-<h3>Image Generation</h3>
-<p>Rapid visual ideation and concept assets, with prompt specificity as the core craft.</p>
-<span class="r-go">Explore &rarr;</span>
-</a>
-</div>
-</div>
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">AI Design Guide</div>
+      <h2>Workflow resources for building with AI</h2>
+      <p>Each guide covers one part of the prototyping stack: how to think about it, the tools that fit, a worked prompt structure, and the pitfalls that show up in practice. Start with the full field guide, or jump straight to the workflow you need.</p>
+    </div>
+    <div class="resource-grid">
+      <a class="resource-card" href="/ai_design_guide_v1">
+        <div class="r-icon">&#9670;</div>
+        <h3>AI + Design — Full Field Guide</h3>
+        <p>The mental model, all five workflows, and the ethical commitments in one place. Start here if you're new.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_vibe_coding">
+        <div class="r-icon">&#60;/&#62;</div>
+        <h3>Vibe Coding</h3>
+        <p>Directing AI to write web/app behavior by describing intent and feel, not code structure.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_microcontrollers">
+        <div class="r-icon">&#9889;</div>
+        <h3>Microcontroller Programming</h3>
+        <p>AI-assisted firmware for Arduino/ESP32 sensors, actuators, and physical behavior.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_hardware">
+        <div class="r-icon">&#9881;</div>
+        <h3>Hardware Troubleshooting</h3>
+        <p>Using AI as a diagnostic partner for wiring, power, and sensor problems.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_ui_dev">
+        <div class="r-icon">&#9707;</div>
+        <h3>User Interface Development</h3>
+        <p>Building web-based control interfaces and displays with an emotional register in mind.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+      <a class="resource-card" href="/ai_guide_image_gen">
+        <div class="r-icon">&#9998;</div>
+        <h3>Image Generation</h3>
+        <p>Rapid visual ideation and concept assets, with prompt specificity as the core craft.</p>
+        <span class="r-go">Explore &rarr;</span>
+      </a>
+    </div>
+  </div>
 </section>
 
 <footer>
-<div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; width:100%;">
-<p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
-<p>Test deploy &middot; August 6, 2026 &middot; Morgan Hynes</p>
-</div>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; width:100%;">
+    <p>IDE 495 &middot; Prototyping for Experience &nbsp;&middot;&nbsp; <span class="footer-mark">Purdue MDE</span></p>
+    <p>Test deploy &middot; August 3, 2026 &middot; Morgan Hynes</p>
+  </div>
 </footer>
 
 </body>
