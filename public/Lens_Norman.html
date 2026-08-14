@@ -12,7 +12,8 @@
     --head:  #F2F2F2;
     --muted: #8C8C8C;
     --dim:   #4A4A4A;
-    --green: #4A7C59;
+    --dim-text: #8A8A8A;
+    --green: #6FA37F;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -57,7 +58,7 @@
 
   /* PAGE HEADER */
   .page-header { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--dim); }
-  .breadcrumb { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .breadcrumb { font-size: 11px; color: var(--dim-text); letter-spacing: 0.06em; margin-bottom: 1rem; }
   .breadcrumb a { color: var(--gold); text-decoration: none; }
   .page-header h1 {
     font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
@@ -87,7 +88,7 @@
     content: ''; position: absolute; top: 0; left: 0;
     width: 3px; height: 100%; background: var(--gold); opacity: 0.5;
   }
-  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim); line-height: 1; margin-bottom: 0.65rem; }
+  .principle-card .p-num { font-size: 32px; font-weight: 200; color: var(--dim-text); line-height: 1; margin-bottom: 0.65rem; }
   .principle-card h3 { font-size: 15px; font-weight: 500; color: var(--gold); margin-bottom: 0.55rem; }
   .principle-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
   .principle-card .rule {
@@ -111,11 +112,11 @@
   }
   .example-shot .shot-badge {
     position: absolute; top: 0.6rem; left: 0.7rem;
-    font-size: 9px; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase;
+    font-size: 9px; letter-spacing: 0.16em; color: var(--dim-text); text-transform: uppercase;
     background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border: 1px solid var(--dim); border-radius: 2px;
   }
-  .example-shot .shot-icon { font-size: 22px; color: var(--dim); }
-  .example-shot .shot-label { font-size: 11px; color: var(--dim); font-style: italic; text-align: center; padding: 0 1rem; }
+  .example-shot .shot-icon { font-size: 22px; color: var(--dim-text); }
+  .example-shot .shot-label { font-size: 11px; color: var(--dim-text); font-style: italic; text-align: center; padding: 0 1rem; }
   .example-body { padding: 1.1rem 1.3rem; }
   .example-body .e-label { font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.4rem; }
   .example-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
@@ -143,7 +144,7 @@
     border: 1px solid var(--dim); background: var(--card);
     padding: 1.4rem 1.6rem; display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
   }
-  .source-block .s-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+  .source-block .s-label { font-size: 10px; letter-spacing: 0.14em; color: var(--dim-text); text-transform: uppercase; }
   .source-block p { font-size: 13.5px; color: var(--head); }
   .source-block em { color: var(--gold); font-style: italic; }
 
@@ -160,7 +161,7 @@
 
   footer { border-top: 1px solid var(--dim); padding: 1.75rem 0; }
   footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  footer p { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; }
+  footer p { font-size: 11px; color: var(--dim-text); letter-spacing: 0.05em; }
   footer .footer-mark { color: var(--gold); }
 </style>
 </head>
