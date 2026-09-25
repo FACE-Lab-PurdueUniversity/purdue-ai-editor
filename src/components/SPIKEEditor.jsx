@@ -566,7 +566,12 @@ const SPIKEEditor = forwardRef(({ sessionId }, ref) => {
         }
       }
       if (!replConnected) {
-        throw new Error('ESP32 REPL not ready after flashing. Unplug/replug the board, then click Connect ESP32.');
+        // Some boards don't wire RTS to EN, so the post-flash hard reset never
+        // happens and the chip stays in the bootloader until reset by hand.
+        throw new Error(
+          'MicroPython was installed, but the ESP32 did not restart. Press the EN/RST button on the board ' +
+          '(without holding BOOT), then click Connect ESP32.'
+        );
       }
 
       await board.interrupt(150);

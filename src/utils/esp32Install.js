@@ -1,10 +1,26 @@
 import { ESPLoader, Transport } from 'esptool-js';
+import SparkMD5 from 'spark-md5';
 import firmwareUrl from '../assets/firmware/esp32-micropython-v1.28.0.bin?url';
 
 const noop = () => {};
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const MICROPYTHON_FLASH_ADDRESS = 0x1000;
+// The bundled firmware is the ESP32_GENERIC build (classic ESP32 only).
+// S2/S3/C3 etc. need a different image at a different address.
+const SUPPORTED_CHIP = 'ESP32';
+const MAX_WRITE_ATTEMPTS = 3;
+
+// esptool-js only verifies the written flash if we supply an MD5 function.
+// Copy into a fresh buffer so a Uint8Array view never hashes extra bytes.
+const md5Hex = (image) => SparkMD5.ArrayBuffer.hash(new Uint8Array(image).buffer);
+
+// Serial corruption during the write surfaces as a stub status error
+// (e.g. 193 = 0xC1 bad data checksum) or an MD5 mismatch — both are worth a retry.
+const isRetryableWriteError = (error) =>
+  /failed with status|MD5 of file does not match|Timeout|Invalid head of packet|Packet content transfer stopped/i.test(
+    error?.message || ''
+  );
 
 export const looksLikeMissingMicroPythonEsp32 = (error) => {
   const message = error?.message || '';
@@ -64,6 +80,14 @@ export const openEsp32FlashSession = async (port, { onStatus = noop, skipReset =
     onStatus(skipReset ? 'Syncing with ESP32 bootloader...' : 'Connecting to ESP32 bootloader...');
     const mode = skipReset ? 'no_reset' : 'default_reset';
     const chipName = await esploader.main(mode);
+    if (esploader.chip?.CHIP_NAME !== SUPPORTED_CHIP) {
+      const unsupported = new Error(
+        `This board is an ${esploader.chip?.CHIP_NAME || chipName}, but only the classic ESP32 ` +
+        '(e.g. ESP32-WROOM-32E) is supported. MicroPython was not installed.'
+      );
+      unsupported.code = 'ESP32_UNSUPPORTED_CHIP';
+      throw unsupported;
+    }
     onStatus(`Connected to ${chipName}. Preparing to install MicroPython...`);
   } catch (error) {
     try { await transport.disconnect(); } catch {}
@@ -79,26 +103,51 @@ export const openEsp32FlashSession = async (port, { onStatus = noop, skipReset =
 
   return {
     flashMicroPython: async ({ onStatus: flashStatus = noop, onProgress = noop } = {}) => {
-      flashStatus('Erasing old firmware (this takes ~15 seconds)...');
-      await esploader.eraseFlash();
-
+      // Download before erasing so a network failure doesn't leave the board blank.
       flashStatus('Downloading MicroPython firmware...');
       const response = await fetch(firmwareUrl);
       if (!response.ok) throw new Error(`Failed to fetch MicroPython firmware: ${response.statusText}`);
       const firmwareData = new Uint8Array(await response.arrayBuffer());
 
-      flashStatus('Writing MicroPython to ESP32...');
-      await esploader.writeFlash({
-        fileArray: [{ data: firmwareData, address: MICROPYTHON_FLASH_ADDRESS }],
-        flashMode: 'dio',
-        flashFreq: '40m',
-        flashSize: 'keep',
-        eraseAll: false,
-        compress: true,
-        reportProgress: (_fileIndex, written, total) => {
-          if (total > 0) onProgress(Math.round((written / total) * 100));
-        },
-      });
+      flashStatus('Erasing old firmware (this takes ~15 seconds)...');
+      await esploader.eraseFlash();
+
+      for (let attempt = 1; attempt <= MAX_WRITE_ATTEMPTS; attempt++) {
+        flashStatus(
+          attempt === 1
+            ? 'Writing MicroPython to ESP32...'
+            : `Data was corrupted over USB — retrying write (${attempt}/${MAX_WRITE_ATTEMPTS})...`
+        );
+        onProgress(0);
+        try {
+          await esploader.writeFlash({
+            fileArray: [{ data: firmwareData, address: MICROPYTHON_FLASH_ADDRESS }],
+            flashMode: 'dio',
+            flashFreq: '40m',
+            flashSize: 'keep',
+            eraseAll: false,
+            compress: true,
+            calculateMD5Hash: md5Hex,
+            reportProgress: (_fileIndex, written, total) => {
+              if (total > 0) onProgress(Math.round((written / total) * 100));
+            },
+          });
+          break;
+        } catch (error) {
+          console.warn(`[esptool] write attempt ${attempt} failed:`, error);
+          if (!isRetryableWriteError(error)) throw error;
+          if (attempt === MAX_WRITE_ATTEMPTS) {
+            throw new Error(
+              'MicroPython could not be written reliably — the USB connection kept corrupting data. ' +
+              'Try a different USB cable (a data cable, not charge-only), plug directly into the computer ' +
+              'instead of a hub, then put the board in bootloader mode and click Flash MicroPython again.'
+            );
+          }
+          // Let the stub drop any half-received packet before restarting the write.
+          await sleep(500);
+          esploader.transport.flushInput();
+        }
+      }
 
       flashStatus('MicroPython installed. Resetting ESP32...');
       // hard_reset toggles DTR/RTS which may briefly disconnect the USB port.
