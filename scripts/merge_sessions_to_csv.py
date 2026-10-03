@@ -17,15 +17,23 @@ back to the profile's email, then to the raw user_id.
 Message rows dereference code_context_id / console_context_id and embed the
 actual attached code/console content (not just a boolean flag).
 
+Pass --start / --end to keep only events inside that time frame. Times are
+read as US Eastern; a date-only --end covers that whole day. Sessions with no
+events in the time frame are skipped, so a session (and its conversations) only
+gets a file if something happened in the window.
+
 Usage:
     python3 scripts/merge_sessions_to_csv.py
+    python3 scripts/merge_sessions_to_csv.py --start 2026-09-01 --end 2026-09-30
+    python3 scripts/merge_sessions_to_csv.py --start "2026-09-01 09:00" --end "2026-09-01 17:00"
 """
 
+import argparse
 import csv
 import shutil
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -122,6 +130,54 @@ def parse_eastern(timestamp):
     return dt.astimezone(EASTERN_TZ)
 
 
+def parse_cli_time(value, is_end):
+    """Parse a --start/--end value as Eastern time. Date-only --end is inclusive."""
+    text = value.strip().replace("T", " ")
+    try:
+        dt = datetime.fromisoformat(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"invalid time {value!r}; use YYYY-MM-DD or 'YYYY-MM-DD HH:MM'"
+        )
+    if is_end and len(text) == 10:  # date only -> include the whole day
+        dt = datetime.combine(dt.date(), time.min) + timedelta(days=1) - timedelta(microseconds=1)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=EASTERN_TZ)
+    return dt
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument(
+        "--start",
+        type=lambda v: parse_cli_time(v, is_end=False),
+        help="Keep only events at or after this Eastern time (YYYY-MM-DD or 'YYYY-MM-DD HH:MM').",
+    )
+    parser.add_argument(
+        "--end",
+        type=lambda v: parse_cli_time(v, is_end=True),
+        help="Keep only events at or before this Eastern time (date-only covers the whole day).",
+    )
+    args = parser.parse_args()
+    if args.start and args.end and args.start > args.end:
+        parser.error("--start must be before --end")
+    return args
+
+
+def in_time_frame(timestamp, start, end):
+    """True if the timestamp falls in [start, end]. Unparseable times are excluded when filtering."""
+    if start is None and end is None:
+        return True
+    dt = parse_eastern(timestamp)
+    if dt is None:
+        return False
+    if start is not None and dt < start:
+        return False
+    if end is not None and dt > end:
+        return False
+    return True
+
+
 def build_event(event_type, timestamp, **fields):
     """Create a blank event row, then fill in the type-specific fields."""
     row = {col: "" for col in EVENT_COLUMNS}
@@ -140,6 +196,8 @@ def build_event(event_type, timestamp, **fields):
 
 
 def main():
+    args = parse_args()
+
     if not RESEARCH_DIR.is_dir():
         sys.exit(f"Error: research_data directory not found at {RESEARCH_DIR}")
 
@@ -197,6 +255,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     files_written = 0
+    sessions_skipped = 0
     per_student_counts = defaultdict(int)
 
     for session in sessions:
@@ -282,6 +341,14 @@ def main():
                     )
                 )
 
+        # Keep only events inside the requested time frame (no-op without --start/--end).
+        events = [e for e in events if in_time_frame(e["Timestamp"], args.start, args.end)]
+
+        # Skip sessions with nothing in the time frame.
+        if not events:
+            sessions_skipped += 1
+            continue
+
         # Sort chronologically (ISO-8601 strings sort correctly; blanks last).
         events.sort(key=lambda e: (e["Timestamp"] == "", e["Timestamp"]))
 
@@ -309,7 +376,11 @@ def main():
         per_student_counts[folder_name] += 1
 
     # --- Summary -------------------------------------------------------------
-    print(f"Processed {len(sessions)} sessions.")
+    if args.start or args.end:
+        start_label = args.start.strftime("%Y-%m-%d %H:%M %Z") if args.start else "beginning"
+        end_label = args.end.strftime("%Y-%m-%d %H:%M %Z") if args.end else "now"
+        print(f"Time frame: {start_label} to {end_label}")
+    print(f"Processed {len(sessions)} sessions; skipped {sessions_skipped} with no events in range.")
     print(f"Wrote {files_written} session CSV(s) across "
           f"{len(per_student_counts)} student folder(s) in {OUT_DIR}")
     for name in sorted(per_student_counts):
