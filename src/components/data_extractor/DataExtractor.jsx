@@ -215,6 +215,11 @@ function DataExtractor() {
                   >
                     Clear dates
                   </button>
+                  <p className="admin-time-range-note">
+                    Sessions, Code, Conversations, and User Profiles ignore the time range and
+                    always export their full history (still filtered by email), so time-filtered
+                    rows can be linked back to them.
+                  </p>
                 </div>
               </div>
 
