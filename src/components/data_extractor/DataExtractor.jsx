@@ -82,6 +82,8 @@ const CONVERSATION_COLUMNS = [
   { key: 'start_time', label: 'Start Time', default: true },
   { key: 'last_updated', label: 'Last Updated', default: true },
   { key: 'name', label: 'Name', default: true },
+  { key: 'persona_type', label: 'Persona Type', default: true },
+  { key: 'persona_prompt', label: 'Persona Prompt', default: false },
 ];
 
 const USER_PROFILE_COLUMNS = [

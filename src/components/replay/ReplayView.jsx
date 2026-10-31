@@ -12,6 +12,7 @@ import ReplayTitleBar from './ReplayTitleBar';
 import ReplayEditorPane from './ReplayEditorPane';
 import ReplayChatPane from './ReplayChatPane';
 import ReplayControls from './ReplayControls';
+import PersonaViewer from './PersonaViewer';
 import '../../App.css';
 import './Replay.css';
 
@@ -19,6 +20,7 @@ const PLAY_INTERVAL_MS = 1000;
 
 const ReplayView = () => {
   const [session, setSession] = useState(null); // { meta, events, frames, fileName }
+  const [personaFile, setPersonaFile] = useState(null); // { personas, fileName }
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const containerRef = useRef(null);
@@ -92,10 +94,20 @@ const ReplayView = () => {
     };
   }, [session]);
 
+  if (personaFile) {
+    return (
+      <PersonaViewer
+        personas={personaFile.personas}
+        fileName={personaFile.fileName}
+        onLoadAnother={() => setPersonaFile(null)}
+      />
+    );
+  }
+
   if (!session) {
     return (
       <div className="app-container">
-        <ReplayUpload onLoaded={handleLoaded} />
+        <ReplayUpload onLoaded={handleLoaded} onPersonasLoaded={setPersonaFile} />
       </div>
     );
   }
