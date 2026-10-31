@@ -17,6 +17,12 @@ back to the profile's email, then to the raw user_id.
 Message rows dereference code_context_id / console_context_id and embed the
 actual attached code/console content (not just a boolean flag).
 
+Message rows also carry the chat's Persona Type (blank for a regular chat,
+"preset:<id>" for a fixed persona, "custom" for a student-authored one). The
+full persona prompts are written once per student, rather than on every row, to:
+
+    research_data/by_session/<student>/personas.csv
+
 Pass --start / --end to keep only events inside that time frame. Times are
 read as US Eastern; a date-only --end covers that whole day. Sessions with no
 events in the time frame are skipped, so a session (and its conversations) only
@@ -71,6 +77,7 @@ EVENT_COLUMNS = [
     "Button Clicked",
     "Message Author",
     "Chat Tab Name",
+    "Persona Type",
     "Message",
     "LLM Coding Level",
     "AI Model",
@@ -78,6 +85,17 @@ EVENT_COLUMNS = [
     "Completion Tokens",
     "Attached Code Context",
     "Attached Console Context",
+]
+
+# Column order for the per-student personas.csv.
+PERSONA_COLUMNS = [
+    "Session ID",
+    "Session Name",
+    "Conversation ID",
+    "Chat Tab Name",
+    "Persona Type",
+    "Started At",
+    "Persona Prompt",
 ]
 
 # Characters that are unsafe in folder names across common filesystems.
@@ -229,6 +247,10 @@ def main():
     code_name_by_id = {r["id"]: r.get("name", "") for r in code_records}
     conversation_name_by_id = {r["id"]: r.get("name", "") for r in conversations}
 
+    # Persona lookups. .get() keeps older exports (without these columns) working.
+    persona_type_by_id = {r["id"]: r.get("persona_type", "") for r in conversations}
+    conversation_by_id = {r["id"]: r for r in conversations}
+
     code_by_session = defaultdict(list)
     for r in code_snapshots:
         code_by_session[r["session_id"]].append(r)
@@ -257,6 +279,7 @@ def main():
     files_written = 0
     sessions_skipped = 0
     per_student_counts = defaultdict(int)
+    personas_by_student = defaultdict(list)
 
     for session in sessions:
         sid = session.get("id")
@@ -330,6 +353,7 @@ def main():
                         **{
                             "Message Author": r.get("role"),
                             "Chat Tab Name": conversation_name_by_id.get(conv_id, ""),
+                            "Persona Type": persona_type_by_id.get(conv_id, ""),
                             "Message": r.get("content"),
                             "LLM Coding Level": r.get("coding_level"),
                             "AI Model": r.get("ai_model"),
@@ -375,6 +399,30 @@ def main():
         files_written += 1
         per_student_counts[folder_name] += 1
 
+        # Collect this session's persona chats for the student's personas.csv.
+        for conv_id in conversations_by_session.get(sid, []):
+            conv = conversation_by_id[conv_id]
+            if is_blank(conv.get("persona_type")):
+                continue
+            personas_by_student[folder_name].append({
+                "Session ID": sid,
+                "Session Name": session.get("name", ""),
+                "Conversation ID": conv_id,
+                "Chat Tab Name": conv.get("name", ""),
+                "Persona Type": conv.get("persona_type", ""),
+                "Started At": conv.get("start_time", ""),
+                "Persona Prompt": conv.get("persona_prompt", ""),
+            })
+
+    # --- Write per-student personas.csv --------------------------------------
+    for folder_name, rows in personas_by_student.items():
+        rows.sort(key=lambda r: (r["Started At"] == "", r["Started At"]))
+        with (OUT_DIR / folder_name / "personas.csv").open("w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(PERSONA_COLUMNS)
+            for row in rows:
+                writer.writerow(["" if is_blank(row[col]) else row[col] for col in PERSONA_COLUMNS])
+
     # --- Summary -------------------------------------------------------------
     if args.start or args.end:
         start_label = args.start.strftime("%Y-%m-%d %H:%M %Z") if args.start else "beginning"
@@ -384,7 +432,9 @@ def main():
     print(f"Wrote {files_written} session CSV(s) across "
           f"{len(per_student_counts)} student folder(s) in {OUT_DIR}")
     for name in sorted(per_student_counts):
-        print(f"  {name}: {per_student_counts[name]} session(s)")
+        persona_count = len(personas_by_student.get(name, []))
+        persona_note = f", {persona_count} persona chat(s)" if persona_count else ""
+        print(f"  {name}: {per_student_counts[name]} session(s){persona_note}")
 
 
 if __name__ == "__main__":
